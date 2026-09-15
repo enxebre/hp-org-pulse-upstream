@@ -1,0 +1,5 @@
+*
+!fixtures/*
+!modules/*
+modules/team-tracker
+!platform/*

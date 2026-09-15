@@ -1,0 +1,205 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      app: ${{ steps.changes.outputs.app }}
+      deploy: ${{ steps.changes.outputs.deploy }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          show-progress: false
+          fetch-depth: 0
+
+      - name: Detect changed paths
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "merge_group" ]; then
+            BASE_SHA="${{ github.event.merge_group.base_sha }}"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_SHA="origin/main"
+          fi
+
+          if [ -z "$BASE_SHA" ]; then
+            echo "::error::BASE_SHA is empty — cannot detect changes"
+            exit 1
+          fi
+
+          CHANGED=$(git diff --name-only ${BASE_SHA} HEAD)
+          if echo "$CHANGED" | grep -qE '^(server/index\.js|modules/|platform/|package|vite\.config|tailwind\.config|postcss\.config|vitest\.config|index\.html|public/|tests/|playwright\.config|Makefile)'; then
+            echo "app=true" >> "$GITHUB_OUTPUT"
+          fi
+          if echo "$CHANGED" | grep -q '^deploy/'; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.app == 'true' || needs.detect-changes.outputs.deploy == 'true'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Setup Node.js
+        if: needs.detect-changes.outputs.app == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: 'npm'
+
+      - name: Setup Socket Security
+        if: needs.detect-changes.outputs.app == 'true'
+        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+        with:
+          mode: firewall-free
+
+      - name: Install dependencies
+        if: needs.detect-changes.outputs.app == 'true'
+        run: |
+          if command -v sfw &> /dev/null; then
+            sfw npm ci
+          else
+            echo "::warning::Socket firewall not available, falling back to plain npm ci"
+            npm ci
+          fi
+
+      - name: Setup workspace
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run setup
+
+      - name: Security audit
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Validate module manifests
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run validate:modules
+
+      - name: Validate platform manifests
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run validate:platform
+
+      - name: Run linting
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run lint
+
+      - name: Run tests
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm test
+
+      - name: Validate OpenAPI spec
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run validate:openapi
+
+      - name: Validate Dockerfile dependencies
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run validate:dockerfile-deps
+
+      - name: Build
+        if: needs.detect-changes.outputs.app == 'true'
+        run: npm run build
+
+  # No-op when test job is skipped (no app/deploy changes) so the required
+  # "Test & Build" status check still passes.
+  test-skip:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.app != 'true' && needs.detect-changes.outputs.deploy != 'true'
+    permissions: {}
+    steps:
+      - run: echo "No app or deploy changes — skipping"
+
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.app == 'true'
+    permissions:
+      contents: read
+    env:
+      CONTAINER_RUNTIME: docker
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: 'npm'
+
+      - name: Install dependencies and setup workspace
+        run: npm ci && npm run setup
+
+      - name: Build HP Eng images
+        run: |
+          make build-backend-image
+          make build-frontend-image
+
+      - name: Run HP Eng smoke tests
+        run: make smoke-test
+
+  smoke-test-status:
+    name: Smoke Test Status
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [detect-changes, test, test-skip, smoke-tests]
+    permissions: {}
+    steps:
+      - name: Evaluate smoke test results
+        run: |
+          APP="${{ needs.detect-changes.outputs.app }}"
+          TEST="${{ needs.test.result }}"
+          SMOKE="${{ needs.smoke-tests.result }}"
+
+          if [ "$APP" != "true" ]; then
+            echo "No code changes — smoke tests skipped"
+            exit 0
+          fi
+
+          FAILED=false
+
+          if [ "$TEST" != "success" ]; then
+            echo "::error::Test & Build failed (result: $TEST)"
+            FAILED=true
+          fi
+
+          if [ "$SMOKE" != "success" ]; then
+            echo "::error::Smoke tests failed (result: $SMOKE)"
+            FAILED=true
+          fi
+
+          if [ "$FAILED" = "true" ]; then
+            exit 1
+          fi
+
+          echo "All checks passed"
