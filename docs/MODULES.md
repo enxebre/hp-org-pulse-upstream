@@ -70,6 +70,7 @@ modules/your-module/
 | `client.settingsComponent` | No | Vue component for the Settings page |
 | `client.sotuWidgets` | No | Array of widget declarations for the SOTU dashboard (see below) |
 | `server.entry` | No | Path to backend entry point |
+| `fixtures` | No | Object mapping fixture filenames to collection names for demo mode seeding (e.g., `{"data.json": "collection-name"}`) |
 
 ### navItem Fields
 
@@ -119,6 +120,25 @@ export const routes = {
 
 Use `defineAsyncComponent` for lazy loading.
 
+### Floating Widgets
+
+A module can export a `floatingWidget` component that renders as a floating overlay in the app shell,
+independent of sidebar navigation. This is useful for always-available features like chat assistants.
+
+```javascript
+import { defineAsyncComponent } from 'vue'
+
+export const routes = {
+  'chat': defineAsyncComponent(() => import('./views/ChatView.vue')),
+}
+
+export const floatingWidget = defineAsyncComponent(() => import('./views/ChatView.vue'))
+```
+
+When `floatingWidget` is exported, the shell renders it as a persistent floating component.
+The module can omit `navItems` from `module.json` if it doesn't need sidebar navigation — the floating widget
+will still load when the module is enabled.
+
 ## Navigation API
 
 The shell provides a `moduleNav` object via Vue's `provide/inject`:
@@ -137,33 +157,6 @@ nav.goBack()
 // Read current route params (reactive)
 const id = computed(() => nav.params.value.id)
 ```
-
-### Deep-linkable params (react to post-mount changes)
-
-When a view is a deep-link target — another view navigates to it with a param
-that pre-selects state (e.g. the releases Schedule timeline links into Execute
-with `?version=3.5.EA1`) — read the param **at mount** *and* **watch it**. A
-plain `onMounted` read is not enough: hash-only navigation to the same view
-(`navigateTo`/`updateParams` without a remount) changes `nav.params` in place,
-so a mount-only read silently ignores the new value.
-
-```javascript
-// Mount: honour an incoming deep-link param, else fall back to a default.
-onMounted(() => {
-  const requested = nav?.params.value?.version
-  selected.value = requested || defaultValue.value
-})
-
-// Post-mount: react to in-place param changes (no feedback loop — this only
-// reads params and sets local state; the writer path guards with updateParams).
-if (nav) {
-  watch(() => nav.params.value?.version, (v) => {
-    if (v && v !== selected.value) selected.value = v
-  })
-}
-```
-
-Ref: RHOAIENG-82037 (releases Schedule → Execute version deep-link).
 
 ### Hash URL Format
 
@@ -215,13 +208,13 @@ const { linkTo } = useModuleLink()
 module.exports = function registerRoutes(router, context) {
   const { storage, requireAuth, requireAdmin } = context
 
-  router.get('/data', function(req, res) {
-    const data = storage.readFromStorage('my-module-data.json')
+  router.get('/data', async function(req, res) {
+    const data = await storage.readFromStorage('my-module-data.json')
     res.json(data || {})
   })
 
-  router.post('/data', requireAdmin, function(req, res) {
-    storage.writeToStorage('my-module-data.json', req.body)
+  router.post('/data', requireAdmin, async function(req, res) {
+    await storage.writeToStorage('my-module-data.json', req.body)
     res.json({ success: true })
   })
 }
@@ -238,6 +231,7 @@ Each module receives a frozen, per-module context built by `buildModuleContext()
 
 | Property | Type | Description |
 |----------|------|-------------|
+| `db` | object\|null | Scoped database factory: `db.model(name, schema)` returns a Mongoose model on a `<slug>__<name>` collection. `null` when MongoDB is not configured. |
 | `storage` | object | Storage module (`readFromStorage`, `writeToStorage`, etc.) |
 | `requireAuth` | middleware | Requires authenticated user |
 | `requireAdmin` | middleware | Requires admin role |
@@ -397,11 +391,10 @@ Re-enable People & Teams and restart to restore automatic syncs.
 
 ## Export Hook
 
-Modules that persist data via `writeToStorage` or `writeToStorageAtomic` **must** register an export hook via
-`context.registerExport(fn)` and declare exported files in `module.json`.
-This ensures all module data is included in the anonymized test data export (used for demo mode and testing).
-CI validation (`npm run validate:modules`) enforces this — modules that write to storage without an
-`export` section in `module.json` will fail the build.
+Modules that persist data via `writeToStorage` **must** register an export hook via `context.registerExport(fn)`
+and declare exported files in `module.json`. This ensures all module data is included in the anonymized test data export
+(used for demo mode and testing). CI validation (`npm run validate:modules`) enforces this — modules
+that write to storage without an `export` section in `module.json` will fail the build.
 
 ### module.json
 
@@ -434,7 +427,7 @@ module.exports = function registerRoutes(router, context) {
 
 ```javascript
 module.exports = async function(addFile, storage, mapping) {
-  const data = storage.readFromStorage('my-data.json');
+  const data = await storage.readFromStorage('my-data.json');
   if (!data) return;
 
   // Anonymize PII using the shared mapping
@@ -480,7 +473,7 @@ module.exports = function registerRoutes(router, context) {
     context.registerDiagnostics(async function() {
       return {
         refreshState,
-        dataExists: !!storage.readFromStorage('my-data.json'),
+        dataExists: !!(await storage.readFromStorage('my-data.json')),
         // Include whatever is useful for debugging
       }
     })
@@ -510,8 +503,8 @@ See [Must-Gather Documentation](MUST-GATHER.md) for the full bundle format.
 ## Message Provider Hook
 
 Modules can register message providers to surface contextual alerts to users across every page of the application.
-Messages appear as a stack of sticky banners below the top bar header. This is optional — modules that don't register
-a provider simply produce no messages.
+Messages appear as a stack of sticky banners below the top bar header.
+This is optional — modules that don't register a provider simply produce no messages.
 
 ### Registering a Message Provider
 
@@ -598,7 +591,7 @@ module.exports = function registerRoutes(router, context) {
       handler: async function(options) {
         // Fetch and store data
         const data = await fetchExternalData()
-        storage.writeToStorage('my-module/data.json', data)
+        await storage.writeToStorage('my-module/data.json', data)
         return { status: 'success', count: data.length }
       }
     })
@@ -621,8 +614,7 @@ module.exports = function registerRoutes(router, context) {
 
 Each handler declares a cadence — how often it should actually run. When `runAll()` is called,
 handlers whose `lastSuccessfulRun` is more recent than their cadence are skipped.
-This allows the CronJob to fire frequently (every 15 minutes) while each
-handler controls its own update frequency.
+This allows the CronJob to fire frequently (every 15 minutes) while each handler controls its own update frequency.
 
 - Default cadence is `'24h'` — handlers without an explicit cadence run once per day
 - Cadence is validated at registration time — invalid values throw immediately
@@ -675,6 +667,161 @@ Prefer this over a direct `require` to stay consistent with the module context p
 
 Existing handlers that return `{ status: 'skipped', reason: '...' }` are also recognized
 as skips automatically via a legacy compatibility bridge.
+
+## Frontend Contribution Slots
+
+### Mechanism vs. slots
+
+The generic contribution **mechanism** lives in `@shared`
+(`shared/client/contributions/` + `shared/client/components/ContributionBoundary.vue`)
+so any module can build its own contribution slots on it. Core deliberately does
+**not** define a universal slot vocabulary — each module decides what its own
+slots are and what a valid contribution looks like.
+
+- `createContributionRegistry({ name, validate })` — factory returning a
+  namespaced registry `{ register, getAll, runGuard, reset }`. `name` prefixes
+  log messages; `validate` is optional slot-specific validation.
+- `runGuard(fn, opts)` — safely run a guard callback (throws are swallowed).
+- `ContributionBoundary.vue` — the fault-isolation wrapper (see below). The
+  single `render` descriptor `type` switch (component today; `remote` /
+  `declarative` later) lives in `shared/client/contributions/`
+  (`isValidRenderDescriptor` / `resolveRenderDescriptor`), so new delivery types
+  are added in one place.
+
+### team-tracker slots
+
+Team-tracker builds three named **slots** on the shared factory so features can
+extend its UI without core hardcoding `if (feature configured)` branches. This is
+the frontend analog of the backend `context.registerRefresh` pattern.
+
+The slots live at `modules/team-tracker/client/contributions/`:
+
+- `registry.js` — three `createContributionRegistry` instances
+  (`team-tracker:team-detail-tab`, `team-tracker:report`,
+  `team-tracker:settings-tab`) wrapped in the team-tracker-specific slot API
+  (`registerTeamDetailTab`, `registerReport`, `registerSettingsTab`, the getters,
+  and `runGuard`)
+- `apply-platform-contributions.js` — the pure, resilient helper that applies
+  platform-provided contributions (see the discovery seam below)
+- `index.js` — evaluates the registry, side-effect-imports the core reports
+  (`../reports/registry`), applies the platform discovery seam, and re-exports the
+  getters + `register*` functions. **Always import from `../contributions` (the
+  index), never `./registry` directly**, so registration is guaranteed to have run.
+
+The fault-isolation wrapper is imported from
+`@shared/client/components/ContributionBoundary.vue`.
+
+### Platform discovery seam (consumer contributions)
+
+Core registers only its own reports (trends, team-comparison) directly. Consumer
+repos add contributions from `platform/` — without importing team-tracker
+internals — via a glob-by-convention seam:
+
+```js
+// modules/team-tracker/client/contributions/index.js
+const platformContributions = import.meta.glob(
+  '/platform/*/team-tracker-contributions.js',
+  { eager: true }
+)
+applyPlatformContributions(platformContributions, {
+  registerTeamDetailTab, registerReport, registerSettingsTab
+})
+```
+
+A consumer ships one file per extension exporting a `register` function; the
+registrar API is **injected**, never imported:
+
+```js
+// platform/<name>/team-tracker-contributions.js
+export function register({ registerTeamDetailTab, registerReport, registerSettingsTab }) {
+  registerTeamDetailTab({ /* ... */ })
+}
+```
+
+`applyPlatformContributions` calls each `register(api)` inside a try/catch, so a
+missing-`register` or throwing extension is skipped and logged, never aborting the
+others (mirroring the registry's per-item resilience). When `platform/` is absent
+(core / CI) the glob is empty and the seam is a no-op. See
+[`docs/PLATFORM.md`](PLATFORM.md) § Team-Tracker Contributions for the consumer
+guide.
+
+### Slots
+
+Core registrations import the `register*` functions from `../contributions`
+(e.g. `../reports/registry`); consumer contributions receive them injected via
+`register(api)` (see the discovery seam above). Either way the shape is the same:
+
+```js
+// A tab on the team detail view
+registerTeamDetailTab({
+  id: 'my-feature',           // unique; also the URL ?tab= value
+  label: 'My Feature',
+  order: 40,                  // optional, default 100
+  icon: '<path ... />',       // optional inline SVG markup
+  isVisible: (team, context) => boolean, // optional; throw or falsy hides it
+  render: { type: 'component', load: () => import('./MyFeatureTab.vue') }
+})
+
+// A card in the Reports hub
+registerReport({
+  id: 'my-report',
+  title: 'My Report',
+  description: '...',
+  icon: 'PieChart',           // optional lucide icon name
+  tags: ['My Feature'],       // optional
+  filters: ['org', 'team'],   // optional shared filter ids
+  order: 30,
+  isAvailable: () => boolean, // optional; throw or falsy hides it
+  render: { type: 'component', load: () => import('./MyReport.vue') }
+})
+
+// A tab in Team Tracker settings
+registerSettingsTab({
+  id: 'my-feature',
+  label: 'My Feature',
+  order: 40,
+  render: { type: 'component', load: () => import('./MyFeatureSettings.vue') }
+})
+```
+
+Read the merged, sorted contributions with `getTeamDetailTabs()`, `getReports()`,
+and `getSettingsTabs()`. Core renders each slot generically — it does not know
+about any specific feature.
+
+### The `render` descriptor
+
+`render` is a **descriptor**, never a raw component, so the shape stays
+forward-compatible with remote/federated or declarative delivery. Today only
+`{ type: 'component', load: () => import('...') }` is rendered. Any object with a
+string `type` is accepted at registration time; unknown types degrade gracefully
+to a fallback at render time. Future types (e.g. `{ type: 'remote', ... }`,
+`{ type: 'declarative', ... }`) can be added without breaking existing callers.
+
+### Fault isolation
+
+Extension failures must never break the host page:
+
+- **Rendering** — every contributed component is rendered inside the shared
+  `ContributionBoundary.vue` (`@shared/client/components/ContributionBoundary.vue`),
+  which combines a Vue error boundary (`onErrorCaptured`) with an async-load
+  fallback. A component that throws at runtime, or fails/ times out while
+  loading, shows a small "This extension failed to load" panel instead of
+  crashing the page.
+- **Guards** — `isVisible` / `isAvailable` are always invoked through the
+  `runGuard` helper (try/catch). A throw is treated as "not visible / not
+  available", never a crash.
+- **Registration** — a malformed contribution (missing required field, invalid
+  render descriptor, duplicate id) is skipped and logged; it never aborts
+  registration of the others.
+
+### Conditional availability
+
+Prefer expressing "only show when X" through `isVisible` / `isAvailable`
+callbacks rather than conditional registration, so the decision is re-evaluated
+reactively. `registerSettingsTab` has no visibility hook, so gate it by
+registering conditionally. For example, a per-team tab can check that the team
+has the relevant boards configured via `isVisible: (team, context) => ...`,
+returning falsy (or throwing) to stay hidden.
 
 ## Secrets Declaration
 
@@ -788,6 +935,131 @@ are allowed. Test files are excluded.
 - `GET /api/admin/secrets/status` — returns configured/missing status for all secrets (never actual values)
 - `POST /api/admin/secrets/validate` — runs registered validators
 - Must-gather bundle includes `bundle.secrets` with full status
+
+## Search Index
+
+Modules contribute searchable items to the command palette (`/` key), allowing module-specific data
+(feature keys, repo names, releases) to appear in global search alongside page navigation and quick actions.
+
+### Declarative (preferred)
+
+Add a `searchIndex` array to `module.json`. The system auto-generates search entries from your data files — no code needed:
+
+```json
+{
+  "searchIndex": [
+    {
+      "source": "my-module/items.json",
+      "items": "records",
+      "label": "name",
+      "context": "My Module → Items",
+      "viewId": "detail",
+      "params": { "id": "$id" },
+      "filter": { "status": "active" },
+      "keywords": ["category", "description"]
+    }
+  ]
+}
+```
+
+#### Declaration Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `source` | Yes | Storage key of the data file to read |
+| `items` | Yes | Dot-path to the array (or object) within the JSON (e.g. `"features"`, `"data.repos"`) |
+| `label` | Yes | Field name to use as the display label. Use `"$key"` when `items` is an object to use object keys as labels |
+| `fallbackLabel` | No | Field name to use if `label` field is empty |
+| `context` | Yes | Breadcrumb text shown in suggestions (e.g. "Releases → Schedule") |
+| `viewId` | Yes | View ID from the module's `routes` export |
+| `params` | No | Query parameters object. Values starting with `$` are field references (e.g. `{ "key": "$key" }` substitutes from each item) |
+| `filter` | No | Object with field=value conditions. Only matching items are indexed |
+| `keywords` | No | Array of field names whose values become extra search terms |
+
+When `items` points to an object (not an array), each key-value pair becomes an entry with `$key` available as a field reference.
+
+### Custom Handler (advanced)
+
+For complex logic that can't be expressed declaratively, use `context.registerSearchIndex(fn)`:
+
+```javascript
+module.exports = function registerRoutes(router, context) {
+  context.registerSearchIndex(async function(storage) {
+    return [{ label: 'Item', context: 'My Module', viewId: 'view', params: { id: '1' } }]
+  })
+}
+```
+
+Both modes can coexist — declarative entries from `module.json` and custom handlers are merged.
+
+### How It Works
+
+- Items are served at `GET /api/search-index` with a 5-minute server-side cache
+- The command palette fetches the index on first open and merges results with page navigation and quick actions
+- Fuzzy matching applies to `label`, `context`, and `keywords`
+- Routes are built automatically as `#/<module-slug>/<viewId>?<params>`
+- Errors in one module's handler don't affect others
+
+## Module Search (Scoped Search)
+
+Modules can declare searchable views that appear in the command palette's scoped search.
+When a user selects a searchable view, the palette shows a pill (e.g., "People & Teams → Team Directory")
+and a text input. Typing a query and pressing Enter navigates to the module's view with the search term
+as a URL param — the module's own search engine handles the query.
+
+This is separate from [Search Index](#search-index): the search index contributes individual data items to global search,
+while module search declares individual views as scoped search targets.
+
+### Declaration
+
+Add a `search` object to `module.json` with a `views` array. Each entry registers one searchable view.
+View labels are auto-discovered from `navItems` — no hardcoded display names:
+
+```json
+{
+  "search": {
+    "enabled": true,
+    "keywords": ["person", "member", "engineer", "team", "manager"],
+    "views": [
+      { "viewId": "home", "paramName": "search", "placeholder": "Search teams, orgs..." },
+      { "viewId": "people", "paramName": "q", "placeholder": "Search people..." }
+    ]
+  }
+}
+```
+
+### Fields
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `enabled` | Yes | — | Opt-in flag. Only `true` modules appear as scoped search targets |
+| `views` | Yes | — | Array of searchable views (see below) |
+| `keywords` | No | `[]` | Extra terms that boost this module in regular (non-slash) search |
+
+Each entry in `views`:
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `viewId` | Yes | — | View ID that receives the search param (must match a navItem id or hiddenRoute) |
+| `paramName` | No | `"q"` | URL param name for the search term |
+| `placeholder` | No | `"Search in <name>..."` | Hint text shown in the scoped search input |
+
+### How It Works
+
+- **Suggestion Mode**: User types a search term → matching views appear as suggestions with a "Module" badge.
+  Matches are ranked by relevance (more field matches score higher).
+- **Scoped Mode**: Selecting a view shows a glass chip breadcrumb in the search bar
+  (e.g., "People & Teams › Team Directory"). The user types a query and sees a single "Go to results" row.
+  Pressing Enter navigates to `#/<slug>/<viewId>?<paramName>=<term>` and closes the palette.
+- **History**: Each scope (main search vs. each module view) maintains its own separate search history.
+  When the search input is empty, recent searches appear as selectable items in the dropdown with a clock icon.
+  Selecting a history item populates the input and shows results for that query.
+  Individual history items can be removed via the ✕ button or Delete key.
+- **Exit**: Pressing Escape or Backspace on an empty input exits scoped mode (returns to portal search).
+  A second Escape closes the palette.
+- **Search Execution**: The target view reads the param via `inject('moduleNav').params.value.<paramName>`
+  and executes its own search.
+- **Validation**: `npm run validate:modules` enforces `search.views` is an array with valid `viewId` values.
 
 ## PR Checklist
 

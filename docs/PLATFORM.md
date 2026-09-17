@@ -65,117 +65,197 @@ Usage.
 Platform tab components receive no props and emit no events. They are
 standalone sections that render their own content.
 
-## Allocation (`platform/allocation/`)
+## Team-Tracker Contributions (`platform/<name>/team-tracker-contributions.js`)
 
-Allocation was removed from `@org-pulse/core` in v2.0.61 and now lives entirely
-in this consumer repo as a self-contained `module-views` platform extension at
-`platform/allocation/`. It registers into team-tracker's contribution slots via
-the discovery seam (a per-team **Allocation** tab, the **Work Allocation**
-report, and an **Allocation** settings tab) and ships its own classification
-strategy, server engine, and Jira transport.
+Core team-tracker exposes fine-grained **contribution slots** — a per-team tab
+on the team-detail view, a card in the Reports hub, and a tab in Team Tracker
+settings — that a consumer repo can fill from `platform/`, without core
+hardcoding `if (feature configured)` branches. This is how an org ships a
+feature like work allocation as a native part of team-tracker while keeping it
+out of published core.
 
-### Structure
+### Discovery seam
+
+Team-tracker discovers a single file per extension by convention:
 
 ```text
-platform/allocation/
-  manifest.json                 # type module-views, targetModule team-tracker,
-                                #   server.entry, secrets (jira), strategy metadata
-  team-tracker-contributions.js # register({ registerTeamDetailTab, registerReport,
-                                #   registerSettingsTab }) — the discovery seam
-  classify.js                   # classifyIssue() + getJiraFields() (owns classification)
-  client/                       # tab, settings, report, subcomponents, composables
-  server/                       # index.js (entry) + routes/orchestration/…engine
+platform/<name>/team-tracker-contributions.js
 ```
 
-### Contribution seam (`team-tracker-contributions.js`)
+Core loads them all with
+`import.meta.glob('/platform/*/team-tracker-contributions.js', { eager: true })`
+and calls each module's exported `register` function, passing in the registrar
+API. When `platform/` is absent (core / CI), the glob is empty and nothing is
+registered.
 
-Core discovers `platform/*/team-tracker-contributions.js` and calls its exported
-`register(api)` with an **injected** registrar API — the extension never imports
-team-tracker internals:
+### The `register(api)` contract
 
 ```js
+// platform/allocation/team-tracker-contributions.js
 export function register({ registerTeamDetailTab, registerReport, registerSettingsTab }) {
   registerTeamDetailTab({
-    id: 'allocation', label: 'Allocation', order: 40,
-    isVisible: () => true, // gated on the strategy being configured
-    render: { type: 'component', load: () => import('./client/TeamAllocationTab.vue') }
+    id: 'allocation',
+    label: 'Allocation',
+    order: 40,
+    icon: '<path ... />',                                   // optional inline SVG
+    isVisible: (team, context) => teamHasBoards(team, context), // optional guard
+    render: { type: 'component', load: () => import('./TeamAllocationTab.vue') }
   })
-  // registerReport({ … render: { … './client/reports/AllocationReport.vue' } })
-  // registerSettingsTab({ … render: { … './client/AllocationSettings.vue' } })
+
+  registerReport({
+    id: 'allocation',
+    title: 'Work Allocation',
+    description: 'Effort breakdown across categories.',
+    order: 30,
+    isAvailable: () => true,                                // optional guard
+    render: { type: 'component', load: () => import('./AllocationReport.vue') }
+  })
+
+  registerSettingsTab({
+    id: 'allocation',
+    label: 'Allocation',
+    order: 40,
+    render: { type: 'component', load: () => import('./AllocationSettings.vue') }
+  })
 }
 ```
 
-`render` is a **descriptor** (`{ type: 'component', load: () => import(...) }`),
-never a raw component, so client chunks stay code-split.
+The registrar API is **injected**, never imported. A contribution must not
+import team-tracker internals — the injected `register*` functions are the only
+supported surface, which keeps the seam stable and forward-compatible with
+future remote/federated delivery. See the "Frontend Contribution Slots" section
+of [`docs/MODULES.md`](MODULES.md) for the full slot/field reference, the
+`render` descriptor contract, and the fault-isolation behavior.
 
-### Strategy metadata (`manifest.json` → `strategy`)
+### Resilience
 
-The strategy (formerly `platform/allocation-strategy/`) is folded in. Its
-metadata lives under `manifest.strategy`:
+- A file that does not export `register`, or whose `register` throws, is skipped
+  and logged — it never aborts the other extensions
+  (`modules/team-tracker/client/contributions/apply-platform-contributions.js`).
+- Guards (`isVisible` / `isAvailable`) run in a try/catch; a throw means
+  "hidden / unavailable", never a crash.
+- Each contributed component renders inside `ContributionBoundary.vue`, so a
+  runtime or load failure shows a small fallback instead of breaking the page.
+
+### Backend for a contribution
+
+A contributed tab/report talks only to its own API routes. Ship those routes as
+a **module-views** extension (see below) targeting `team-tracker`; the routes
+mount at `/api/modules/team-tracker/...` after the module's own router. A
+contribution never calls core internals directly.
+
+### Example: work allocation
+
+Allocation (per-team allocation tab + Work Allocation report + settings tab, plus
+its Jira classification engine and a refresh job) is delivered this way as a
+consumer-repo `platform/allocation/` extension. It is **not** part of core.
+
+## Module Views (`platform/<name>/`)
+
+Module-view extensions inject additional views, nav items, and API routes into
+existing core modules. This lets consumer repos add deployment-specific pages
+to core modules (e.g., adding a "Jira Taxonomy" page to team-tracker) without
+forking core code.
+
+### Manifest format
 
 ```json
 {
-  "strategy": {
-    "id": "ai-eng-40-40-20",
-    "name": "AI Engineering 40/40/20",
-    "description": "Classifies work into Tech Debt & Quality (40%), New Features (40%), and Learning & Enablement (20%)",
-    "categories": [
-      { "key": "tech-debt-quality", "name": "Tech Debt & Quality", "color": "amber", "target": 40 },
-      { "key": "new-features", "name": "New Features", "color": "blue", "target": 40 },
-      { "key": "learning-enablement", "name": "Learning & Enablement", "color": "green", "target": 20 }
-    ]
+  "type": "module-views",
+  "targetModule": "team-tracker",
+  "navItems": [
+    {
+      "id": "jira-taxonomy",
+      "label": "Jira Taxonomy",
+      "icon": "Layers",
+      "order": 150
+    }
+  ],
+  "client": {
+    "views": {
+      "jira-taxonomy": "./client/JiraTaxonomyView.vue"
+    }
+  },
+  "server": {
+    "entry": "./server/index.js"
   }
 }
 ```
 
-`classify.js` exports `classifyIssue(issue)` (returns a category key or
-`'uncategorized'`) and optionally `getJiraFields()` (declares extra Jira field
-IDs + an `extract` function). The AI-Eng story-points field remains the
-hardcoded `customfield_10028`.
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | yes | Must be `"module-views"` |
+| `targetModule` | string | yes | Slug of the core module to extend |
+| `navItems` | array | conditional | Nav items to inject into the target module's sidebar section. Required unless the extension declares a `server.entry` |
+| `client.views` | object | conditional | Map of view ID → Vue component path (relative to extension dir). Required when `navItems` are declared (each nav item renders a view) |
+| `server.entry` | string | conditional | Path to CommonJS server entry (relative to extension dir). Required unless the extension declares `navItems` |
 
-### Self-loading the strategy (core no longer provides it)
+An extension must contribute **something** — it needs `navItems` (+ matching
+`client.views`) and/or a `server.entry`. Both loader and `validate:platform`
+reject a `module-views` manifest that has neither.
 
-Core removed `loadAllocationStrategy` and `context.allocationStrategy`, so the
-extension is fully self-sufficient:
+**Server-only / contribution-seam extensions.** An extension may declare *only* a
+`server.entry` (no `navItems`, no `client.views`). This is the pattern for a
+feature whose UI is registered through a module's contribution seam (e.g.
+[Team-Tracker Contributions](#team-tracker-contributions-platformnameteam-tracker-contributionsjs))
+rather than the sidebar: the `server.entry` mounts the backend routes, while the
+per-team tab / report / settings tab come from `team-tracker-contributions.js`.
+Such an extension adds **no** top-level nav item. Allocation is delivered this way.
 
-- **Backend** — `server/index.js` builds the strategy object from
-  `manifest.strategy` + `classify.js` and threads it (plus the Jira transport)
-  into `server/routes.js`/orchestration via an augmented context. Routes are
-  registered on the passed `router` and mounted by core at
-  `/api/modules/team-tracker/allocation/...`. The refresh handler is preserved
-  via `context.registerRefresh`.
-- **Frontend** — `useAllocationStrategy()` reads `manifest.strategy` directly
-  (no core loader). It reports `configured: true` whenever the extension is
-  present. Backend metadata is also available at
-  `GET /api/modules/team-tracker/allocation/strategy`.
+Each nav item:
 
-### Secrets
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | yes | Unique view identifier (must match a key in `client.views`) |
+| `label` | string | yes | Display text in the sidebar |
+| `icon` | string | yes | Lucide icon name (resolved via shared ICON_MAP) |
+| `order` | number | no | Sort position among the target module's nav items. Core nav items default to `10, 20, 30, ...` based on array position. Set `150` to appear after all core items. |
 
-The extension slug is `team-tracker/allocation`, so it does **not** inherit
-team-tracker's Jira secrets automatically. `manifest.json` declares the `jira`
-platform secret group and `server/index.js` reads `JIRA_EMAIL`/`JIRA_TOKEN` from
-`context.secrets` (via core's shared `createJiraClient`) — never `process.env`.
+### Server entry
 
-```json
-{ "secrets": { "platform": ["jira"] } }
+The server entry follows the same contract as module server entries:
+
+```js
+module.exports = function(router, context) {
+  // context has the same shape as ModuleContext:
+  // storage, requireAuth, requireAdmin, requireScope, secrets, etc.
+  // Registrations (diagnostics, refresh) use a disambiguated slug
+  // (e.g., "team-tracker/jira-taxonomy") to avoid collisions.
+
+  router.get('/my-endpoint', context.requireScope('team-tracker:read'), async function(req, res) {
+    // ...
+  })
+}
 ```
 
-### Server-only manifest (no nav item)
+Routes are mounted at `/api/modules/<targetModule>/` — the same path as the
+target module. The extension's router is mounted AFTER the module's router, so
+module routes take precedence.
 
-Core v2.0.62 allows server-only `module-views` extensions, so the manifest
-declares only `server.entry` (plus `secrets` and `strategy`) — no `navItems` or
-`client.views`. All UI surfaces through the contribution seam: the per-team
-allocation tab, the report card, and the settings tab.
+### How it works
 
-### Adding or changing the strategy
+- **Server-side**: `server/platform-loader.js` discovers `module-views` manifests,
+  creates Express routers with the target module's context (disambiguated slug),
+  and mounts them after the module's own router.
+- **Frontend**: `src/platform-loader.js` discovers manifests via `import.meta.glob`
+  and resolves Vue components. `App.vue` merges platform views into the module's
+  routes when loading the module client.
+- **Nav items**: The `/api/built-in-modules/manifests` endpoint merges extension
+  nav items into the target module's manifest. The sidebar sorts items by `order`.
+- **Disabled modules**: Extensions are skipped when their target module is disabled.
 
-1. Edit `platform/allocation/manifest.json` → `strategy` (categories, targets).
-1. Edit `platform/allocation/classify.js` classification logic.
-1. Run `npm run validate:platform` to verify the manifest.
+### Adding a module-view extension
+
+1. Create `platform/<name>/manifest.json` with `type: "module-views"`
+1. Create Vue components in `platform/<name>/client/`
+1. Optionally create `platform/<name>/server/index.js` for API routes
+1. Run `npm run validate:platform` to verify
+1. Views and nav items appear automatically in the target module
 
 ## Dockerfile layering
 
-The core frontend builder does NOT include `platform/`. Deployment-specific Dockerfiles add it:
+The core frontend builder does NOT include `platform/`. Deployment-specific
+Dockerfiles add it:
 
 ```dockerfile
 # In deploy/ai-eng.frontend.Dockerfile

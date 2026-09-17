@@ -2,7 +2,7 @@
 
 This document describes the JSON structure of all files stored in the `data/` directory (production)
 and `fixtures/` directory (demo mode).
-**Demo fixtures must always match production format** — see[Fixture Rules](#fixture-rules) below.
+**Demo fixtures must always match production format** — see [Fixture Rules](#fixture-rules) below.
 
 ## Person Metrics — `data/people/{name}.json`
 
@@ -454,6 +454,7 @@ via the Team Structure Management UI or migration.
       "createdAt": "2026-01-01T00:00:00.000Z",
       "createdBy": "admin@example.com",
       "description": "Owns the **core platform services** and developer experience.",
+      "managers": ["bsmith"],
       "metadata": {
         "field_g7h8i9": "Pat Manager"
       },
@@ -473,6 +474,8 @@ via the Team Structure Management UI or migration.
 - `orgKey` links the team to an org root UID.
 - `description` is an optional Markdown string (max 2000 chars) describing the team's mission or scope.
   `null` when not set.
+- `managers` is an array of UIDs identifying the explicit managers of this team. Used for team-level permissions
+  (purview, membership, fields, boards). Defaults to `[]`.
 - `metadata` stores team-level custom field values, keyed by field definition ID.
   Empty object `{}` when no team fields are set.
 - `createdBy` is the email of the user who created the team.
@@ -485,43 +488,13 @@ are separate data stores with different lifecycles. Sprint tracking boards are a
 and include sprint-specific metadata (filters, staleness). Team record boards are user-managed URLs.
 A future enhancement may link these two systems.
 
-## Allocation Data — `data/allocation/`
+## Allocation Data — provided by an extension
 
-> **Provided by the `platform/allocation/` extension.** Allocation was removed
-> from `@org-pulse/core` in v2.0.61; this consumer re-homes it as a
-> self-contained platform extension (see `docs/PLATFORM.md` → Allocation). Core
-> itself writes no allocation data.
-
-Sprint allocation data is stored under `data/allocation/` with an `allocation/` storage prefix. Key files:
-
-- `allocation/sprints/{sprintId}.json` — Per-sprint issue classification data
-- `allocation/summaries/{teamKey}.json` — Aggregated team allocation summary
-- `allocation/org/{orgKey}.json` — Org-level allocation summary
-
-Sprint data files include a `strategyId` field that records which allocation strategy was used for classification.
-When the strategy changes (different `id` in `platform/allocation/manifest.json`'s `strategy` block),
-cached closed sprint data is invalidated and re-classified on next refresh.
-
-```json
-{
-  "sprintId": 12345,
-  "sprintName": "Sprint 42",
-  "strategyId": "ai-eng-40-40-20",
-  "summary": {
-    "totalPoints": 100,
-    "totalCount": 20,
-    "buckets": {
-      "tech-debt-quality": { "points": 40, "count": 8, "completedPoints": 30, "completedCount": 6 },
-      "new-features": { "points": 40, "count": 8, "completedPoints": 35, "completedCount": 7 },
-      "uncategorized": { "points": 20, "count": 4, "completedPoints": 10, "completedCount": 2 }
-    }
-  }
-}
-```
-
-Bucket keys are dynamic — they come from the active allocation strategy's `categories[].key`
-values plus a built-in `uncategorized` key. When the `platform/allocation/` extension is absent,
-allocation features are hidden and no data is written.
+Work allocation is no longer part of core. It ships as a consumer-repo
+`platform/` contribution (see [`docs/PLATFORM.md`](PLATFORM.md) § Team-Tracker
+Contributions), which owns its own storage schema under a `data/allocation/`
+prefix. The allocation data-format reference lives with that extension in the
+consumer repo, not here. Core writes no allocation data.
 
 ## Field Definitions — `data/team-data/field-definitions.json`
 
@@ -539,6 +512,7 @@ is set to `"in-app"` and fields are defined via the Field Definitions UI or migr
       "required": false,
       "visible": true,
       "primaryDisplay": true,
+      "helpText": "The primary area this person is currently focused on.",
       "allowedValues": null,
       "optionsRef": null,
       "deleted": false,
@@ -556,6 +530,7 @@ is set to `"in-app"` and fields are defined via the Field Definitions UI or migr
       "required": false,
       "visible": true,
       "primaryDisplay": false,
+      "helpText": null,
       "allowedValues": null,
       "optionsRef": null,
       "deleted": false,
@@ -583,6 +558,8 @@ is set to `"in-app"` and fields are defined via the Field Definitions UI or migr
   instead of from the static `allowedValues` array. The `GET /structure/field-definitions` API response resolves
   `optionsRef` fields by injecting the option values into `allowedValues` (with a `_resolvedFromOptions: true` flag).
   Defaults to `null`.
+- `helpText` is an optional string (or `null`) providing guidance displayed to users via an info icon.
+  Supports a minimal inline-markdown subset: `**bold**` and `[text](https://...)` links. Defaults to `null`.
 - At most one person field can have `primaryDisplay: true`.
 
 ## Field Options — `data/team-data/field-options/<name>.json`
