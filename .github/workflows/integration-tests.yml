@@ -40,6 +40,9 @@ jobs:
             shared-test-files:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'
+            agentic-tools:
+              - 'modules/agentic-tools/**'
+              - 'tests/integration/agentic-tools.spec.js'
             about-tabs:
               - 'platform/about-tabs/**'
               - 'tests/integration/about-tabs.spec.js'
@@ -64,7 +67,7 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED"
 
-          ALL_MODULES='["about-tabs", "sotu-dashboard"]'
+          ALL_MODULES='["agentic-tools", "about-tabs", "sotu-dashboard"]'
 
           # If shared test infrastructure changed, test all modules
           if echo "$CHANGED" | grep -qE '^tests/integration/(constants|helpers)\.js$'; then
@@ -83,6 +86,8 @@ jobs:
             fi
           }
 
+          check_module "agentic-tools" \
+            "^(modules/agentic-tools/|tests/integration/agentic-tools\.spec\.js)"
           check_module "about-tabs" \
             "^(platform/about-tabs/|tests/integration/about-tabs\.spec\.js)"
           check_module "sotu-dashboard" \

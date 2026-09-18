@@ -1,7 +1,7 @@
 /**
- * ESLint rule: no-module-process-env (AI Eng extension)
+ * ESLint rule: no-module-process-env (HP Eng extension)
  *
- * Extends core's ALLOWED set with AI Eng-specific config variables.
+ * Extends core's ALLOWED set with HP Eng-specific config variables.
  * These are non-secret configuration — not credentials or tokens.
  */
 

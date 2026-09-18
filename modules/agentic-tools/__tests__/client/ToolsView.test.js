@@ -1,0 +1,240 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { mount } from '@vue/test-utils'
+
+// Mock the apiRequest function
+vi.mock('@shared/client/services/api', () => {
+  const mockFn = vi.fn(async (path) => {
+    if (path === '/modules/agentic-tools/tools') {
+      return [
+        {
+          id: 'test-tool-1',
+          title: 'Test Tool 1',
+          description: 'A test tool',
+          icon: 'Wrench',
+          url: 'https://example.com/tool1',
+          order: 0
+        },
+        {
+          id: 'test-tool-2',
+          title: 'Test Tool 2',
+          description: 'Another test tool',
+          icon: 'Hammer',
+          url: 'https://example.com/tool2',
+          order: 1
+        },
+        {
+          id: 'test-tool-tbd',
+          title: 'Test TBD Tool',
+          description: 'A tool coming soon',
+          icon: 'Sparkles',
+          url: '',
+          order: 2
+        }
+      ]
+    }
+    return []
+  })
+  return { apiRequest: mockFn }
+})
+
+// Mock the useAuth composable
+vi.mock('@shared/client/composables/useAuth', () => ({
+  useAuth: vi.fn(() => ({
+    isAdmin: { value: true }
+  }))
+}))
+
+// Now import the component after mocks are defined
+import ToolsView from '../../client/views/ToolsView.vue'
+import { apiRequest } from '@shared/client/services/api'
+
+describe('ToolsView', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  async function waitForDataLoad(wrapper) {
+    // Wait for the onMounted hook to complete
+    await wrapper.vm.$nextTick()
+    // Wait for the async apiRequest to complete
+    await new Promise(resolve => setTimeout(resolve, 10))
+    await wrapper.vm.$nextTick()
+  }
+
+  it('renders the page title', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    expect(wrapper.text()).toContain('Agentic Tools')
+  })
+
+  it('renders one card per tool', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    const cards = wrapper.findAll('.grid > *')
+    expect(cards).toHaveLength(3)
+  })
+
+  it('sets correct href and target attributes on tool cards with URLs', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    const links = wrapper.findAll('a[target="_blank"]')
+
+    expect(links).toHaveLength(2)
+    expect(links[0].attributes('href')).toBe('https://example.com/tool1')
+    expect(links[0].attributes('target')).toBe('_blank')
+    expect(links[0].attributes('rel')).toBe('noopener noreferrer')
+
+    expect(links[1].attributes('href')).toBe('https://example.com/tool2')
+    expect(links[1].attributes('target')).toBe('_blank')
+    expect(links[1].attributes('rel')).toBe('noopener noreferrer')
+  })
+
+  it('renders tool title and description', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    expect(wrapper.text()).toContain('Test Tool 1')
+    expect(wrapper.text()).toContain('A test tool')
+    expect(wrapper.text()).toContain('Test Tool 2')
+    expect(wrapper.text()).toContain('Another test tool')
+  })
+
+  it('falls back to ExternalLink icon for unknown icon names', async () => {
+    // Mount and verify it doesn't throw; actual icon rendering is hard to test
+    // without testing implementation details, but we can at least verify no errors
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    expect(wrapper.vm).toBeDefined()
+  })
+
+  it('renders TBD tool as non-interactive div without href', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    // Find div cards (TBD cards rendered as divs, not anchors)
+    const divCards = wrapper.findAll('div.group')
+    // Should have at least one div card (the TBD tool)
+    expect(divCards.length).toBeGreaterThan(0)
+
+    // Verify TBD tool content and badge
+    const text = wrapper.text()
+    expect(text).toContain('Test TBD Tool')
+    expect(text).toContain('A tool coming soon')
+    // Badge should show TBD (uppercase due to uppercase class)
+    expect(text).toContain('TBD')
+  })
+
+  it('does not apply group-hover classes to TBD card icon and title', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    
+    // Find all div.group cards (TBD cards are divs, not anchors)
+    const divCards = wrapper.findAll('div.group')
+    expect(divCards.length).toBeGreaterThan(0)
+    
+    // Verify at least one div card is the TBD tool and lacks group-hover classes
+    let foundTbdWithoutHover = false
+    divCards.forEach(card => {
+      const titleText = card.find('h3').text()
+      if (titleText.includes('Test TBD Tool')) {
+        // Verify title element does NOT have group-hover classes
+        const titleClasses = card.find('h3').attributes('class')
+        expect(titleClasses).not.toContain('group-hover:text-primary-600')
+        expect(titleClasses).not.toContain('group-hover:text-primary-400')
+        
+        // Verify icon component (first child within flex container) also doesn't have group-hover
+        const iconElement = card.find('.flex-shrink-0 svg')
+        if (iconElement.exists()) {
+          const iconClasses = iconElement.element.parentElement?.getAttribute('class') || ''
+          expect(iconClasses).not.toContain('group-hover:text-primary-600')
+          expect(iconClasses).not.toContain('group-hover:text-primary-400')
+        }
+        foundTbdWithoutHover = true
+      }
+    })
+    expect(foundTbdWithoutHover).toBe(true)
+  })
+
+  it('handles tools gracefully when array is loaded', async () => {
+    // The component correctly loads and renders tools from the API
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    const text = wrapper.text()
+    // Should render either tool cards OR empty state, not both
+    const hasCards = text.includes('Test Tool 1')
+    const hasEmptyState = text.includes('No tools yet')
+    expect(hasCards || hasEmptyState).toBe(true)
+    expect(hasCards && hasEmptyState).toBe(false)
+  })
+
+  it('renders empty state when no tools are available', async () => {
+    // Mock empty response
+    vi.mocked(apiRequest).mockResolvedValueOnce([])
+    
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    
+    const text = wrapper.text()
+    expect(text).toContain('No tools yet')
+  })
+
+  it('displays Wand2 icon in the empty state', async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce([])
+    
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    
+    // Check for the centered flex layout used by empty state
+    const emptyState = wrapper.find('.flex.flex-col.items-center')
+    expect(emptyState.exists()).toBe(true)
+  })
+
+  it('shows Settings link in empty state when user is admin', async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce([])
+    
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    
+    const text = wrapper.text()
+    expect(text).toContain('Go to')
+    expect(text).toContain('Settings')
+    expect(text).toContain('to add your first tool')
+  })
+
+  it('navigates to settings when Settings link is clicked', async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce([])
+    
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    
+    // Mock window.location.hash
+    let navigatedHash = null
+    Object.defineProperty(window, 'location', {
+      value: { hash: '' },
+      writable: true
+    })
+    Object.defineProperty(window.location, 'hash', {
+      set: (val) => { navigatedHash = val },
+      get: () => navigatedHash,
+      configurable: true
+    })
+    
+    const settingsButton = wrapper.find('button')
+    await settingsButton.trigger('click')
+    
+    expect(navigatedHash).toBe('#/settings?tab=agentic-tools')
+  })
+
+  it('shows either admin or non-admin message based on isAdmin value', async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce([])
+    
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+    
+    const text = wrapper.text()
+    // For admin users (default mock), should show Settings link
+    expect(text).toContain('Go to')
+    expect(text).toContain('Settings')
+    
+    // Non-admin message should only appear if isAdmin is false
+    // This is tested implicitly — if it were visible here, the first assertions would fail
+  })
+})

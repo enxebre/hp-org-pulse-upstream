@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Workspace setup for AI Eng Org Pulse.
+ * Workspace setup for HP Eng Org Pulse.
  *
  * Runs the core sync-core.js script (symlinks core modules, copies index.html),
  * then creates an additional symlink for shared/ so that module server code

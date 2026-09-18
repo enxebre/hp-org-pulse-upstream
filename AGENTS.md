@@ -18,7 +18,7 @@ npm dependency and symlinked into the workspace by `npm run setup`.
 - **Core platform**: `@org-pulse/core` npm package — app shell, shared client/server code, team-tracker module
 - **Frontend**: Vue 3 SPA (`<script setup>`), Vite 8, Tailwind CSS 3, Chart.js 4
 - **Backend**: Express (port 3001), thin `server/index.js` wrapper calling core's `startServer()`
-- **Modules**: AI Eng modules in `modules/<slug>/` with `module.json` manifests, auto-discovered
+- **Modules**: HP Eng modules in `modules/<slug>/` with `module.json` manifests, auto-discovered
 - **Auth**: OpenShift OAuth proxy in prod; no auth locally (uses `ADMIN_EMAILS`)
 - **Storage**: Local filesystem (`./data/`), mounted as PVC in OpenShift
 - **Shared code**: `shared/client/` and `shared/server/` (from core), importable via `@shared` alias
@@ -144,7 +144,7 @@ npm run validate:openapi         # Validate OpenAPI annotations
 npm run validate:dockerfile-deps # Verify Dockerfile deps match package.json
 
 # Container-based tests (requires Docker/Podman)
-make smoke-test                 # Run smoke tests against AI Eng images
+make smoke-test                 # Run smoke tests against HP Eng images
 make test-module MODULE=<name>  # Run integration tests for a module
 ```
 

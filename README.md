@@ -122,7 +122,7 @@ npm run validate:dockerfile-deps  # Verify Dockerfile deps match package.json
 npm run update:view-owners        # Regenerate platform/view-owners/owners.js from git history
 
 # Container-based tests (requires Docker/Podman)
-make smoke-test                 # Run smoke tests against AI Eng images
+make smoke-test                 # Run smoke tests against HP Eng images
 make test-module MODULE=<name>  # Run integration tests for a module
 ```
 

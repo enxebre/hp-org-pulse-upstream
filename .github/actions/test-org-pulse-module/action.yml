@@ -19,13 +19,13 @@ runs:
       shell: bash
       run: npm ci && npm run setup
 
-    - name: Build AI Eng backend image
+    - name: Build HP Eng backend image
       shell: bash
       run: make build-backend-image
       env:
         CONTAINER_RUNTIME: docker
 
-    - name: Build AI Eng frontend image
+    - name: Build HP Eng frontend image
       shell: bash
       run: make build-frontend-image
       env:

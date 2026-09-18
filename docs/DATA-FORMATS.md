@@ -152,7 +152,7 @@ Platform-level configuration for the site. Created when an admin saves settings 
 
 ```json
 {
-  "titlePrefix": "AI Engineering",
+  "titlePrefix": "HP Engineering",
   "authEmailDomain": "cluster.local"
 }
 ```
@@ -765,6 +765,47 @@ JSON Lines format (one JSON object per line). Partitioned by month for efficient
   "emails": ["user-who-opted-out@redhat.com"]
 }
 ```
+
+## Tools — `data/agentic-tools/tools.json`
+
+Admin-managed list of external tool launchers. Array of tool objects.
+
+```json
+[
+  {
+    "id": "tool_1234567890_abcdef",
+    "title": "Example Tool",
+    "description": "What this tool does",
+    "icon": "Wrench",
+    "url": "https://example.com",
+    "order": 0
+  },
+  {
+    "id": "tool_coming_soon",
+    "title": "Coming Soon",
+    "description": "A tool under development",
+    "icon": "Sparkles",
+    "url": "",
+    "order": 1
+  }
+]
+```
+
+**Fields:**
+
+- `id` (string, auto-generated): Unique identifier in format `tool_<timestamp>_<randomstring>` or custom ID on creation.
+- `title` (string, required): Display name of the tool.
+- `description` (string, required): Short description of what the tool does.
+- `icon` (string, required): Name of a lucide-vue-next icon from the allowed set (e.g. `Wrench`, `Hammer`, `Bot`, `Sparkles`, etc.). See ICON_MAP in `modules/agentic-tools/client/components/AgenticToolsSettings.vue` for the full list.
+- `url` (string, optional): External URL to the tool. Leave as empty string `""` to mark the tool as TBD (To Be Determined) — the card will render without a clickable link and display a "TBD" badge.
+- `order` (integer, optional): Display order in the grid. Tools are sorted by this field (ascending). Default 0 on creation; auto-assigned to next available order if omitted on POST.
+
+**Notes:**
+
+- Created/updated via `POST /api/modules/agentic-tools/tools` and `PATCH /api/modules/agentic-tools/tools/:id` (admin-gated).
+- Deleted via `DELETE /api/modules/agentic-tools/tools/:id` (admin-gated).
+- Reordering is handled by updating the `order` field on affected tools via PATCH.
+- In demo mode (`DEMO_MODE=true`), write operations return a success response but do not persist changes to storage.
 
 ---
 

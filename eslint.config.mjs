@@ -7,7 +7,7 @@ const noModuleProcessEnv = require('./eslint-rules/no-module-process-env.js')
 export default createEslintConfig({
   additionalConfigs: [
     {
-      // Override no-module-process-env with AI Eng extended ALLOWED set
+      // Override no-module-process-env with HP Eng extended ALLOWED set
       files: ['modules/**/server/**/*.js'],
       ignores: ['modules/**/__tests__/**'],
       plugins: {

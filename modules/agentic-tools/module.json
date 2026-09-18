@@ -1,0 +1,33 @@
+{
+  "name": "Agentic Tools",
+  "slug": "agentic-tools",
+  "description": "Quick launchers for external agentic tools",
+  "icon": "Wand2",
+  "order": 100,
+  "client": {
+    "entry": "./client/index.js",
+    "navItems": [
+      {
+        "id": "tools",
+        "label": "Tools",
+        "icon": "Wand2",
+        "default": true
+      }
+    ],
+    "settingsComponent": "./client/components/AgenticToolsSettings.vue"
+  },
+  "server": {
+    "entry": "./server/index.js"
+  },
+  "fixtures": {
+    "agentic-tools/tools.json": "tools"
+  },
+  "export": {
+    "files": [
+      {
+        "path": "agentic-tools/tools.json",
+        "notes": "Admin-managed external tool launcher list"
+      }
+    ]
+  }
+}

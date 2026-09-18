@@ -1,10 +1,10 @@
-# Org Pulse — AI Engineering Backend
+# Org Pulse — HP Engineering Backend
 #
-# Extends the core backend image with AI Eng-specific modules.
+# Extends the core backend image with HP Eng-specific modules.
 # Core's default CMD (node server/dev-server.js) auto-discovers all
 # modules in ./modules/, so no custom entrypoint is needed.
 
-FROM quay.io/org-pulse/org-pulse-core-backend:v2.0.82
+FROM quay.io/org-pulse/org-pulse-core-backend:v2.0.83
 
 USER root
 
