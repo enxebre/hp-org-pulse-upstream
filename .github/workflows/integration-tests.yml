@@ -107,7 +107,7 @@ jobs:
           if [ "${{ github.event_name }}" = "merge_group" ]; then
             MODULES='${{ steps.git-filter.outputs.modules }}'
           elif [ "${{ steps.filter.outputs.shared-test-files }}" == "true" ]; then
-            MODULES='["cve-triage", "about-tabs", "sotu-dashboard"]'
+            MODULES='["agentic-tools", "cve-triage", "about-tabs", "sotu-dashboard"]'
           else
             # Use the modules that have direct changes
             MODULES='${{ steps.filter.outputs.changes }}'
