@@ -11,6 +11,7 @@ approvers:
   - squizzi            # Kyle Squizzato
   - wcmitchell         # Chris Mitchell
   - enxebre            # Alberto García Lamela
+  - vishsanghishetty   # Vishali Kamenani
 options: {}
 reviewers:
   - bsquizz            # Brandon Squizzato
@@ -24,3 +25,4 @@ reviewers:
   - shruthi-raghuraman # Shruthi Raghuraman
   - squizzi            # Kyle Squizzato
   - wcmitchell         # Chris Mitchell
+  - vishsanghishetty   # Vishali Kamenani
