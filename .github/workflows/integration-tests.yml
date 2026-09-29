@@ -19,8 +19,9 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
+      any_changed: ${{ steps.filter.outputs.any_changed }}
       # This captures the dynamic JSON array of modules to test
-      enabled-modules: ${{ steps.build-matrix.outputs.modules }}
+      matrix: ${{ steps.filter.outputs.modified_keys }}
 
     steps:
       - uses: actions/checkout@v7
@@ -29,117 +30,55 @@ jobs:
           persist-credentials: false
           show-progress: false
 
-      # For PRs, use dorny/paths-filter (GitHub API mode, fast)
-      - uses: dorny/paths-filter@v4
-        if: github.event_name == 'pull_request'
+      - uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         id: filter
         with:
-          # This determines which keys get added to the 'changes' output array
-          # Adding a new module here automatically adds it to the test matrix
-          filters: |
-            shared-test-files:
+          matrix: true
+          files_yaml: |
+            agentic-tools:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'
-            agentic-tools:
               - 'modules/agentic-tools/**'
               - 'tests/integration/agentic-tools.spec.js'
             cve-triage:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
               - 'modules/cve-triage/**'
               - 'tests/integration/cve-triage.spec.js'
             backport-tracker:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
               - 'modules/backport-tracker/**'
               - 'tests/integration/backport-tracker.spec.js'
             jira-solve-agent:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
               - 'modules/jira-solve-agent/**'
               - 'tests/integration/jira-solve-agent.spec.js'
             about-tabs:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
               - 'platform/about-tabs/**'
               - 'tests/integration/about-tabs.spec.js'
             sotu-dashboard:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
               - 'modules/*/client/widgets/**'
               - 'modules/*/module.json'
               - 'tests/integration/sotu-dashboard.spec.js'
-
-      # For merge_group events, dorny/paths-filter doesn't support this event type.
-      # Use git diff directly, mirroring the filter definitions above.
-      - name: Detect changes via git diff
-        if: github.event_name == 'merge_group'
-        id: git-filter
-        run: |
-          BASE_SHA="${{ github.event.merge_group.base_sha }}"
-          if [ -z "$BASE_SHA" ]; then
-            echo "::error::BASE_SHA is empty — cannot detect changes"
-            exit 1
-          fi
-
-          CHANGED=$(git diff --name-only ${BASE_SHA} HEAD)
-          echo "Changed files:"
-          echo "$CHANGED"
-
-          ALL_MODULES='["agentic-tools", "cve-triage", "backport-tracker", "jira-solve-agent", "about-tabs", "sotu-dashboard"]'
-
-          # If shared test infrastructure changed, test all modules
-          if echo "$CHANGED" | grep -qE '^tests/integration/(constants|helpers)\.js$'; then
-            echo "modules=$ALL_MODULES" >> "$GITHUB_OUTPUT"
-            echo "Shared test files changed — testing all modules"
-            exit 0
-          fi
-
-          MODULES="[]"
-
-          check_module() {
-            local name="$1"
-            local pattern="$2"
-            if echo "$CHANGED" | grep -qE "$pattern"; then
-              MODULES=$(echo "$MODULES" | jq -c ". + [\"$name\"]")
-            fi
-          }
-
-          check_module "agentic-tools" \
-            "^(modules/agentic-tools/|tests/integration/agentic-tools\.spec\.js)"
-          check_module "cve-triage" \
-            "^(modules/cve-triage/|tests/integration/cve-triage\.spec\.js)"
-          check_module "backport-tracker" \
-            "^(modules/backport-tracker/|tests/integration/backport-tracker\.spec\.js)"
-          check_module "jira-solve-agent" \
-            "^(modules/jira-solve-agent/|tests/integration/jira-solve-agent\.spec\.js)"
-          check_module "about-tabs" \
-            "^(platform/about-tabs/|tests/integration/about-tabs\.spec\.js)"
-          check_module "sotu-dashboard" \
-            "^(modules/.*/client/widgets/|modules/.*/module\.json|tests/integration/sotu-dashboard\.spec\.js)"
-
-          echo "modules=$MODULES" >> "$GITHUB_OUTPUT"
-          echo "Testing modules: $MODULES"
-
-      - name: Build module matrix
-        id: build-matrix
-        run: |
-          if [ "${{ github.event_name }}" = "merge_group" ]; then
-            MODULES='${{ steps.git-filter.outputs.modules }}'
-          elif [ "${{ steps.filter.outputs.shared-test-files }}" == "true" ]; then
-            MODULES='["agentic-tools", "cve-triage", "backport-tracker", "jira-solve-agent", "about-tabs", "sotu-dashboard"]'
-          else
-            # Use the modules that have direct changes
-            MODULES='${{ steps.filter.outputs.changes }}'
-            # Remove 'shared-test-files' from the array if it's present
-            MODULES=$(echo "$MODULES" | jq -c 'map(select(. != "shared-test-files"))')
-          fi
-
-          echo "modules=$MODULES" >> $GITHUB_OUTPUT
-          echo "Testing modules: $MODULES"
 
   run-tests:
     name: Test ${{ matrix.module }}
     needs: detect-changes
     # Only run if one or more modules need testing
-    if: needs.detect-changes.outputs.enabled-modules != '[]'
+    if: needs.detect-changes.outputs.any_changed == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false  # Allows other modules to finish even if one fails
       matrix:
-        module: ${{ fromJson(needs.detect-changes.outputs.enabled-modules) }}
+        module: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v7
@@ -161,10 +100,7 @@ jobs:
     steps:
       - name: Evaluate integration test results
         run: |
-          MODULES='${{ needs.detect-changes.outputs.enabled-modules }}'
-          if [ "$MODULES" = "[]" ] || [ -z "$MODULES" ]; then
-            echo "No module changes — integration tests skipped"
-          elif [ "${{ needs.run-tests.result }}" = "success" ]; then
+          if [ "${{ needs.run-tests.result }}" = "success" ]; then
             echo "All integration tests passed"
           elif [ "${{ needs.run-tests.result }}" = "skipped" ]; then
             echo "No module changes — integration tests skipped"
