@@ -25,8 +25,7 @@
     "prepare": "husky || true"
   },
   "dependencies": {
-    "@org-pulse/core": "^2.0.82",
-    "node-fetch": "^3.3.2"
+    "@org-pulse/core": "^2.0.82"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

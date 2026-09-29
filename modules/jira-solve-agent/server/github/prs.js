@@ -10,9 +10,9 @@
  *
  * Requires a GITHUB_TOKEN (classic PAT). This is a lightweight fetch (a handful
  * of repos, cursor-paginated), consistent with the app's display-layer role.
+ *
+ * Uses Node's global fetch (available in Node 22+).
  */
-
-const fetch = require('node-fetch');
 
 const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql';
 const GITHUB_REST_URL = 'https://api.github.com';
