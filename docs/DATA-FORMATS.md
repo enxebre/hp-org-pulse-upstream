@@ -887,6 +887,75 @@ Cached Jira issues grouped by solution. ARC stores OCPBUGS issues labeled `arc:t
 
 ---
 
+## Jira Solve Agent — `data/jira-solve-agent/data.json`
+
+Cached OpenShift Jira Solve Agent data with PR hydration and remote links. Issues are tracked from Jira (labeled `issue-for-agent`), bot PRs from GitHub, and linked PRs from Jira remote issue links. The module performs deduplication and PR state hydration to provide a unified view of agent activity across both systems.
+
+```json
+{
+  "fetchedAt": "2026-09-29T12:00:00.000Z",
+  "issues": [
+    {
+      "key": "TRT-1001",
+      "summary": "Example issue tracked by Jira Solve Agent",
+      "status": "In Progress",
+      "issueType": "Story",
+      "priority": "Normal",
+      "created": "2026-09-20T10:00:00.000Z",
+      "updated": "2026-09-28T15:30:00.000Z",
+      "labels": ["ai-generated-jira", "issue-for-agent"],
+      "components": [],
+      "assignee": "Test User",
+      "agentState": "in-progress",
+      "processed": true,
+      "linkedPrs": [
+        {
+          "repo": "openshift/example-repo",
+          "team": "example-team",
+          "number": 1234,
+          "url": "https://github.com/openshift/example-repo/pull/1234",
+          "state": "MERGED",
+          "author": "github-bot"
+        }
+      ]
+    }
+  ],
+  "prs": [
+    {
+      "url": "https://github.com/openshift/example-repo/pull/1234",
+      "number": 1234,
+      "repo": "openshift/example-repo",
+      "team": "example-team",
+      "title": "Example PR from bot",
+      "state": "MERGED",
+      "author": "github-bot",
+      "jiraKey": "TRT-1001"
+    }
+  ],
+  "combined": []
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fetchedAt` | ISO string | Time of the most recent successful refresh |
+| `issues` | object[] | Combined array of Jira issues, net-new-keyed PRs, and NO-JIRA rows |
+| `issues[].key` | string | Jira issue key (e.g., `TRT-1001`) or `NO-JIRA` for keyless bot PRs |
+| `issues[].agentState` | string | Agent state derived from Jira status: `new`, `ready-to-solve`, `in-progress`, `closed`, or `other` |
+| `issues[].processed` | boolean | Whether the issue has been processed by the agent (has linked PRs or is closed) |
+| `issues[].linkedPrs` | object[] | Array of linked PRs from Jira remote issue links (GitHub-for-Jira integration) |
+| `linkedPrs[].state` | string | PR state from GitHub GraphQL API: `OPEN`, `MERGED`, `CLOSED`, or `UNKNOWN` |
+| `linkedPrs[].team` | string | Team owning the repository, derived from `TEAM_REPOS` mapping |
+| `prs` | object[] | Raw bot PR data from GitHub (all states, after backport filtering) |
+| `prs[].jiraKey` | string | Jira key parsed from PR title or branch name, or null for keyless PRs |
+| `combined` | array | Deduplication result: PRs overlapping with tracked Jira issues (diagnostic field) |
+
+**Deduplication logic**: Bot PRs are deduplicated against Jira issues by matching the PR's `jiraKey` to an issue's `key`. Overlapping PRs are already represented by their Jira issue. Net-new-keyed PRs (Jira key exists but issue lacks `issue-for-agent` label) and keyless PRs (no Jira reference) each become their own row in the `issues` array.
+
+**PR state hydration**: Linked PRs from Jira remote issue links are hydrated with state from GitHub's GraphQL API (MERGED, OPEN, CLOSED) to show merge status without requiring the PR to be opened by a tracked bot account.
+
+---
+
 ## Fixture Rules
 
 The `fixtures/` directory provides read-only demo data used when `DEMO_MODE=true`.

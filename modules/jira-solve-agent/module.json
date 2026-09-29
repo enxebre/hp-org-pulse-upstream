@@ -1,0 +1,27 @@
+{
+  "name": "OpenShift Jira Solve Agent",
+  "slug": "jira-solve-agent",
+  "description": "Track the progress and adoption of OpenShift Jira Solve Agent",
+  "icon": "bot",
+  "order": 10,
+  "client": {
+    "entry": "./client/index.js",
+    "navItems": [
+      { "id": "main", "label": "OpenShift Jira Solve Agent", "icon": "Bot", "default": true }
+    ]
+  },
+  "server": {
+    "entry": "./server/index.js"
+  },
+  "secrets": {
+    "platform": ["jira", "github"]
+  },
+  "export": {
+    "files": [
+      {
+        "path": "jira-solve-agent/data.json",
+        "notes": "Cached OpenShift Jira Solve Agent data with PR hydration and remote links"
+      }
+    ]
+  }
+}
