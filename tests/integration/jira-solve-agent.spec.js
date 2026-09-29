@@ -12,11 +12,12 @@ test.describe('Jira Solve Agent Module @jira-solve-agent', () => {
     // Scoped to main: the core app shell also renders the page title in the header.
     await expect(page.getByRole('main').getByRole('heading', { name: 'OpenShift Jira Solve Agent' })).toBeVisible()
 
-    // Verify stat cards are visible
-    await expect(page.getByText('Total Issues')).toBeVisible()
-    await expect(page.getByText('New')).toBeVisible()
-    await expect(page.getByText('In Progress')).toBeVisible()
-    await expect(page.getByText('Closed')).toBeVisible()
+    // Verify stat cards are visible - scope to stat cards grid to avoid matching filter dropdowns and table cells
+    const statCardsGrid = page.locator('.p-6.grid.gap-4')
+    await expect(statCardsGrid.getByText('Total Issues')).toBeVisible()
+    await expect(statCardsGrid.getByText('New')).toBeVisible()
+    await expect(statCardsGrid.getByText('In Progress')).toBeVisible()
+    await expect(statCardsGrid.getByText('Closed')).toBeVisible()
 
     // Verify fixture data issues are visible (fixture has TRT-1001, OCPBUGS-60001, TRT-1002)
     await expect(page.getByRole('link', { name: 'TRT-1001' })).toBeVisible()
