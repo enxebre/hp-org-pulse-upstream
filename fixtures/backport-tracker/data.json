@@ -1,0 +1,19 @@
+{
+  "fetchedAt": "2026-09-16T08:00:00.000Z",
+  "issues": [
+    {
+      "key": "OCPBUGS-61001",
+      "summary": "Example Chai-driven backport in progress",
+      "status": "POST",
+      "updated": "2026-09-16T07:00:00.000Z",
+      "merged": false
+    },
+    {
+      "key": "OCPBUGS-61002",
+      "summary": "Example merged Chai-driven backport",
+      "status": "VERIFIED",
+      "updated": "2026-09-16T06:00:00.000Z",
+      "merged": true
+    }
+  ]
+}

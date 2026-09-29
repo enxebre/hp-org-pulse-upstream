@@ -1,0 +1,24 @@
+{
+  "name": "Agentic Backports",
+  "slug": "backport-tracker",
+  "description": "Track Chai-driven OpenShift backports and merge outcomes",
+  "icon": "GitMerge",
+  "order": 12,
+  "client": {
+    "entry": "./client/index.js",
+    "navItems": [
+      { "id": "main", "label": "Agentic Backports", "icon": "GitMerge", "default": true }
+    ]
+  },
+  "server": {
+    "entry": "./server/index.js"
+  },
+  "secrets": {
+    "platform": ["jira"]
+  },
+  "export": {
+    "files": [
+      { "path": "backport-tracker/data.json", "notes": "Cached OCPBUGS issues labeled chai-backport with merge outcomes" }
+    ]
+  }
+}

@@ -809,6 +809,35 @@ Admin-managed list of external tool launchers. Array of tool objects.
 
 ---
 
+## Agentic Backports — `data/backport-tracker/data.json`
+
+Cached OCPBUGS issues labeled `chai-backport`. An issue is marked `merged` when Jira's
+status history matches `status WAS MODIFIED`, so later transitions to ON_QA, VERIFIED,
+or CLOSED do not lose the successful merge outcome.
+
+```json
+{
+  "fetchedAt": "2026-09-16T08:00:00.000Z",
+  "issues": [
+    {
+      "key": "OCPBUGS-61002",
+      "summary": "Example merged Chai-driven backport",
+      "status": "VERIFIED",
+      "updated": "2026-09-16T06:00:00.000Z",
+      "merged": true
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fetchedAt` | ISO string | Time of the most recent successful Jira refresh |
+| `issues` | object[] | OCPBUGS issues carrying the `chai-backport` label |
+| `issues[].merged` | boolean | Whether the issue has ever transitioned through MODIFIED |
+
+---
+
 ## CVE Triage — `data/cve-triage/data.json`
 
 Cached Jira issues grouped by solution. ARC stores OCPBUGS issues labeled `arc:triaged`; `resolved` is true when the issue also has `arc:complete`. Sustaining Engineer CHAI stores Jira issues from any project labeled `chai-bot-analyzed`; `resolved` is true when Jira places the issue in its Done status category. OAPE CHAI stores Jira issues from any project labeled `ai-cve-analyzed`; `resolved` is true when Jira places the issue in its Done status category.
