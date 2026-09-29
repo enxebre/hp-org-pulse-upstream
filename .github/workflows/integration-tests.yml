@@ -49,6 +49,9 @@ jobs:
             backport-tracker:
               - 'modules/backport-tracker/**'
               - 'tests/integration/backport-tracker.spec.js'
+            jira-solve-agent:
+              - 'modules/jira-solve-agent/**'
+              - 'tests/integration/jira-solve-agent.spec.js'
             about-tabs:
               - 'platform/about-tabs/**'
               - 'tests/integration/about-tabs.spec.js'
@@ -73,7 +76,7 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED"
 
-          ALL_MODULES='["agentic-tools", "cve-triage", "backport-tracker", "about-tabs", "sotu-dashboard"]'
+          ALL_MODULES='["agentic-tools", "cve-triage", "backport-tracker", "jira-solve-agent", "about-tabs", "sotu-dashboard"]'
 
           # If shared test infrastructure changed, test all modules
           if echo "$CHANGED" | grep -qE '^tests/integration/(constants|helpers)\.js$'; then
@@ -98,6 +101,8 @@ jobs:
             "^(modules/cve-triage/|tests/integration/cve-triage\.spec\.js)"
           check_module "backport-tracker" \
             "^(modules/backport-tracker/|tests/integration/backport-tracker\.spec\.js)"
+          check_module "jira-solve-agent" \
+            "^(modules/jira-solve-agent/|tests/integration/jira-solve-agent\.spec\.js)"
           check_module "about-tabs" \
             "^(platform/about-tabs/|tests/integration/about-tabs\.spec\.js)"
           check_module "sotu-dashboard" \
@@ -112,7 +117,7 @@ jobs:
           if [ "${{ github.event_name }}" = "merge_group" ]; then
             MODULES='${{ steps.git-filter.outputs.modules }}'
           elif [ "${{ steps.filter.outputs.shared-test-files }}" == "true" ]; then
-            MODULES='["agentic-tools", "cve-triage", "backport-tracker", "about-tabs", "sotu-dashboard"]'
+            MODULES='["agentic-tools", "cve-triage", "backport-tracker", "jira-solve-agent", "about-tabs", "sotu-dashboard"]'
           else
             # Use the modules that have direct changes
             MODULES='${{ steps.filter.outputs.changes }}'

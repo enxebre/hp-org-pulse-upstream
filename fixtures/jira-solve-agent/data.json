@@ -1,0 +1,100 @@
+{
+  "fetchedAt": "2026-09-29T12:00:00.000Z",
+  "issues": [
+    {
+      "key": "TRT-1001",
+      "summary": "Example issue tracked by Jira Solve Agent",
+      "status": "In Progress",
+      "issueType": "Story",
+      "priority": "Normal",
+      "created": "2026-09-20T10:00:00.000Z",
+      "updated": "2026-09-28T15:30:00.000Z",
+      "labels": [
+        "ai-generated-jira",
+        "issue-for-agent"
+      ],
+      "components": [],
+      "assignee": "Test User",
+      "agentState": "in-progress",
+      "processed": true,
+      "linkedPrs": [
+        {
+          "repo": "openshift/example-repo",
+          "team": "example-team",
+          "number": 1234,
+          "url": "https://github.com/openshift/example-repo/pull/1234",
+          "state": "MERGED",
+          "author": "github-bot"
+        }
+      ]
+    },
+    {
+      "key": "OCPBUGS-60001",
+      "summary": "Example bug with linked PR",
+      "status": "New",
+      "issueType": "Bug",
+      "priority": "Major",
+      "created": "2026-09-25T08:00:00.000Z",
+      "updated": "2026-09-29T09:00:00.000Z",
+      "labels": [
+        "issue-for-agent"
+      ],
+      "components": [
+        "Component A"
+      ],
+      "assignee": null,
+      "agentState": "new",
+      "processed": false,
+      "linkedPrs": [
+        {
+          "repo": "openshift/another-repo",
+          "team": "another-team",
+          "number": 5678,
+          "url": "https://github.com/openshift/another-repo/pull/5678",
+          "state": "OPEN",
+          "author": "openshift-bot"
+        }
+      ]
+    },
+    {
+      "key": "TRT-1002",
+      "summary": "Example closed issue",
+      "status": "Closed",
+      "issueType": "Task",
+      "priority": "Normal",
+      "created": "2026-09-15T14:00:00.000Z",
+      "updated": "2026-09-27T16:00:00.000Z",
+      "labels": [
+        "issue-for-agent",
+        "ai-generated-jira"
+      ],
+      "components": [],
+      "assignee": "Another User",
+      "agentState": "closed",
+      "processed": true
+    }
+  ],
+  "prs": [
+    {
+      "url": "https://github.com/openshift/example-repo/pull/1234",
+      "number": 1234,
+      "repo": "openshift/example-repo",
+      "team": "example-team",
+      "title": "Example PR from bot",
+      "state": "MERGED",
+      "author": "github-bot",
+      "jiraKey": "TRT-1001"
+    },
+    {
+      "url": "https://github.com/openshift/another-repo/pull/5678",
+      "number": 5678,
+      "repo": "openshift/another-repo",
+      "team": "another-team",
+      "title": "Fix for OCPBUGS-60001",
+      "state": "OPEN",
+      "author": "openshift-bot",
+      "jiraKey": "OCPBUGS-60001"
+    }
+  ],
+  "combined": []
+}
