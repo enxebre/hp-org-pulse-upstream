@@ -1,0 +1,519 @@
+const { test, expect } = require('@playwright/test');
+const { DEFAULT_PAGE_WAIT_TIME } = require('./constants');
+const { setupErrorTracking, logCapturedErrors, pageHasContent, pageLoadComplete, mainContentIsVisible } = require('./helpers');
+
+/**
+ * Integration tests for AI Impact module
+ *
+ * These tests verify:
+ * - Module loads and renders correctly
+ * - Data fetching and display works
+ * - Navigation within the module functions
+ * - API integration is functional
+ *
+ * Tag: @ai-impact
+ * Usage: npx playwright test --grep @ai-impact
+ */
+
+test.describe('AI Impact Module @ai-impact', () => {
+  test.beforeEach(async ({ page }) => {
+    setupErrorTracking(page);
+  });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    logCapturedErrors(page, testInfo);
+  });
+
+  test('should fetch data from AI Impact API endpoints', async ({ page }) => {
+    // Monitor network requests
+    const apiRequests = [];
+    page.on('request', request => {
+      if (request.url().includes('/api/modules/ai-impact')) {
+        apiRequests.push({
+          url: request.url(),
+          method: request.method()
+        });
+      }
+    });
+
+    // Navigate to RFE Review (a data-driven view that makes API calls)
+    // The default landing page (AI Factory Guide) is static and has no API calls
+    await page.goto('/#/ai-impact/rfe-review');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    // Verify that API requests were made to the AI Impact endpoints
+    // In demo mode, these should still be called and return fixture data
+    expect(apiRequests.length).toBeGreaterThan(0);
+    console.log(`AI Impact API requests: ${apiRequests.length}`);
+    apiRequests.forEach(req => {
+      console.log(`  ${req.method} ${req.url}`);
+    });
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+});
+
+/**
+ * Disabled Menu Items
+ * 
+ * Verify that disabled components display as non-clickable, disabled (aka 
+ * "greyed out") options.
+ */
+test.describe('AI Impact Disabled Menu Items @ai-impact', () => {
+  test.beforeEach(async ({ page }) => {
+    setupErrorTracking(page);
+  });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    logCapturedErrors(page, testInfo);
+  });
+
+  // Helper to test a disabled menu item
+  async function testDisabledMenuItem(page, itemLabel) {
+    await page.goto('/#/ai-impact/ai-factory-guide');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    // Find the disabled item in the navigation by its title (display text)
+    // Navigation items are rendered as buttons in the sidebar
+    const navItem = page.locator('aside nav button').filter({ hasText: itemLabel });
+    const count = await navItem.count();
+    expect(count).toBeGreaterThan(0);
+    const disabledItem = navItem.first();
+
+    // Verify it's disabled (check for disabled attribute, aria-disabled, or
+    // opacity/cursor styling)
+    const isAriaDisabled = await disabledItem.getAttribute('aria-disabled');
+    const hasDisabledClass = await disabledItem.evaluate(el => {
+      const classes = el.className || '';
+      // Common patterns for disabled items: opacity, cursor, pointer-events
+      return classes.includes('disabled') ||
+             classes.includes('opacity-') ||
+             window.getComputedStyle(el).cursor === 'not-allowed' ||
+             window.getComputedStyle(el).pointerEvents === 'none';
+    });
+
+    // At least one disabled indicator should be present
+    const isDisabled = isAriaDisabled === 'true' || hasDisabledClass;
+    expect(isDisabled).toBe(true);
+
+    // Verify it's truly non-interactive by attempting to click
+    // and ensure navigation doesn't occur
+    const urlBeforeClick = page.url();
+    await disabledItem.click({ force: true }).catch(() => {
+      // Click might fail if pointer-events: none, that's expected
+    });
+    await page.waitForTimeout(500);
+
+    // Verify the URL hasn't changed (i.e., no navigation occurred)
+    const urlAfterClick = page.url();
+    expect(urlAfterClick).toBe(urlBeforeClick);
+
+    expect(page.errors).toHaveLength(0);
+  }
+
+  test('Implementation menu item should be disabled', async ({ page }) => {
+    await testDisabledMenuItem(page, 'Implementation');
+  });
+
+  test('Security Review menu item should be disabled', async ({ page }) => {
+    await testDisabledMenuItem(page, 'Security Review');
+  });
+
+});
+
+/**
+ * Active Components
+ * 
+ * Verify each major view (aka menu item) in the AI Impact module loads with
+ * meaningful content
+ */
+test.describe('AI Impact Views @ai-impact', () => {
+  test.beforeEach(async ({ page }) => {
+    setupErrorTracking(page);
+  });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    logCapturedErrors(page, testInfo);
+  });
+
+  // Helper to navigate and verify a view loads with content
+  async function testView(page, viewId, viewName) {
+    await page.goto(`/#/ai-impact/${viewId}`);
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    // Before we verify content, we need to verify the overall view loads
+    const mainContentVisible = await mainContentIsVisible(page);
+    expect(mainContentVisible).toBe(true);
+
+    // Verify the view has rendered some meaningful content by checking for
+    // data-bearing elements (not just empty containers or placeholders)
+    const hasContent = await pageHasContent(page);
+    expect(hasContent).toBe(true);
+
+    // Verify we're not stuck in an infinite loading state
+    const pageHasFinishedLoading = await pageLoadComplete(page);
+    expect(pageHasFinishedLoading).toBe(true);
+    if (page.errors.length > 0) {
+      console.error(`${viewName} errors:`, page.errors);
+    }
+
+    expect(page.errors).toHaveLength(0);
+  }
+
+  test('should load AI Factory Guide view', async ({ page }) => {
+    await testView(page, 'ai-factory-guide', 'AI Factory Guide');
+  });
+
+  test('should load RFE Review view', async ({ page }) => {
+    await testView(page, 'rfe-review', 'RFE Review');
+  });
+
+  test('should load Feature Review view', async ({ page }) => {
+    await testView(page, 'feature-review', 'Feature Review');
+  });
+
+  test('Feature Review view loads data from unified store', async ({ page }) => {
+    // Monitor API requests — Feature Review reads from ai-impact/features
+    // which internally reads from the releases execution store
+    const apiResponses = [];
+    page.on('response', response => {
+      if (response.url().includes('/api/modules/ai-impact/features')) {
+        apiResponses.push({
+          url: response.url(),
+          status: response.status()
+        });
+      }
+    });
+
+    await page.goto('/#/ai-impact/feature-review');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    // Verify the features API was called and returned data
+    const featuresResponse = apiResponses.find(r =>
+      r.url.endsWith('/features') || r.url.includes('/features?')
+    );
+    expect(featuresResponse).toBeDefined();
+    expect(featuresResponse.status).toBe(200);
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('should load Feature Decomposer view', async ({ page }) => {
+    await testView(page, 'feature-decomposer', 'Feature Decomposer');
+  });
+
+  test('Feature Decomposer view loads snapshot data and renders charts', async ({ page }) => {
+    // Monitor the decomposer snapshot endpoint
+    const apiResponses = [];
+    page.on('response', response => {
+      if (response.url().includes('/api/modules/ai-impact/decomposer')) {
+        apiResponses.push({ url: response.url(), status: response.status() });
+      }
+    });
+
+    await page.goto('/#/ai-impact/feature-decomposer');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    // The GET /decomposer snapshot endpoint was called and returned data
+    const decompResponse = apiResponses.find(r => r.url.includes('/decomposer'));
+    expect(decompResponse).toBeDefined();
+    expect(decompResponse.status).toBe(200);
+
+    // KPIs, the "Showing" date filter, and charts render from the demo fixture
+    await expect(page.locator('text=Strategies Decomposed')).toBeVisible();
+    await expect(page.locator('#decomposer-showing')).toBeVisible();
+    const canvases = await page.locator('canvas').count();
+    expect(canvases).toBeGreaterThan(0);
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('should load Documentation view', async ({ page }) => {
+    await testView(page, 'documentation', 'Documentation');
+  });
+
+  test('should load Jira AutoFix view', async ({ page }) => {
+    await testView(page, 'autofix', 'AutoFix');
+  });
+
+  test('Jira AutoFix view renders impact metrics sections', async ({ page }) => {
+    const autofixResponsePromise = page.waitForResponse(response =>
+      response.url().includes('/api/modules/ai-impact/autofix-data') && response.status() === 200
+    );
+    await page.goto('/#/ai-impact/autofix');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const autofixResponse = await autofixResponsePromise;
+    const autofixPayload = await autofixResponse.json();
+    expect(autofixPayload.metrics).toHaveProperty('pipelineCohort');
+    expect(autofixPayload.metrics).toHaveProperty('stageFunnel');
+    expect(autofixPayload.metrics.stageFunnel).toHaveProperty('conversions');
+    expect(autofixPayload.metrics.stageFunnel.authoritative).toBe(false);
+    expect(autofixPayload.evidence.stageContract).toContain('AIPCC-31384');
+
+    const priorityHeading = page.locator('text=Priority Distribution');
+    await expect(priorityHeading).toBeVisible();
+
+    const effortHeading = page.locator('text=Effort Breakdown');
+    await expect(effortHeading).toBeVisible();
+
+    const ttfHeading = page.getByRole('heading', { name: 'Time to Fix' });
+    await expect(ttfHeading).toBeVisible();
+
+    const effortColumn = page.locator('th:has-text("Effort")');
+    await expect(effortColumn).toBeVisible();
+
+    await expect(page.getByText('Autofix lifecycle funnel')).toBeVisible();
+    await expect(page.getByText('Proxy evidence')).toBeVisible();
+    await expect(page.getByText('Pipeline-ready Share')).toBeVisible();
+    await expect(page.getByText('Eligibility Rate')).toHaveCount(0);
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('should load Test Plan Review view', async ({ page }) => {
+    await testView(page, 'test-plan-review', 'Test Plan Review');
+  });
+
+  test('Test Plan Review renders trend charts and time window selector', async ({ page }) => {
+    await page.goto('/#/ai-impact/test-plan-review');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const timeWindowSelect = page.locator('select#tp-time-window');
+    await expect(timeWindowSelect).toBeVisible();
+
+    const trendHeading = page.locator('text=Trend Visualization');
+    await expect(trendHeading).toBeVisible();
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('Feature Review renders trend charts and time window selector', async ({ page }) => {
+    await page.goto('/#/ai-impact/feature-review');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const timeWindowSelect = page.locator('select#fr-time-window');
+    await expect(timeWindowSelect).toBeVisible();
+
+    const trendHeading = page.locator('text=Trend Visualization');
+    await expect(trendHeading).toBeVisible();
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('should load Build & Release view', async ({ page }) => {
+    await testView(page, 'build-release', 'Build & Release');
+  });
+
+  test('should load State of the Union on landing page', async ({ page }) => {
+    // SOTU content now lives on the landing page (home), not as an AI Impact nav item
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const mainContentVisible = await mainContentIsVisible(page);
+    expect(mainContentVisible).toBe(true);
+
+    // The SOTU heading should be visible on the landing page.
+    // Use a role selector rather than `text=`: the latter is a substring
+    // matcher, so a strict-mode violation would be swallowed by isVisible()
+    // and silently fail the assertion.
+    await expect(
+      page.getByRole('heading', { name: 'State of the Union' }).first()
+    ).toBeVisible();
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  // Skip: SOTU view was removed, redirect logic doesn't exist yet
+  test.skip('should redirect legacy SOTU hash to home', async ({ page }) => {
+    await page.goto('/#/ai-impact/state-of-the-union');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    // Should redirect to home (root hash)
+    const url = page.url();
+    expect(url).toMatch(/\/#?\/?$/);
+
+    // Filter out expected "view not found" errors from the redirect
+    const unexpectedErrors = page.errors.filter(
+      (e) => !e.message.includes('View "state-of-the-union" not found')
+    );
+    expect(unexpectedErrors).toHaveLength(0);
+  });
+});
+
+/**
+ * Build & Release (Component Onboarding) — status badges, filters, metrics
+ */
+test.describe('AI Impact Build & Release @ai-impact', () => {
+  test.beforeEach(async ({ page }) => {
+    setupErrorTracking(page);
+    // Prevent the auto-open AI Impact Guide modal from blocking filter clicks.
+    await page.addInitScript(() => {
+      localStorage.setItem('ai-impact-guide-dismissed', 'true');
+    });
+    await page.goto('/#/ai-impact/build-release');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+  });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    logCapturedErrors(page, testInfo);
+  });
+
+  test('"In Queue" metric card renders in the header', async ({ page }) => {
+    const inQueueCard = page.locator('text=In Queue').first();
+    await expect(inQueueCard).toBeVisible();
+
+    const waitingLabel = page.locator('text=waiting');
+    await expect(waitingLabel).toBeVisible();
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('"In Queue" status badge displays with blue styling', async ({ page }) => {
+    const inQueueBadge = page.locator('.rounded-full:has-text("In Queue")').first();
+    await expect(inQueueBadge).toBeVisible();
+
+    const hasBlueStyling = await inQueueBadge.evaluate(el => {
+      return el.className.includes('bg-blue-100') || el.className.includes('blue');
+    });
+    expect(hasBlueStyling).toBe(true);
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('target version dropdown appears and filters correctly', async ({ page }) => {
+    // Page header version multi-select (button + checkbox menu).
+    const versionButton = page.getByRole('button', { name: /All versions/ }).first();
+    await expect(versionButton).toBeVisible();
+    await versionButton.click();
+
+    const menu = page.getByTestId('page-version-filter-menu');
+    await expect(menu).toBeVisible();
+    const checkboxes = menu.locator('input[type="checkbox"]');
+    expect(await checkboxes.count()).toBeGreaterThan(0);
+
+    await checkboxes.first().check();
+    await menu.getByRole('button', { name: 'Done' }).click();
+    await page.waitForTimeout(500);
+
+    const countText = page.locator('text=/\\d+ components?/');
+    await expect(countText).toBeVisible();
+
+    expect(page.errors).toHaveLength(0);
+  });
+
+  test('status filter includes "In Queue" option and filters correctly', async ({ page }) => {
+    const statusButton = page.getByRole('button', { name: /All statuses/ });
+    await expect(statusButton).toBeVisible();
+    await statusButton.click();
+
+    const menu = page.getByTestId('status-filter-menu');
+    await expect(menu).toBeVisible();
+    await expect(menu.getByText('In Queue')).toBeVisible();
+
+    await menu.locator('input[type="checkbox"][value="in_queue"]').check();
+    await menu.getByRole('button', { name: 'Done' }).click();
+    await page.waitForTimeout(500);
+
+    const rows = page.locator('table tbody tr');
+    const rowCount = await rows.count();
+    expect(rowCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < rowCount; i++) {
+      const row = rows.nth(i);
+      const badge = row.locator('.rounded-full');
+      if (await badge.count() > 0) {
+        const text = await badge.first().textContent();
+        if (text && ['Completed', 'In Progress', 'In Queue'].includes(text.trim())) {
+          expect(text.trim()).toBe('In Queue');
+        }
+      }
+    }
+
+    expect(page.errors).toHaveLength(0);
+  });
+});
+
+/**
+ * Component onboarding API — target version sync endpoints and ingest normalization
+ */
+test.describe('AI Impact Component Onboarding API @ai-impact', () => {
+  test('GET /component-onboarding/sync/status returns sync state', async ({ request }) => {
+    const res = await request.get('/api/modules/ai-impact/component-onboarding/sync/status');
+    expect(res.ok()).toBe(true);
+
+    const body = await res.json();
+    expect(body).toHaveProperty('running');
+    expect(body).toHaveProperty('startedAt');
+    expect(body).toHaveProperty('lastResult');
+  });
+
+  test('POST /component-onboarding/sync returns a known status', async ({ request }) => {
+    const res = await request.post('/api/modules/ai-impact/component-onboarding/sync');
+
+    // Admin endpoint — skip in CI containers where no user is authenticated
+    if (res.status() === 403) {
+      test.skip();
+      return;
+    }
+
+    expect(res.ok()).toBe(true);
+
+    const body = await res.json();
+    expect(['started', 'already_running', 'skipped']).toContain(body.status);
+  });
+
+  test('GET /component-onboarding excludes YAML build_type target versions', async ({ request }) => {
+    const res = await request.get('/api/modules/ai-impact/component-onboarding');
+    expect(res.ok()).toBe(true);
+
+    const body = await res.json();
+    expect(body.components).toBeDefined();
+
+    for (const comp of Object.values(body.components || {})) {
+      const tv = String(comp.targetVersion || '').toLowerCase();
+      expect(tv).not.toBe('ci');
+      expect(tv).not.toBe('release');
+    }
+  });
+
+  test('Build & Release target version column does not show CI/Release labels', async ({ page }) => {
+    setupErrorTracking(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ai-impact-guide-dismissed', 'true');
+    });
+    await page.goto('/#/ai-impact/build-release');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const productSelect = page.locator('select').filter({
+      has: page.locator('option[value="ODH"]')
+    }).first();
+    if (await productSelect.count()) {
+      await productSelect.selectOption('ODH');
+      await page.waitForTimeout(500);
+    }
+
+    const versionCells = page.locator('table tbody tr td:nth-child(5)');
+    const count = await versionCells.count();
+    for (let i = 0; i < count; i++) {
+      const text = (await versionCells.nth(i).innerText()).trim();
+      expect(text).not.toBe('CI');
+      expect(text).not.toBe('Release');
+    }
+
+    expect(page.errors).toHaveLength(0);
+  });
+});

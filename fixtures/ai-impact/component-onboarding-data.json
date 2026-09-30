@@ -1,0 +1,859 @@
+{
+  "fetchedAt": "2026-05-10T11:01:55.980Z",
+  "totalComponents": 16,
+  "components": {
+    "RHOAIENG-61528": {
+      "latest": {
+        "key": "RHOAIENG-61528",
+        "summary": "ODH Konflux CI Build Onboarding odh-ogx-core",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "odh-ogx-core",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-1373"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+        },
+        "labels": [
+          "bundle-changes-done",
+          "component-onboarding",
+          "component-onboarding-completed",
+          "krd-mr-merged",
+          "okc-pr-merged",
+          "onboarder-workflow-triggered",
+          "onboarding-in-review",
+          "quay-mr-merged",
+          "tekton-pr-merged",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-05-08T08:23:15.259+0000",
+        "resolved": "2026-05-08T13:38:23.996+0000",
+        "validationDate": "2026-05-08T08:31:46.851+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "targetVersion": "rhoai-2.20",
+        "syncedAt": "2026-05-10T11:01:55.977Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-61465": {
+      "latest": {
+        "key": "RHOAIENG-61465",
+        "summary": "ODH Konflux CI Build Onboarding odh-ogx-k8s-operator",
+        "status": "Review",
+        "completionStatus": "in-progress",
+        "productContext": "ODH",
+        "componentName": "odh-ogx-k8s-operator",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-1373"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+        },
+        "labels": [
+          "bundle-changes-done",
+          "component-onboarding",
+          "krd-mr-merged",
+          "okc-pr-merged",
+          "onboarder-workflow-triggered",
+          "onboarding-in-review",
+          "operator-pr-raised",
+          "quay-mr-merged",
+          "tekton-pr-merged",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-05-07T15:57:16.922+0000",
+        "resolved": null,
+        "validationDate": "2026-05-07T16:03:15.521+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": true,
+          "bundleConfigured": true,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "targetVersion": "rhoai-2.20",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": null
+      },
+      "history": []
+    },
+    "RHOAIENG-61363": {
+      "latest": {
+        "key": "RHOAIENG-61363",
+        "summary": "RHOAI Konflux Onboarding odh-ogx-core",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "odh-ogx-core",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-1373"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+        },
+        "labels": [
+          "auto-merge-setup-done",
+          "bundle-changes-done",
+          "component-onboarding",
+          "component-onboarding-completed",
+          "delivery-repo-created",
+          "krd-mr-merged",
+          "okc-pr-merged",
+          "onboarding-in-review",
+          "product-listing-created",
+          "quay-mr-merged",
+          "renovate-changes-done",
+          "renovate-sync-done",
+          "rkc-pr-raised",
+          "rkc-pull-changes-done",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-05-07T09:33:45.020+0000",
+        "resolved": "2026-05-07T14:01:37.788+0000",
+        "validationDate": "2026-05-07T09:40:24.114+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": true,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": true,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": true,
+          "autoMergeSetup": true,
+          "renovateSetup": true
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "targetVersion": "rhoai-2.20",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-60933": {
+      "latest": {
+        "key": "RHOAIENG-60933",
+        "summary": "RHOAI Konflux Onboarding odh-ogx-k8s-operator",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "odh-ogx-k8s-operator",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-1373"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+        },
+        "labels": [
+          "auto-merge-setup-done",
+          "bundle-changes-done",
+          "component-onboarding",
+          "component-onboarding-completed",
+          "delivery-repo-created",
+          "krd-mr-merged",
+          "okc-pr-merged",
+          "onboarding-in-review",
+          "operator-pr-merged",
+          "product-listing-created",
+          "quay-mr-merged",
+          "renovate-changes-done",
+          "renovate-sync-done",
+          "rkc-pull-changes-done",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-05-05T07:30:11.874+0000",
+        "resolved": "2026-05-08T08:33:25.153+0000",
+        "validationDate": "2026-05-07T16:02:32.238+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": true,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": true,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": true,
+          "bundleConfigured": true,
+          "productListingUpdated": true,
+          "autoMergeSetup": true,
+          "renovateSetup": true
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-58284": {
+      "latest": {
+        "key": "RHOAIENG-58284",
+        "summary": "ODH Konflux CI Build Onboarding kube-rbac-proxy",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "kube-rbac-proxy",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [],
+        "featureTitles": {},
+        "labels": [
+          "component-onboarding",
+          "devops-onboarding",
+          "konflux-mr-raised",
+          "okc-changes-done",
+          "onboarding-in-review",
+          "quay-repo-created",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-04-15T07:56:35.024+0000",
+        "resolved": "2026-04-17T19:05:34.267+0000",
+        "validationDate": "2026-04-16T11:36:58.161+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-57229": {
+      "latest": {
+        "key": "RHOAIENG-57229",
+        "summary": "ODH Konflux CI Build Onboarding [LLM-D Batch Gateway GC]",
+        "status": "Closed",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "LLM-D Batch Gateway GC",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-964"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
+        },
+        "labels": [
+          "component-onboarding",
+          "component-onboarding-completed",
+          "devops-onboarding",
+          "krd-mr-merged",
+          "obc-changes-done",
+          "okc-pr-merged",
+          "onboarder-workflow-triggered",
+          "onboarding-in-review",
+          "quay-mr-merged",
+          "tekton-pr-merged",
+          "tekton-pr-raised",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-04-08T13:52:19.197+0000",
+        "resolved": "2026-04-17T13:02:06.529+0000",
+        "validationDate": "2026-04-15T13:56:33.349+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-57227": {
+      "latest": {
+        "key": "RHOAIENG-57227",
+        "summary": "ODH Konflux CI Build Onboarding [LLM-D Batch Gateway Processor]",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "LLM-D Batch Gateway Processor",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-964"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
+        },
+        "labels": [
+          "component-onboarding",
+          "devops-onboarding",
+          "krd-mr-merged",
+          "obc-changes-done",
+          "okc-pr-merged",
+          "onboarding-in-review",
+          "quay-mr-merged",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-04-08T13:49:35.948+0000",
+        "resolved": "2026-04-28T17:38:44.187+0000",
+        "validationDate": "2026-04-16T07:44:49.270+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-56716": {
+      "latest": {
+        "key": "RHOAIENG-56716",
+        "summary": "RHOAI Konflux Onboarding [Kserve LocalModelNode Agent ]",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "Kserve LocalModelNode Agent",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-853"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-853": "Implement Model Cache in RHOAI"
+        },
+        "labels": [
+          "auto-merge-setup-done",
+          "bundle-changes-done",
+          "component-onboarding",
+          "component-onboarding-completed",
+          "delivery-repo-created",
+          "krd-mr-merged",
+          "okc-pr-merged",
+          "onboarding-in-review",
+          "product-listing-created",
+          "quay-mr-merged",
+          "renovate-changes-done",
+          "renovate-sync-triggered",
+          "rkc-pr-raised",
+          "rkc-pull-changes-done",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-04-05T18:10:15.237+0000",
+        "resolved": "2026-05-07T09:43:11.060+0000",
+        "validationDate": "2026-05-06T10:08:06.164+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": true,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": true,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": true,
+          "autoMergeSetup": true,
+          "renovateSetup": true
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-56375": {
+      "latest": {
+        "key": "RHOAIENG-56375",
+        "summary": "RHOAI Konflux Onboarding [Kserve LocalModel Controller ]",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "Kserve LocalModel Controller",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-853"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-853": "Implement Model Cache in RHOAI"
+        },
+        "labels": [
+          "auto-merge-setup-done",
+          "component-onboarding",
+          "delivery-repo-mr-raised",
+          "devops-onboarding",
+          "dockerfile-labels-pr-raised",
+          "konflux-mr-raised",
+          "obc-changes-done",
+          "quay-repo-created",
+          "renovate-changes-done",
+          "rkc-pr-raised",
+          "validation-successful",
+          "waiting-on-component",
+          "yaml-attached"
+        ],
+        "created": "2026-04-01T18:40:29.682+0000",
+        "resolved": "2026-04-29T08:51:42.526+0000",
+        "validationDate": "2026-04-23T08:33:15.876+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": true,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": false,
+          "autoMergeSetup": true,
+          "renovateSetup": true
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-55217": {
+      "latest": {
+        "key": "RHOAIENG-55217",
+        "summary": "ODH Konflux CI Build Onboarding [LLM-D Batch Gateway API Server]",
+        "status": "Resolved",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "LLM-D Batch Gateway API Server",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-964"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
+        },
+        "labels": [
+          "component-onboarding",
+          "component-onboarding-completed",
+          "devops-onboarding",
+          "krd-mr-merged",
+          "obc-changes-done",
+          "okc-pr-merged",
+          "onboarder-workflow-triggered",
+          "onboarding-in-review",
+          "quay-mr-merged",
+          "tekton-pr-merged",
+          "tekton-pr-raised",
+          "validation-successful",
+          "yaml-attached"
+        ],
+        "created": "2026-03-25T18:33:11.346+0000",
+        "resolved": "2026-04-17T13:00:48.435+0000",
+        "validationDate": "2026-04-15T07:28:42.231+0000",
+        "onboardingSteps": {
+          "yamlValidated": true,
+          "quayRepoCreated": true,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": true,
+          "pushPipelineConfigured": true,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": true,
+          "operatorIntegrated": false,
+          "bundleConfigured": true,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-42310": {
+      "latest": {
+        "key": "RHOAIENG-42310",
+        "summary": "RHOAI Konflux Onboarding odh-dashboard",
+        "status": "Closed",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "odh-dashboard",
+        "repoUrl": "https://github.com/opendatahub-io/odh-dashboard",
+        "branch": "main",
+        "dockerfilePath": "Dockerfile",
+        "contextPath": ".",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-502"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+        },
+        "labels": [
+          "devops-onboarding"
+        ],
+        "created": "2024-08-12T10:15:22.450+0000",
+        "resolved": "2024-11-04T14:30:18.771+0000",
+        "validationDate": null,
+        "onboardingSteps": {
+          "yamlValidated": false,
+          "quayRepoCreated": false,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": false,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "manual",
+        "firstCommentDate": "2024-08-15T14:22:10.330+0000",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-38755": {
+      "latest": {
+        "key": "RHOAIENG-38755",
+        "summary": "RHOAI Konflux Onboarding codeflare-operator",
+        "status": "Closed",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "codeflare-operator",
+        "repoUrl": "https://github.com/project-codeflare/codeflare-operator",
+        "branch": "main",
+        "dockerfilePath": "Dockerfile",
+        "contextPath": ".",
+        "isOperator": true,
+        "linkedFeatures": [
+          "RHAISTRAT-502"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+        },
+        "labels": [
+          "devops-onboarding"
+        ],
+        "created": "2024-06-20T08:45:33.192+0000",
+        "resolved": "2024-09-18T11:22:47.385+0000",
+        "validationDate": null,
+        "onboardingSteps": {
+          "yamlValidated": false,
+          "quayRepoCreated": false,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": false,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "manual",
+        "firstCommentDate": "2024-06-25T10:11:45.920+0000",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-35901": {
+      "latest": {
+        "key": "RHOAIENG-35901",
+        "summary": "ODH Konflux CI Build Onboarding modelmesh-serving",
+        "status": "Closed",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "modelmesh-serving",
+        "repoUrl": "https://github.com/opendatahub-io/modelmesh-serving",
+        "branch": "main",
+        "dockerfilePath": "Dockerfile",
+        "contextPath": ".",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-502"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+        },
+        "labels": [
+          "devops-onboarding"
+        ],
+        "created": "2024-10-03T14:20:08.611+0000",
+        "resolved": "2025-01-15T09:44:55.803+0000",
+        "validationDate": null,
+        "onboardingSteps": {
+          "yamlValidated": false,
+          "quayRepoCreated": false,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": false,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "manual",
+        "firstCommentDate": "2024-10-07T09:30:22.115+0000",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Done"
+      },
+      "history": []
+    },
+    "RHOAIENG-33480": {
+      "latest": {
+        "key": "RHOAIENG-33480",
+        "summary": "ODH Konflux CI Build Onboarding odh-notebook-controller",
+        "status": "Closed",
+        "completionStatus": "completed",
+        "productContext": "ODH",
+        "componentName": "odh-notebook-controller",
+        "repoUrl": "https://github.com/opendatahub-io/kubeflow",
+        "branch": "main",
+        "dockerfilePath": "components/notebook-controller/Dockerfile",
+        "contextPath": ".",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-502"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+        },
+        "labels": [
+          "devops-onboarding"
+        ],
+        "created": "2024-07-15T11:33:44.820+0000",
+        "resolved": "2024-10-28T16:15:32.994+0000",
+        "validationDate": null,
+        "onboardingSteps": {
+          "yamlValidated": false,
+          "quayRepoCreated": false,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": false,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "manual",
+        "firstCommentDate": "2024-07-22T15:48:33.441+0000",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Duplicate"
+      },
+      "history": []
+    },
+    "RHOAIENG-31200": {
+      "latest": {
+        "key": "RHOAIENG-31200",
+        "summary": "RHOAI Konflux Onboarding kserve",
+        "status": "Closed",
+        "completionStatus": "completed",
+        "productContext": "RHOAI",
+        "componentName": "kserve",
+        "repoUrl": "https://github.com/opendatahub-io/kserve",
+        "branch": "main",
+        "dockerfilePath": "Dockerfile",
+        "contextPath": ".",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-502"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+        },
+        "labels": [
+          "devops-onboarding"
+        ],
+        "created": "2024-09-10T09:05:17.340+0000",
+        "resolved": "2025-02-20T13:48:29.156+0000",
+        "validationDate": null,
+        "onboardingSteps": {
+          "yamlValidated": false,
+          "quayRepoCreated": false,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": false,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "manual",
+        "firstCommentDate": "2024-09-18T11:05:47.220+0000",
+        "syncedAt": "2026-05-10T11:01:55.980Z",
+        "resolution": "Won't Do"
+      },
+      "history": []
+    },
+    "RHOAIENG-62100": {
+      "latest": {
+        "key": "RHOAIENG-62100",
+        "summary": "RHOAI Konflux Onboarding odh-model-registry",
+        "status": "New",
+        "completionStatus": "new",
+        "productContext": "RHOAI",
+        "componentName": "odh-model-registry",
+        "repoUrl": "",
+        "branch": "",
+        "dockerfilePath": "",
+        "contextPath": "",
+        "isOperator": false,
+        "linkedFeatures": [
+          "RHAISTRAT-853"
+        ],
+        "featureTitles": {
+          "RHAISTRAT-853": "Implement Model Cache in RHOAI"
+        },
+        "labels": [
+          "component-onboarding",
+          "yaml-attached"
+        ],
+        "created": "2026-05-12T09:15:30.450+0000",
+        "resolved": null,
+        "validationDate": null,
+        "onboardingSteps": {
+          "yamlValidated": false,
+          "quayRepoCreated": false,
+          "deliveryRepoProvisioned": false,
+          "konfluxOnboarded": false,
+          "pushPipelineConfigured": false,
+          "pullPipelineConfigured": false,
+          "odhKonfluxOnboarded": false,
+          "operatorIntegrated": false,
+          "bundleConfigured": false,
+          "productListingUpdated": false,
+          "autoMergeSetup": false,
+          "renovateSetup": false
+        },
+        "onboardingMethod": "automated",
+        "firstCommentDate": null,
+        "targetVersion": "rhoai-2.21",
+        "syncedAt": "2026-05-12T09:15:30.450Z",
+        "resolution": null
+      },
+      "history": []
+    }
+  }
+}

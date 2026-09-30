@@ -1,0 +1,592 @@
+module.exports = function registerRoutes(router, context) {
+  const { storage, requireAdmin, requireScope } = context;
+  const { readFromStorage, writeToStorage } = storage;
+
+  // Register module scopes
+  context.registerScopes([
+    { key: 'ai-impact:read', label: 'AI Impact (Read)', description: 'Read AI impact data', category: 'AI Impact' },
+    { key: 'ai-impact:write', label: 'AI Impact (Write)', description: 'Push/clear AI impact data', category: 'AI Impact' }
+  ]);
+
+  const DEMO_MODE = process.env.DEMO_MODE === 'true';
+
+  // Jira helpers from shared package (no duplication)
+  const { createJiraClient } = require('../../../shared/server/jira');
+  const jira = createJiraClient({
+    email: (context.secrets && context.secrets.JIRA_EMAIL) || '',
+    token: (context.secrets && context.secrets.JIRA_TOKEN) || '',
+    host: process.env.JIRA_HOST
+  });
+  const { jiraRequest, JIRA_HOST } = jira;
+
+  const { fetchRFEData } = require('./jira/rfe-fetcher');
+  const { resolveLinkedFeatures } = require('./jira/link-resolver');
+  const { getConfig, saveConfig } = require('./config');
+  const { computeAllMetrics } = require('./metrics');
+  const {
+    fetchAutofixData,
+    computeAutofixMetrics,
+    buildTrendData: buildAutofixTrend,
+    buildForgeEvidence
+  } = require('./jira/autofix-fetcher');
+  const { fetchDocData, fetchDocActivityEvents, fetchDocCumulativeStats, fetchDocCompletedData, computeDocMetrics, buildDocTrendData, resolveMRLinksFromKpiData } = require('./jira/doc-fetcher');
+  const mrStatus = require('./mr-status');
+  const { enrichMRStatuses } = mrStatus;
+
+  // Initialize sub-modules with secrets
+  mrStatus.init(context.secrets);
+  const { fetchMrKpiData } = require('./gitlab/mr-kpi-fetcher');
+
+  // Assessment routes (Phase 1: Storage + Ingest API)
+  const registerAssessmentRoutes = require('./assessments/routes');
+  registerAssessmentRoutes(router, context);
+
+  // Feature review routes
+  const registerFeatureRoutes = require('./features/routes');
+  registerFeatureRoutes(router, context);
+
+  // Test plan quality routes
+  const registerTestPlanRoutes = require('./test-plans/routes');
+  registerTestPlanRoutes(router, context);
+
+  // Component onboarding routes (Build & Release)
+  const registerComponentOnboardingRoutes = require('./component-onboarding/routes');
+  registerComponentOnboardingRoutes(router, { ...context, jiraRequest });
+
+  // Feature Decomposer routes (epic-decomposer pipeline snapshot push)
+  const registerDecomposerRoutes = require('./decomposer/routes');
+  registerDecomposerRoutes(router, context);
+
+  // Pipeline signals routes (cross-store lineage resolution)
+  const registerPipelineSignalRoutes = require('./pipeline-signals/routes');
+  registerPipelineSignalRoutes(router, context);
+
+  // ─── Refresh state (in-memory) ───
+
+  const refreshState = {
+    running: false,
+    startedAt: null,
+    lastResult: null
+  };
+
+  // ─── Routes ───
+
+  const VALID_TIME_WINDOWS = ['week', 'month', '3months'];
+
+  /**
+   * @openapi
+   * /modules/ai-impact/rfe-data:
+   *   get:
+   *     summary: RFE data with computed metrics and pipeline friction
+   *     tags: [ai-impact]
+   *     parameters:
+   *       - in: query
+   *         name: timeWindow
+   *         schema:
+   *           type: string
+   *           enum: [week, month, 3months]
+   *           default: month
+   *         description: Time window for metric computation
+   *     responses:
+   *       200:
+   *         description: RFE dataset with metrics, trend data, breakdown, and pipeline friction
+   */
+  router.get('/rfe-data', requireScope('ai-impact:read'), async function(req, res) {
+    const timeWindow = VALID_TIME_WINDOWS.includes(req.query.timeWindow)
+      ? req.query.timeWindow
+      : 'month';
+
+    const data = await readFromStorage('ai-impact/rfe-data.json');
+    if (!data || !data.issues) {
+      return res.json({
+        fetchedAt: null,
+        jiraHost: JIRA_HOST,
+        metrics: { createdPct: 0, createdChange: 0, trend: 'stable', revisedCount: 0, priorRevisedCount: 0, windowTotal: 0, totalRFEs: 0 },
+        trendData: [],
+        breakdown: [],
+        pipelineFriction: { needsAttentionPct: 0, needsAttentionChange: 0, needsAttentionTrend: 'stable', feasibilityBlockedPct: 0, feasibilityBlockedChange: 0, feasibilityBlockedTrend: 'stable' },
+        issues: []
+      });
+    }
+
+    // Compute metrics server-side from cached issues
+    const config = await getConfig(readFromStorage);
+    const { metrics, trendData, breakdown, pipelineFriction } = computeAllMetrics(data.issues, timeWindow, config);
+
+    res.json({
+      fetchedAt: data.fetchedAt,
+      jiraHost: JIRA_HOST,
+      metrics,
+      trendData,
+      breakdown,
+      pipelineFriction,
+      issues: data.issues
+    });
+  });
+
+  // ─── Autofix data ───
+
+  const VALID_AUTOFIX_TIME_WINDOWS = ['week', 'lastWeek', 'last7', 'month', 'lastMonth', 'last30', 'last90', 'last180', 'all'];
+
+  let autofixDataCache = null;
+
+  function shiftAutofixDates(data) {
+    if (!data || !data.fetchedAt) return data;
+    const offset = Date.now() - new Date(data.fetchedAt).getTime();
+    if (Math.abs(offset) < 60 * 60 * 1000) return data;
+
+    function shift(iso) {
+      if (!iso) return iso;
+      return new Date(new Date(iso).getTime() + offset).toISOString();
+    }
+
+    return {
+      ...data,
+      fetchedAt: new Date().toISOString(),
+      issues: data.issues.map(i => ({
+        ...i,
+        created: shift(i.created),
+        updated: shift(i.updated),
+        terminalAt: shift(i.terminalAt),
+        mrLinks: i.mrLinks || [],
+        mrStatuses: i.mrStatuses || {}
+      })),
+      policyEligibleIssues: (data.policyEligibleIssues || []).map(i => ({
+        ...i,
+        created: shift(i.created),
+        updated: shift(i.updated),
+        terminalAt: shift(i.terminalAt)
+      })),
+      currentPolicyEligibleIssues: (data.currentPolicyEligibleIssues || []).map(i => ({
+        ...i,
+        created: shift(i.created),
+        updated: shift(i.updated),
+        terminalAt: shift(i.terminalAt)
+      })),
+      outcomeEvents: (data.outcomeEvents || []).map(event => ({
+        ...event,
+        cohort_timestamp: shift(event.cohort_timestamp),
+        transition_timestamp: shift(event.transition_timestamp)
+      })),
+      outcomeEventsComplete: data.outcomeEventsComplete === true,
+      evidence: data.evidence,
+      queries: data.queries
+    };
+  }
+
+  async function getAutofixData() {
+    if (!autofixDataCache) {
+      const raw = await readFromStorage('ai-impact/autofix-data.json');
+      autofixDataCache = DEMO_MODE ? shiftAutofixDates(raw) : raw;
+    }
+    return autofixDataCache;
+  }
+
+  function invalidateAutofixCache() {
+    autofixDataCache = null;
+  }
+
+  function stripIssueFields(issue) {
+    return {
+      key: issue.key,
+      summary: issue.summary,
+      status: issue.status,
+      issueType: issue.issueType,
+      priority: issue.priority,
+      created: issue.created,
+      updated: issue.updated,
+      terminalAt: issue.terminalAt || null,
+      components: issue.components,
+      assignee: issue.assignee,
+      pipelineState: issue.pipelineState,
+      effortScore: issue.effortScore ?? null,
+      effortTier: issue.effortTier ?? null,
+      forgeEvidence: buildForgeEvidence(issue)
+    };
+  }
+
+  /**
+   * @openapi
+   * /modules/ai-impact/autofix-data:
+   *   get:
+   *     summary: Jira Autofix cohorts, lifecycle funnel, and trend data
+   *     tags: [ai-impact]
+   *     parameters:
+   *       - in: query
+   *         name: timeWindow
+   *         schema:
+   *           type: string
+   *           enum: [week, lastWeek, last7, month, lastMonth, last30, last90]
+   *           default: month
+   *         description: Time window for metric computation. Calendar windows (week, lastWeek, month, lastMonth) use fixed boundaries. Rolling windows (last7, last30, last90) count back from now. Past windows (lastWeek, lastMonth) use terminalAt for resolved issues.
+   *       - in: query
+   *         name: components
+   *         schema:
+   *           type: string
+   *         description: Comma-separated Jira component names to filter issues by
+   *     responses:
+   *       200:
+   *         description: Autofix dataset with separate policy and pipeline cohorts. Lifecycle stage conversions are authoritative only when immutable Autofix outcome events are present.
+   */
+  router.get('/autofix-data', requireScope('ai-impact:read'), async function(req, res) {
+    const timeWindow = VALID_AUTOFIX_TIME_WINDOWS.includes(req.query.timeWindow)
+      ? req.query.timeWindow
+      : 'month';
+
+    const data = await getAutofixData();
+    if (!data || !data.issues) {
+      return res.json({
+        fetchedAt: null,
+        jiraHost: JIRA_HOST,
+        metrics: {
+          triageTotal: 0,
+          triageVerdicts: {},
+          autofixStates: {},
+          autofixTotal: 0,
+          successRate: 0,
+          windowTotal: 0,
+          totalIssues: 0,
+          priorityBreakdown: {},
+          medianTimeToFixDays: null,
+          effortBreakdown: { quickWin: 0, standardFix: 0, complexFix: 0 },
+          totalImpactScore: 0,
+          pipelineCohort: { denominator: 0, ready: 0, source: 'jira-pipeline-label-query', authoritative: false },
+          pipelineReadyShare: { numerator: 0, denominator: 0, rate: null },
+          policyEligibleCohort: { available: false, denominator: null },
+          stageFunnel: null
+        },
+        trendData: [],
+        issues: []
+      });
+    }
+
+    let issues = data.issues;
+    let policyEligibleIssues = data.policyEligibleIssues;
+    let currentPolicyEligibleIssues = data.currentPolicyEligibleIssues;
+    if (req.query.components) {
+      const componentSet = new Set(
+        req.query.components.split(',').map(function(c) { return c.trim(); }).filter(Boolean)
+      );
+      if (componentSet.size > 0) {
+        issues = issues.filter(function(issue) {
+          return (issue.components || []).some(function(c) { return componentSet.has(c); });
+        });
+        if (Array.isArray(policyEligibleIssues)) {
+          policyEligibleIssues = policyEligibleIssues.filter(function(issue) {
+            return (issue.components || []).some(function(c) { return componentSet.has(c); });
+          });
+        }
+        if (Array.isArray(currentPolicyEligibleIssues)) {
+          currentPolicyEligibleIssues = currentPolicyEligibleIssues.filter(function(issue) {
+            return (issue.components || []).some(function(c) { return componentSet.has(c); });
+          });
+        }
+      }
+    }
+
+    const metrics = computeAutofixMetrics(issues, timeWindow, {
+      policyEligibleIssues,
+      currentPolicyEligibleIssues,
+      outcomeEvents: data.outcomeEvents || [],
+      outcomeEventsComplete: data.outcomeEventsComplete === true,
+      policyScope: data.evidence?.policyScope
+    });
+    const trendData = buildAutofixTrend(issues, timeWindow);
+
+    res.json({
+      fetchedAt: data.fetchedAt,
+      jiraHost: JIRA_HOST,
+      metrics,
+      trendData,
+      issues: issues.map(stripIssueFields),
+      evidence: data.evidence || {
+        pipeline: 'Jira labels',
+        policyEligible: 'Jira JQL policy query unavailable in this snapshot',
+        stageContract: 'AIPCC-31384 lifecycle outcome contract dependency'
+      }
+    });
+  });
+
+  // ─── Documentation data ───
+
+  function shiftDocDates(data) {
+    if (!data.fetchedAt) return data;
+    const offset = Date.now() - new Date(data.fetchedAt).getTime();
+    if (Math.abs(offset) < 60 * 60 * 1000) return data;
+
+    function shift(iso) {
+      if (!iso) return iso;
+      return new Date(new Date(iso).getTime() + offset).toISOString();
+    }
+
+    return {
+      ...data,
+      fetchedAt: new Date().toISOString(),
+      issues: data.issues.map(i => ({
+        ...i,
+        created: shift(i.created),
+        updated: shift(i.updated),
+        docContributedDate: shift(i.docContributedDate),
+        docInvokedDate: shift(i.docInvokedDate)
+      })),
+      labelEvents: (data.labelEvents || []).map(e => ({
+        ...e,
+        date: shift(e.date)
+      })),
+      activityEvents: (data.activityEvents || []).map(e => ({
+        ...e,
+        date: shift(e.date)
+      }))
+    };
+  }
+
+  router.get('/doc-data', requireScope('ai-impact:read'), async function(req, res) {
+    const rawData = await readFromStorage('ai-impact/doc-data.json');
+    if (!rawData || !rawData.issues) {
+      return res.json({
+        fetchedAt: null,
+        jiraHost: JIRA_HOST,
+        metrics: { demandCount: 0, coverageCount: 0, coverageRate: 0, invokedCount: 0, totalLabelEvents: 0 },
+        trendData: [],
+        issues: []
+      });
+    }
+
+    const data = DEMO_MODE ? shiftDocDates(rawData) : rawData;
+    const activity = data.activityEvents || data.labelEvents || [];
+    const metrics = computeDocMetrics(data.issues, activity);
+    const trendData = buildDocTrendData(data.issues, activity);
+
+    res.json({
+      fetchedAt: data.fetchedAt,
+      jiraHost: JIRA_HOST,
+      metrics,
+      trendData,
+      issues: data.issues,
+      completedIssues: data.completedIssues || [],
+      cumulativeStats: data.cumulativeStats || null
+    });
+  });
+
+  /**
+   * @openapi
+   * /modules/ai-impact/doc-mr-kpi-data:
+   *   get:
+   *     summary: MR KPI data fetched directly from GitLab
+   *     tags: [ai-impact]
+   *     responses:
+   *       200:
+   *         description: MR KPI data with merge request metrics
+   */
+  router.get('/doc-mr-kpi-data', requireScope('ai-impact:read'), async function(req, res) {
+    const data = await readFromStorage('ai-impact/doc-mr-kpi-data.json');
+    if (!data || !data.mergeRequests) {
+      return res.json({ fetchedAt: null, mergeRequests: [] });
+    }
+    res.json(data);
+  });
+
+  router.get('/config', requireAdmin, requireScope('ai-impact:write'), async function(req, res) {
+    res.json(await getConfig(readFromStorage));
+  });
+
+  router.post('/config', requireAdmin, requireScope('ai-impact:write'), async function(req, res) {
+    try {
+      await saveConfig(writeToStorage, req.body);
+      res.json({ status: 'saved' });
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+
+  router.delete('/cache', requireAdmin, requireScope('ai-impact:write'), async function(req, res) {
+    await writeToStorage('ai-impact/rfe-data.json', null);
+    await writeToStorage('ai-impact/autofix-data.json', null);
+    invalidateAutofixCache();
+    await writeToStorage('ai-impact/doc-data.json', null);
+    await writeToStorage('ai-impact/doc-mr-kpi-data.json', null);
+    res.json({ status: 'cleared' });
+  });
+
+  router.get('/refresh/status', requireScope('ai-impact:read'), function(req, res) {
+    res.json(refreshState);
+  });
+
+  async function runAiImpactRefresh() {
+    if (DEMO_MODE) return;
+
+    const config = await getConfig(readFromStorage);
+
+    const issues = await fetchRFEData(jiraRequest, config);
+    const withLinks = await resolveLinkedFeatures(jiraRequest, issues, config);
+    await writeToStorage('ai-impact/rfe-data.json', {
+      fetchedAt: new Date().toISOString(),
+      issues: withLinks
+    });
+
+    let autofixCount = 0;
+    try {
+      const autofixReport = await fetchAutofixData(jiraRequest, config);
+      const allAutofixIssues = [
+        ...(autofixReport.issues || []),
+        ...(autofixReport.policyEligibleIssues || [])
+      ];
+      const uniqueAutofixMap = new Map();
+      for (const issue of allAutofixIssues) {
+        if (!uniqueAutofixMap.has(issue.key)) uniqueAutofixMap.set(issue.key, issue);
+      }
+      const uniqueAutofixIssues = [...uniqueAutofixMap.values()];
+      await enrichMRStatuses(uniqueAutofixIssues);
+      const pipelineByKey = new Map((autofixReport.issues || []).map(issue => [issue.key, issue]));
+      for (const issue of autofixReport.policyEligibleIssues || []) {
+        const pipelineIssue = pipelineByKey.get(issue.key);
+        if (pipelineIssue) issue.mrStatuses = pipelineIssue.mrStatuses || {};
+      }
+      await writeToStorage('ai-impact/autofix-data.json', {
+        fetchedAt: new Date().toISOString(),
+        ...autofixReport
+      });
+      invalidateAutofixCache();
+      autofixCount = (autofixReport.issues || []).length;
+    } catch (autofixErr) {
+      console.error('[ai-impact] Autofix data refresh failed:', autofixErr.message);
+    }
+
+    let mrKpiCount = 0;
+    let mrKpiData = null;
+    try {
+      const mrKpiResult = await fetchMrKpiData();
+      mrKpiData = {
+        fetchedAt: new Date().toISOString(),
+        mergeRequests: mrKpiResult.mergeRequests
+      };
+      await writeToStorage('ai-impact/doc-mr-kpi-data.json', mrKpiData);
+      mrKpiCount = mrKpiResult.mergeRequests.length;
+    } catch (mrKpiErr) {
+      console.error('[ai-impact] MR KPI data refresh failed:', mrKpiErr.message);
+    }
+
+    let docCount = 0;
+    try {
+      const docResult = await fetchDocData(jiraRequest, config);
+      let completedIssues = [];
+      try {
+        completedIssues = await fetchDocCompletedData(jiraRequest, config, { mrKpiData });
+      } catch (compErr) {
+        console.error('[ai-impact] Documentation completed data fetch failed:', compErr.message);
+      }
+      let activityEvents = [];
+      try {
+        activityEvents = await fetchDocActivityEvents(jiraRequest, config);
+      } catch (actErr) {
+        console.error('[ai-impact] Documentation activity events fetch failed:', actErr.message);
+      }
+      let cumulativeStats = null;
+      try {
+        cumulativeStats = await fetchDocCumulativeStats(jiraRequest, config);
+      } catch (statsErr) {
+        console.error('[ai-impact] Documentation cumulative stats fetch failed:', statsErr.message);
+      }
+      if (mrKpiData) {
+        resolveMRLinksFromKpiData(docResult.issues, mrKpiData);
+      }
+      try {
+        await enrichMRStatuses(docResult.issues);
+        await enrichMRStatuses(completedIssues);
+      } catch (mrErr) {
+        console.error('[ai-impact] MR status enrichment failed:', mrErr.message);
+      }
+      await writeToStorage('ai-impact/doc-data.json', {
+        fetchedAt: new Date().toISOString(),
+        issues: docResult.issues,
+        labelEvents: docResult.labelEvents,
+        activityEvents,
+        completedIssues,
+        cumulativeStats
+      });
+      docCount = docResult.issues.length;
+    } catch (docErr) {
+      console.error('[ai-impact] Documentation data refresh failed:', docErr.message);
+    }
+
+    refreshState.lastResult = {
+      status: 'success',
+      message: `Fetched ${withLinks.length} RFEs, ${autofixCount} autofix issues, ${docCount} doc issues, ${mrKpiCount} MR KPIs`,
+      completedAt: new Date().toISOString()
+    };
+  }
+
+  router.post('/refresh', requireAdmin, requireScope('ai-impact:write'), async function(req, res) {
+    if (DEMO_MODE) {
+      return res.json({ status: 'skipped', message: 'Refresh disabled in demo mode' });
+    }
+    if (refreshState.running || context.isRefreshRunning()) {
+      return res.json({ status: 'already_running' });
+    }
+    refreshState.running = true;
+    refreshState.startedAt = new Date().toISOString();
+    res.json({ status: 'started' });
+
+    try {
+      await runAiImpactRefresh();
+    } catch (err) {
+      console.error('[ai-impact] Refresh failed:', err);
+      refreshState.lastResult = {
+        status: 'error',
+        message: err.message,
+        completedAt: new Date().toISOString()
+      };
+    } finally {
+      refreshState.running = false;
+    }
+  });
+
+  // ─── Diagnostics ───
+
+  if (context.registerRefresh) {
+    context.registerRefresh('refresh', {
+      order: 50,
+      timeout: 600000,
+      description: 'Refreshes AI Impact component assessments and onboarding data from Jira.',
+      handler: async function() {
+        await runAiImpactRefresh();
+      }
+    });
+  }
+
+  if (context.registerExport) {
+    context.registerExport(require('./export'));
+  }
+
+  if (context.registerDiagnostics) {
+    context.registerDiagnostics(async function() {
+      const rfeData = await readFromStorage('ai-impact/rfe-data.json');
+      const autofixData = await readFromStorage('ai-impact/autofix-data.json');
+      const docData = await readFromStorage('ai-impact/doc-data.json');
+      const coData = await readFromStorage('ai-impact/component-onboarding-data.json');
+      return {
+        refreshState,
+        rfe: {
+          dataExists: !!rfeData,
+          issueCount: rfeData?.issues?.length || 0,
+          fetchedAt: rfeData?.fetchedAt || null
+        },
+        autofix: {
+          dataExists: !!autofixData,
+          issueCount: autofixData?.issues?.length || 0,
+          fetchedAt: autofixData?.fetchedAt || null
+        },
+        documentation: {
+          dataExists: !!docData,
+          issueCount: docData?.issues?.length || 0,
+          fetchedAt: docData?.fetchedAt || null
+        },
+        componentOnboarding: {
+          dataExists: !!coData,
+          componentCount: coData?.totalComponents || 0,
+          fetchedAt: coData?.fetchedAt || null
+        }
+      };
+    });
+  }
+};

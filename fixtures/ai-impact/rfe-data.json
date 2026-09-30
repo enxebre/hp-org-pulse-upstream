@@ -1,0 +1,455 @@
+{
+  "fetchedAt": "2026-07-21T12:00:00Z",
+  "issues": [
+    {
+      "key": "RHAIRFE-1001",
+      "summary": "Implement model serving autoscaling for high-throughput inference",
+      "status": "In Progress",
+      "priority": "High",
+      "created": "2026-04-24T10:00:00Z",
+      "creator": "schen",
+      "creatorDisplayName": "Sarah Chen",
+      "components": [
+        "Platform Core"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "customer-request"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": {
+        "key": "RHAISTRAT-1168",
+        "summary": "GPU-as-a-Service Observability Dashboard",
+        "status": "Refined",
+        "fixVersions": [
+          "RHOAI 2.16"
+        ]
+      }
+    },
+    {
+      "key": "RHAIRFE-1002",
+      "summary": "Add GPU memory monitoring dashboard for notebook users",
+      "status": "New",
+      "priority": "Medium",
+      "created": "2026-04-21T14:30:00Z",
+      "creator": "jpark",
+      "creatorDisplayName": "James Park",
+      "components": [
+        "Platform Dashboard"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-autofix-rubric-pass",
+        "strat-creator-3.5"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-05-04T14:00:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1003",
+      "summary": "Support for fine-tuning LLMs with custom datasets",
+      "status": "In Review",
+      "priority": "Critical",
+      "created": "2026-04-19T09:15:00Z",
+      "creator": "mgarcia",
+      "creatorDisplayName": "Maria Garcia",
+      "components": [
+        "ML Models"
+      ],
+      "labels": [
+        "rfe-creator-auto-revised",
+        "rfe-creator-autofix-rubric-pass",
+        "tech-reviewed",
+        "strategic"
+      ],
+      "aiInvolvement": "revised",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-04-27T10:30:00Z",
+      "linkedFeature": {
+        "key": "RHAISTRAT-502",
+        "summary": "Strat: LLM fine-tuning capability",
+        "status": "Planning",
+        "fixVersions": [
+          "RHOAI 2.17"
+        ]
+      }
+    },
+    {
+      "key": "RHAIRFE-1004",
+      "summary": "Integrate OpenTelemetry tracing for pipeline debugging",
+      "status": "New",
+      "priority": "Low",
+      "created": "2026-04-17T11:00:00Z",
+      "creator": "akim",
+      "creatorDisplayName": "Alex Kim",
+      "components": [
+        "Infrastructure Services"
+      ],
+      "labels": [],
+      "aiInvolvement": "none",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1005",
+      "summary": "Multi-model A/B testing framework for inference endpoints",
+      "status": "In Progress",
+      "priority": "High",
+      "created": "2026-04-09T16:45:00Z",
+      "creator": "lwong",
+      "creatorDisplayName": "Lisa Wong",
+      "components": [
+        "ML Models"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-autofix-rubric-pass",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": "2026-04-23T10:00:00Z",
+      "rubricPassSince": "2026-04-19T08:00:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1006",
+      "summary": "Automated data quality validation for training pipelines",
+      "status": "New",
+      "priority": "Medium",
+      "created": "2026-04-01T08:30:00Z",
+      "creator": "rpatel",
+      "creatorDisplayName": "Raj Patel",
+      "components": [
+        "Data Pipelines"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": "2026-05-25T09:00:00Z",
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1007",
+      "summary": "Role-based access control for shared model registry",
+      "status": "In Review",
+      "priority": "High",
+      "created": "2026-03-27T13:20:00Z",
+      "creator": "emiller",
+      "creatorDisplayName": "Emily Miller",
+      "components": [
+        "Platform Core"
+      ],
+      "labels": [
+        "rfe-creator-auto-revised",
+        "rfe-creator-autofix-rubric-pass"
+      ],
+      "aiInvolvement": "revised",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-05-20T11:00:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1008",
+      "summary": "Support custom runtime images for Jupyter notebooks",
+      "status": "New",
+      "priority": "Medium",
+      "created": "2026-03-22T10:00:00Z",
+      "creator": "dlee",
+      "creatorDisplayName": "David Lee",
+      "components": [
+        "Platform Core",
+        "Infrastructure Services"
+      ],
+      "labels": [
+        "rfe-creator-autofix-rubric-pass",
+        "tech-reviewed",
+        "strat-creator-3.5"
+      ],
+      "aiInvolvement": "none",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-05-11T08:30:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1009",
+      "summary": "Federated learning support for distributed model training",
+      "status": "In Progress",
+      "priority": "Critical",
+      "created": "2026-03-06T15:00:00Z",
+      "creator": "schen",
+      "creatorDisplayName": "Sarah Chen",
+      "components": [
+        "ML Models"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-autofix-rubric-pass",
+        "innovation"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-05-30T09:00:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1010",
+      "summary": "Improve model deployment latency for real-time applications",
+      "status": "New",
+      "priority": "High",
+      "created": "2026-02-24T09:45:00Z",
+      "creator": "jpark",
+      "creatorDisplayName": "James Park",
+      "components": [
+        "ML Models",
+        "Platform Core"
+      ],
+      "labels": [],
+      "aiInvolvement": "none",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1016",
+      "summary": "Enable custom metrics collection for deployed model endpoints",
+      "status": "New",
+      "priority": "Medium",
+      "created": "2026-02-27T10:30:00Z",
+      "creator": "bsanders",
+      "creatorDisplayName": "Ben Sanders",
+      "components": [
+        "Platform Dashboard"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-feasibility-fail"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1017",
+      "summary": "Implement batch inference scheduling with priority queues",
+      "status": "In Review",
+      "priority": "High",
+      "created": "2026-03-15T14:00:00Z",
+      "creator": "lchang",
+      "creatorDisplayName": "Lin Chang",
+      "components": [
+        "ML Models"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": "2026-06-10T11:00:00Z",
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1018",
+      "summary": "Add support for neuromorphic hardware accelerators in serving runtime",
+      "status": "New",
+      "priority": "Low",
+      "created": "2026-04-06T09:00:00Z",
+      "creator": "nthomas",
+      "creatorDisplayName": "Nina Thomas",
+      "components": [
+        "Infrastructure Services"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-feasibility-unknown"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1024",
+      "summary": "Expose per-request latency percentiles in model serving metrics",
+      "status": "New",
+      "priority": "Medium",
+      "created": "2026-03-09T11:00:00Z",
+      "creator": "dlee",
+      "creatorDisplayName": "David Lee",
+      "components": [
+        "Platform Dashboard"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": "2026-07-07T09:30:00Z",
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1025",
+      "summary": "Add experiment comparison view for hyperparameter tuning runs",
+      "status": "New",
+      "priority": "High",
+      "created": "2026-03-24T13:30:00Z",
+      "creator": "lchang",
+      "creatorDisplayName": "Lin Chang",
+      "components": [
+        "ML Models",
+        "Platform Dashboard"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": "2026-07-15T08:00:00Z",
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1026",
+      "summary": "Cross-cluster model weight synchronization for geo-distributed serving",
+      "status": "New",
+      "priority": "Critical",
+      "created": "2026-04-14T09:45:00Z",
+      "creator": "akim",
+      "creatorDisplayName": "Alex Kim",
+      "components": [
+        "Platform Core"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-feasibility-fail"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1019",
+      "summary": "Automated model drift detection with configurable alert thresholds",
+      "status": "New",
+      "priority": "High",
+      "created": "2026-04-29T11:15:00Z",
+      "creator": "rpatel",
+      "creatorDisplayName": "Raj Patel",
+      "components": [
+        "Platform Dashboard",
+        "ML Models"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": "2026-06-29T14:00:00Z",
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1020",
+      "summary": "Real-time feature store integration with sub-millisecond retrieval latency",
+      "status": "New",
+      "priority": "Critical",
+      "created": "2026-05-18T13:45:00Z",
+      "creator": "emiller",
+      "creatorDisplayName": "Emily Miller",
+      "components": [
+        "Data Pipelines"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-feasibility-fail"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": null,
+      "rubricPassSince": null,
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1021",
+      "summary": "Improve pipeline step caching for faster iterative reruns",
+      "status": "In Review",
+      "priority": "Medium",
+      "created": "2026-06-04T10:00:00Z",
+      "creator": "schen",
+      "creatorDisplayName": "Sarah Chen",
+      "components": [
+        "Data Pipelines"
+      ],
+      "labels": [
+        "rfe-creator-auto-revised",
+        "rfe-creator-autofix-rubric-pass",
+        "tech-reviewed"
+      ],
+      "aiInvolvement": "revised",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-06-19T10:00:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1022",
+      "summary": "Multi-cluster model serving with automatic traffic failover",
+      "status": "In Progress",
+      "priority": "High",
+      "created": "2026-06-27T09:30:00Z",
+      "creator": "jpark",
+      "creatorDisplayName": "James Park",
+      "components": [
+        "Platform Core"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-auto-revised",
+        "rfe-creator-autofix-rubric-pass",
+        "strat-creator-3.5"
+      ],
+      "aiInvolvement": "both",
+      "needsAttentionSince": null,
+      "rubricPassSince": "2026-07-11T09:00:00Z",
+      "linkedFeature": null
+    },
+    {
+      "key": "RHAIRFE-1023",
+      "summary": "Integrate compliance audit logging for regulated ML workloads",
+      "status": "In Review",
+      "priority": "High",
+      "created": "2026-07-14T14:00:00Z",
+      "creator": "mgarcia",
+      "creatorDisplayName": "Maria Garcia",
+      "components": [
+        "Platform Core",
+        "Infrastructure Services"
+      ],
+      "labels": [
+        "rfe-creator-auto-created",
+        "rfe-creator-autofix-rubric-pass",
+        "rfe-creator-needs-attention"
+      ],
+      "aiInvolvement": "created",
+      "needsAttentionSince": "2026-07-19T10:00:00Z",
+      "rubricPassSince": "2026-07-18T09:00:00Z",
+      "linkedFeature": null
+    }
+  ]
+}

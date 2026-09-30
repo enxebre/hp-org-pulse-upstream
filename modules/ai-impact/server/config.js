@@ -1,0 +1,157 @@
+const DEFAULT_CONFIG = {
+  jiraProject: 'RHAIRFE',
+  linkedProject: 'RHAISTRAT',
+  createdLabel: 'rfe-creator-auto-created',
+  revisedLabel: 'rfe-creator-auto-revised',
+  testExclusionLabel: 'rfe-creator-skill-testing',
+  linkTypeName: 'Cloners',
+  excludedStatuses: ['Closed'],
+  lookbackMonths: 0,
+  trendThresholdPp: 2,
+  autofixProjects: ['AIPCC', 'RHOAIENG', 'RHAIENG', 'RHAIFIRST', 'INFERENG', 'JN'],
+  // Null means project-wide policy cohort. Set to component names to scope it.
+  autofixComponents: null,
+  autofixCreatedAfter: null,
+  docProject: 'RHAISTRAT',
+  docRequiredStatuses: ['Review', 'Release Pending'],
+  docRequiredFieldId: 'customfield_10665',
+  docContributedLabel: 'ai1st-doc-contributed',
+  docSkippedLabel: 'ai1st-doc-skip',
+  docInvokedLabel: 'ai1st-doc-invoked',
+  docMrFieldId: 'customfield_10875'
+};
+
+// Characters that could enable JQL injection when interpolated into queries
+const JQL_UNSAFE_PATTERN = /["'();\\]/;
+
+function validateJqlSafeString(value, fieldName) {
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error(`${fieldName} must be a non-empty string`);
+  }
+  if (JQL_UNSAFE_PATTERN.test(value)) {
+    throw new Error(`${fieldName} contains unsafe characters (quotes, parens, semicolons not allowed)`);
+  }
+}
+
+async function getConfig(readFromStorage) {
+  const saved = await readFromStorage('ai-impact/config.json');
+  return { ...DEFAULT_CONFIG, ...saved };
+}
+
+/**
+ * Validate and save config. Throws on invalid input.
+ * All string fields are checked for JQL-unsafe characters since they are
+ * interpolated into JQL queries in rfe-fetcher.js.
+ */
+async function saveConfig(writeToStorage, config) {
+  const merged = { ...DEFAULT_CONFIG };
+
+  // Warn about unknown fields (helps catch frontend/backend key mismatches)
+  const knownKeys = new Set(Object.keys(DEFAULT_CONFIG));
+  for (const key of Object.keys(config)) {
+    if (!knownKeys.has(key)) {
+      console.warn(`[ai-impact] Unknown config field ignored: "${key}"`);
+    }
+  }
+
+  // String fields — validate type and JQL safety
+  const stringFields = ['jiraProject', 'linkedProject', 'createdLabel',
+    'revisedLabel', 'testExclusionLabel', 'linkTypeName',
+    'docProject', 'docContributedLabel', 'docSkippedLabel',
+    'docInvokedLabel', 'docRequiredFieldId', 'docMrFieldId'];
+  for (const key of stringFields) {
+    if (config[key] !== undefined) {
+      validateJqlSafeString(config[key], key);
+      merged[key] = config[key];
+    }
+  }
+
+  // autofixCreatedAfter — nullable string, validated only when non-empty
+  if (config.autofixCreatedAfter !== undefined) {
+    if (config.autofixCreatedAfter === null || config.autofixCreatedAfter === '') {
+      merged.autofixCreatedAfter = null;
+    } else {
+      validateJqlSafeString(config.autofixCreatedAfter, 'autofixCreatedAfter');
+      merged.autofixCreatedAfter = config.autofixCreatedAfter;
+    }
+  }
+
+  // excludedStatuses — must be array of JQL-safe strings
+  if (config.excludedStatuses !== undefined) {
+    if (!Array.isArray(config.excludedStatuses)) {
+      throw new Error('excludedStatuses must be an array');
+    }
+    for (const s of config.excludedStatuses) {
+      validateJqlSafeString(s, 'excludedStatuses entry');
+    }
+    merged.excludedStatuses = config.excludedStatuses;
+  }
+
+  // docRequiredStatuses — must be array of JQL-safe strings
+  if (config.docRequiredStatuses !== undefined) {
+    if (!Array.isArray(config.docRequiredStatuses)) {
+      throw new Error('docRequiredStatuses must be an array');
+    }
+    if (config.docRequiredStatuses.length === 0) {
+      throw new Error('docRequiredStatuses must not be empty');
+    }
+    for (const s of config.docRequiredStatuses) {
+      validateJqlSafeString(s, 'docRequiredStatuses entry');
+    }
+    merged.docRequiredStatuses = config.docRequiredStatuses;
+  }
+
+  // lookbackMonths — must be a non-negative integer (0 = no lookback limit)
+  if (config.lookbackMonths !== undefined) {
+    const val = Number(config.lookbackMonths);
+    if (!Number.isInteger(val) || val < 0 || val > 120) {
+      throw new Error('lookbackMonths must be an integer between 0 and 120');
+    }
+    merged.lookbackMonths = val;
+  }
+
+  // trendThresholdPp — must be a non-negative number
+  if (config.trendThresholdPp !== undefined) {
+    const val = Number(config.trendThresholdPp);
+    if (isNaN(val) || val < 0 || val > 50) {
+      throw new Error('trendThresholdPp must be a number between 0 and 50');
+    }
+    merged.trendThresholdPp = val;
+  }
+
+  // autofixProjects — must be array of JQL-safe strings
+  if (config.autofixProjects !== undefined) {
+    if (!Array.isArray(config.autofixProjects)) {
+      throw new Error('autofixProjects must be an array');
+    }
+    for (const p of config.autofixProjects) {
+      validateJqlSafeString(p, 'autofixProjects entry');
+    }
+    merged.autofixProjects = config.autofixProjects;
+  }
+
+  if (config.autofixComponents !== undefined) {
+    if (config.autofixComponents !== null && !Array.isArray(config.autofixComponents)) {
+      throw new Error('autofixComponents must be an array or null');
+    }
+    if (Array.isArray(config.autofixComponents)) {
+      for (const component of config.autofixComponents) {
+        validateJqlSafeString(component, 'autofixComponents entry');
+      }
+    }
+    merged.autofixComponents = config.autofixComponents;
+  }
+
+  // Only persist fields that differ from defaults so that future default
+  // changes (e.g. adding new autofix projects) take effect automatically
+  // on deployments that never customized those fields.
+  const delta = {};
+  for (const [key, value] of Object.entries(merged)) {
+    if (JSON.stringify(value) !== JSON.stringify(DEFAULT_CONFIG[key])) {
+      delta[key] = value;
+    }
+  }
+  await writeToStorage('ai-impact/config.json', delta);
+}
+
+module.exports = { DEFAULT_CONFIG, getConfig, saveConfig, validateJqlSafeString };

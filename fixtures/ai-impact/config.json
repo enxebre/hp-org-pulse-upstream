@@ -1,0 +1,11 @@
+{
+  "jiraProject": "RHAIRFE",
+  "linkedProject": "RHAISTRAT",
+  "createdLabel": "rfe-creator-auto-created",
+  "revisedLabel": "rfe-creator-auto-revised",
+  "testExclusionLabel": "rfe-creator-skill-testing",
+  "linkTypeName": "Cloners",
+  "excludedStatuses": ["Closed"],
+  "lookbackMonths": 12,
+  "trendThresholdPp": 2
+}

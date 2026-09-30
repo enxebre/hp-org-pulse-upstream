@@ -1,0 +1,80 @@
+{
+  "name": "AI Impact",
+  "slug": "ai-impact",
+  "description": "Track AI adoption across the RHAI delivery pipeline",
+  "icon": "sparkles",
+  "order": 5,
+  "client": {
+    "entry": "./client/index.js",
+    "sotuWidgets": [
+      {
+        "id": "rfe-actions",
+        "name": "RFE Action Items",
+        "description": "RFEs needing your attention, filtered by your components",
+        "component": "./client/widgets/RfeActionsWidget.vue",
+        "defaultSize": "full",
+        "icon": "ClipboardList",
+        "category": "action-items"
+      },
+      {
+        "id": "feature-board",
+        "name": "Feature Board",
+        "description": "Kanban view of features in your pipeline",
+        "component": "./client/widgets/FeatureBoardWidget.vue",
+        "defaultSize": "full",
+        "icon": "Columns",
+        "category": "boards"
+      },
+      {
+        "id": "pipeline-stats",
+        "name": "Pipeline Stats",
+        "description": "Summary stats for your RFE and feature pipeline",
+        "component": "./client/widgets/PipelineStatsWidget.vue",
+        "defaultSize": "half",
+        "icon": "BarChart3",
+        "category": "metrics"
+      }
+    ],
+    "navItems": [
+      { "id": "ai-factory-guide", "label": "AI Factory Guide", "icon": "BookOpen", "default": true },
+      { "id": "rfe-review", "label": "RFE Review", "icon": "ClipboardList", "separatorBefore": true },
+      { "id": "feature-review", "label": "Feature Review", "icon": "Target" },
+      { "id": "feature-decomposer", "label": "Feature Decomposer", "icon": "Network" },
+      { "id": "test-plan-review", "label": "Test Plan Review", "icon": "ClipboardCheck" },
+      { "id": "implementation", "label": "Implementation", "icon": "GitBranch", "disabled": true },
+      { "id": "security", "label": "Security Review", "icon": "Shield", "disabled": true },
+      { "id": "documentation", "label": "Documentation", "icon": "FileText" },
+      { "id": "build-release", "label": "Build & Release", "icon": "Layers" },
+      { "id": "autofix", "label": "Jira AutoFix", "icon": "Wand2", "separatorBefore": true }
+    ],
+    "settingsComponent": "./client/components/AIImpactSettings.vue"
+  },
+  "server": {
+    "entry": "./server/index.js"
+  },
+  "secrets": {
+    "platform": ["jira", "github", "gitlab"],
+    "module": [
+      {
+        "key": "GITLAB_CEE_REDHAT_DOCS_TOKEN",
+        "description": "GitLab token for internal docs MR quality KPI",
+        "required": false
+      }
+    ]
+  },
+  "export": {
+    "files": [
+      { "path": "ai-impact/rfe-data.json", "notes": "Anonymized RFE issues from Jira" },
+      { "path": "ai-impact/autofix-data.json", "notes": "Anonymized autofix-tagged issues" },
+      { "path": "ai-impact/doc-data.json", "notes": "Anonymized documentation contribution data" },
+      { "path": "ai-impact/doc-mr-kpi-data.json", "notes": "Anonymized GitLab MR KPI data" },
+      { "path": "ai-impact/config.json", "notes": "Module configuration (no PII)" },
+      { "path": "ai-impact/assessments.json", "notes": "Anonymized RFE quality assessments" },
+      { "path": "ai-impact/test-plans.json", "notes": "Anonymized test plan reviews" },
+      { "path": "ai-impact/features.json", "notes": "Anonymized feature reviews (legacy store)" },
+      { "path": "ai-impact/component-onboarding-data.json", "notes": "Anonymized component onboarding data" },
+      { "path": "ai-impact/decomposer.json", "notes": "Epic-decomposer pipeline snapshot (aggregates, runs, slim strategies)" }
+    ]
+  },
+  "defaultEnabled": true
+}
