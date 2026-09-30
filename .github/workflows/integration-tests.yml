@@ -19,7 +19,6 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      any_changed: ${{ steps.filter.outputs.any_changed }}
       # This captures the dynamic JSON array of modules to test
       matrix: ${{ steps.filter.outputs.modified_keys }}
 
@@ -76,7 +75,7 @@ jobs:
     name: Test ${{ matrix.module }}
     needs: detect-changes
     # Only run if one or more modules need testing
-    if: needs.detect-changes.outputs.any_changed == 'true'
+    if: needs.detect-changes.outputs.matrix != '[]' && needs.detect-changes.outputs.matrix != ''
     runs-on: ubuntu-latest
     permissions:
       contents: read

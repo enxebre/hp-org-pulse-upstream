@@ -32,6 +32,44 @@ test.describe('Agentic Tools Module @agentic-tools', () => {
     logCapturedErrors(page, testInfo);
   });
 
+  test('shows the Org Pulse intro and Strategic Initiatives on the landing page only', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const intro = page.locator('main section').first();
+    await expect(intro.getByText('What is Org Pulse?', { exact: true })).toBeVisible();
+    await expect(intro.getByRole('heading', {
+      level: 1,
+      name: 'Hybrid Platforms’ agentic evolution'
+    })).toBeVisible();
+    await expect(intro.getByText(
+      'Org Pulse brings delivery signals, engineering data, and agentic initiatives together to tell the story of how Hybrid Platforms is evolving.',
+      { exact: true }
+    )).toBeVisible();
+
+    const landingBlock = page.locator('[data-testid="strategic-initiatives"]');
+    const heading = landingBlock.getByRole('heading', { level: 2, name: 'Strategic Initiatives' });
+    await expect(heading).toBeVisible();
+    expect(await heading.evaluate(element => getComputedStyle(element).textTransform)).toBe('uppercase');
+    expect(await intro.evaluate((introElement, initiativesElement) => Boolean(
+      introElement.compareDocumentPosition(initiativesElement) & Node.DOCUMENT_POSITION_FOLLOWING
+    ), await landingBlock.elementHandle())).toBe(true);
+
+    const landingToolTitles = await landingBlock.locator('[data-testid="agentic-tools-content"] h4').allTextContents();
+    expect(landingToolTitles.length).toBeGreaterThan(0);
+
+    await page.goto('/#/agentic-tools/tools', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+    const moduleView = page.locator('main');
+    await expect(moduleView.getByRole('heading', { level: 2, name: 'Agentic Tools' })).toBeVisible();
+    expect(await moduleView.getByRole('heading', { level: 1, name: 'Hybrid Platforms’ agentic evolution' }).count()).toBe(0);
+    expect(await moduleView.getByRole('heading', { level: 2, name: 'Strategic Initiatives' }).count()).toBe(0);
+    const moduleToolTitles = await moduleView.locator('[data-testid="agentic-tools-content"] h4').allTextContents();
+    expect(moduleToolTitles).toEqual(landingToolTitles);
+
+    expect(jsErrors(page)).toHaveLength(0);
+  });
+
   test('should display Agentic Tools section in sidebar', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
@@ -92,7 +130,7 @@ test.describe('Agentic Tools Module @agentic-tools', () => {
     expect(cardText).toBeTruthy();
 
     // Look for at least one card title (tools.json has example entries)
-    const cardTitles = page.locator('a[target="_blank"] h3');
+    const cardTitles = page.locator('a[target="_blank"] h4');
     const titleCount = await cardTitles.count();
     expect(titleCount).toBeGreaterThan(0);
 
@@ -197,7 +235,7 @@ test.describe('Agentic Tools Module @agentic-tools', () => {
     await expect(tbdCard).toBeVisible();
 
     // Get the title and icon elements before hover
-    const titleElement = tbdCard.locator('h3');
+    const titleElement = tbdCard.locator('h4');
     const initialTitleClasses = await titleElement.getAttribute('class');
 
     // Verify title does NOT have group-hover:text-primary classes

@@ -46,6 +46,7 @@ vi.mock('@shared/client/composables/useAuth', () => ({
 
 // Now import the component after mocks are defined
 import ToolsView from '../../client/views/ToolsView.vue'
+import StrategicInitiativesBlock from '../../client/blocks/StrategicInitiativesBlock.vue'
 import { apiRequest } from '@shared/client/services/api'
 
 describe('ToolsView', () => {
@@ -67,10 +68,44 @@ describe('ToolsView', () => {
     expect(wrapper.text()).toContain('Agentic Tools')
   })
 
+  it('does not render the landing-only Strategic Initiatives heading in the module view', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+
+    expect(wrapper.find('[data-testid="strategic-initiatives"] h2').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="agentic-tools-content"]').exists()).toBe(true)
+  })
+
+  it('renders the Org Pulse intro hero before Strategic Initiatives in the landing block', async () => {
+    const wrapper = mount(StrategicInitiativesBlock)
+    await waitForDataLoad(wrapper)
+
+    const sections = wrapper.findAll('section')
+    expect(sections).toHaveLength(2)
+
+    const intro = sections[0]
+    expect(intro.find('p').text()).toBe('What is Org Pulse?')
+    expect(intro.find('p').classes()).toContain('uppercase')
+    expect(intro.get('h1').text()).toBe('Hybrid Platforms’ agentic evolution')
+    expect(intro.findAll('p')[1].text()).toBe(
+      'Org Pulse brings delivery signals, engineering data, and agentic initiatives together to tell the story of how Hybrid Platforms is evolving.'
+    )
+    expect(sections[1].attributes('data-testid')).toBe('strategic-initiatives')
+  })
+
+  it('renders the Strategic Initiatives heading in the landing block with CSS uppercase styling', async () => {
+    const wrapper = mount(StrategicInitiativesBlock)
+    await waitForDataLoad(wrapper)
+
+    const heading = wrapper.get('[data-testid="strategic-initiatives"] h2')
+    expect(heading.text()).toBe('Strategic Initiatives')
+    expect(heading.classes()).toContain('uppercase')
+  })
+
   it('renders one card per tool', async () => {
     const wrapper = mount(ToolsView)
     await waitForDataLoad(wrapper)
-    const cards = wrapper.findAll('.grid > *')
+    const cards = wrapper.findAll('[data-testid="agentic-tools-content"] .grid > *')
     expect(cards).toHaveLength(3)
   })
 
@@ -133,10 +168,10 @@ describe('ToolsView', () => {
     // Verify at least one div card is the TBD tool and lacks group-hover classes
     let foundTbdWithoutHover = false
     divCards.forEach(card => {
-      const titleText = card.find('h3').text()
+      const titleText = card.find('h4').text()
       if (titleText.includes('Test TBD Tool')) {
         // Verify title element does NOT have group-hover classes
-        const titleClasses = card.find('h3').attributes('class')
+        const titleClasses = card.find('h4').attributes('class')
         expect(titleClasses).not.toContain('group-hover:text-primary-600')
         expect(titleClasses).not.toContain('group-hover:text-primary-400')
         

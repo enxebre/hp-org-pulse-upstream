@@ -4,7 +4,7 @@
 # serves from the core runtime image.
 
 # Stage 1: Build with all HP Eng modules
-FROM quay.io/org-pulse/org-pulse-core-frontend-builder:v2.0.83 AS build
+FROM quay.io/org-pulse/org-pulse-core-frontend-builder:v2.0.88 AS build
 
 # Add platform customizations
 COPY platform/ ./platform/
@@ -18,6 +18,6 @@ RUN npm install --no-save mermaid
 RUN npm run build
 
 # Stage 2: Serve with hardened nginx
-FROM quay.io/org-pulse/org-pulse-core-frontend-runtime:v2.0.83
+FROM quay.io/org-pulse/org-pulse-core-frontend-runtime:v2.0.88
 
 COPY --from=build /app/dist /usr/share/nginx/html

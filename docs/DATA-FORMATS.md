@@ -167,6 +167,22 @@ Platform-level configuration for the site. Created when an admin saves settings 
   which takes precedence.
 - If this file doesn't exist, both fields default to `""` (empty string).
 
+## Landing Page Config — `data/landing-page-config.json`
+
+Administrator-selected landing page block configuration. Created when an admin selects a block in Settings > Landing Page.
+
+```json
+{
+  "activeBlock": "team-tracker:organization-overview"
+}
+```
+
+**Notes:**
+
+- `activeBlock` is a module-qualified block ID (`"moduleSlug:blockId"`) or `null` if no block is selected.
+- When `null` or the file does not exist, the landing page renders without a block (existing behavior).
+- If the referenced module is disabled or removed, the block is silently omitted at render time.
+
 ## Messages — `data/messages.json`
 
 Admin-created announcements stored as a JSON array. Merged with computed provider messages at `GET /api/messages`.
@@ -796,9 +812,13 @@ Admin-managed list of external tool launchers. Array of tool objects.
 - `id` (string, auto-generated): Unique identifier in format `tool_<timestamp>_<randomstring>` or custom ID on creation.
 - `title` (string, required): Display name of the tool.
 - `description` (string, required): Short description of what the tool does.
-- `icon` (string, required): Name of a lucide-vue-next icon from the allowed set (e.g. `Wrench`, `Hammer`, `Bot`, `Sparkles`, etc.). See ICON_MAP in `modules/agentic-tools/client/components/AgenticToolsSettings.vue` for the full list.
-- `url` (string, optional): External URL to the tool. Leave as empty string `""` to mark the tool as TBD (To Be Determined) — the card will render without a clickable link and display a "TBD" badge.
-- `order` (integer, optional): Display order in the grid. Tools are sorted by this field (ascending). Default 0 on creation; auto-assigned to next available order if omitted on POST.
+- `icon` (string, required): Name of a lucide-vue-next icon from the allowed set
+  (e.g. `Wrench`, `Hammer`, `Bot`, `Sparkles`, etc.). See ICON_MAP in
+  `modules/agentic-tools/client/components/AgenticToolsSettings.vue` for the full list.
+- `url` (string, optional): External URL to the tool. Leave as empty string `""` to mark the tool
+  as TBD (To Be Determined) — the card will render without a clickable link and display a "TBD" badge.
+- `order` (integer, optional): Display order in the grid. Tools are sorted by this field (ascending).
+  Default 0 on creation; auto-assigned to next available order if omitted on POST.
 
 **Notes:**
 
@@ -840,7 +860,12 @@ or CLOSED do not lose the successful merge outcome.
 
 ## CVE Triage — `data/cve-triage/data.json`
 
-Cached Jira issues grouped by solution. ARC stores OCPBUGS issues labeled `arc:triaged`; `resolved` is true when the issue also has `arc:complete`. Sustaining Engineer CHAI stores Jira issues from any project labeled `chai-bot-analyzed`; `resolved` is true when Jira places the issue in its Done status category. OAPE CHAI stores Jira issues from any project labeled `ai-cve-analyzed`; `resolved` is true when Jira places the issue in its Done status category.
+Cached Jira issues grouped by solution. ARC stores OCPBUGS issues labeled `arc:triaged`;
+`resolved` is true when the issue also has `arc:complete`.
+Sustaining Engineer CHAI stores Jira issues from any project labeled `chai-bot-analyzed`;
+`resolved` is true when Jira places the issue in its Done status category.
+OAPE CHAI stores Jira issues from any project labeled `ai-cve-analyzed`;
+`resolved` is true when Jira places the issue in its Done status category.
 
 ```json
 {
@@ -889,7 +914,10 @@ Cached Jira issues grouped by solution. ARC stores OCPBUGS issues labeled `arc:t
 
 ## Jira Solve Agent — `data/jira-solve-agent/data.json`
 
-Cached OpenShift Jira Solve Agent data with PR hydration and remote links. Issues are tracked from Jira (labeled `issue-for-agent`), bot PRs from GitHub, and linked PRs from Jira remote issue links. The module performs deduplication and PR state hydration to provide a unified view of agent activity across both systems.
+Cached OpenShift Jira Solve Agent data with PR hydration and remote links.
+Issues are tracked from Jira (labeled `issue-for-agent`), bot PRs from GitHub,
+and linked PRs from Jira remote issue links. The module performs deduplication and
+PR state hydration to provide a unified view of agent activity across both systems.
 
 ```json
 {
@@ -950,9 +978,13 @@ Cached OpenShift Jira Solve Agent data with PR hydration and remote links. Issue
 | `prs[].jiraKey` | string | Jira key parsed from PR title or branch name, or null for keyless PRs |
 | `combined` | array | Deduplication result: PRs overlapping with tracked Jira issues (diagnostic field) |
 
-**Deduplication logic**: Bot PRs are deduplicated against Jira issues by matching the PR's `jiraKey` to an issue's `key`. Overlapping PRs are already represented by their Jira issue. Net-new-keyed PRs (Jira key exists but issue lacks `issue-for-agent` label) and keyless PRs (no Jira reference) each become their own row in the `issues` array.
+**Deduplication logic**: Bot PRs are deduplicated against Jira issues by matching the PR's `jiraKey` to an issue's `key`.
+Overlapping PRs are already represented by their Jira issue. Net-new-keyed PRs
+(Jira key exists but issue lacks `issue-for-agent` label) and keyless PRs (no Jira reference)
+each become their own row in the `issues` array.
 
-**PR state hydration**: Linked PRs from Jira remote issue links are hydrated with state from GitHub's GraphQL API (MERGED, OPEN, CLOSED) to show merge status without requiring the PR to be opened by a tracked bot account.
+**PR state hydration**: Linked PRs from Jira remote issue links are hydrated with state from GitHub's GraphQL API
+(MERGED, OPEN, CLOSED) to show merge status without requiring the PR to be opened by a tracked bot account.
 
 ---
 

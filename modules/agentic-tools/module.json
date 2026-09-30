@@ -6,6 +6,14 @@
   "order": 100,
   "client": {
     "entry": "./client/index.js",
+    "landingBlocks": [
+      {
+        "id": "strategic-initiatives",
+        "name": "Strategic Initiatives",
+        "description": "Quick launchers for strategic engineering initiatives.",
+        "component": "./client/blocks/StrategicInitiativesBlock.vue"
+      }
+    ],
     "navItems": [
       {
         "id": "tools",
