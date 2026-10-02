@@ -108,40 +108,24 @@ test.describe('Frontend Smoke Tests', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Capture initial URL (hash-based routing)
-    const initialUrl = page.url();
+    const agenticToolsSection = page.getByRole('button', { name: 'Agentic Tools', exact: true });
+    await expect(agenticToolsSection).toBeVisible();
+    await agenticToolsSection.click();
 
-    // Find and click a navigation link (settings, or any secondary nav item)
-    // Using multiple selectors to be resilient to UI changes
-    const navLink = page.locator('a[href*="settings"], a:has-text("Settings"), nav a').first();
+    const toolsNavButton = page.getByRole('button', { name: 'Tools', exact: true });
+    await expect(toolsNavButton).toBeVisible();
+    await toolsNavButton.click();
 
-    if (await navLink.count() > 0) {
-      await navLink.click();
+    await expect(page).toHaveURL(/#\/agentic-tools\/tools$/);
+    await expect(page.locator('main').getByRole('heading', { name: 'Agentic Tools', exact: true })).toBeVisible();
 
-      // Add buffer in case the page needs time to load
-      await page.waitForTimeout(1000);
+    const homeNavButton = page.getByRole('button', { name: 'Home', exact: true });
+    await expect(homeNavButton).toBeVisible();
+    await homeNavButton.click();
 
-      // Verify URL changed (hash routing)
-      const newUrl = page.url();
-      expect(newUrl).not.toBe(initialUrl);
+    await expect(page).toHaveURL(/#\/$/);
+    await expect(homeNavButton).toHaveAttribute('aria-current', 'page');
 
-      // Verify page still renders without errors
-      const appContainer = page.locator('#app');
-      await expect(appContainer).toBeVisible();
-    } else {
-      // If no settings link found, try any navigation link
-      const anyNavLink = page.locator('nav a, aside a').nth(1); // Second nav item
-
-      if (await anyNavLink.count() > 0) {
-        await anyNavLink.click();
-        await page.waitForTimeout(1000);
-
-        const newUrl = page.url();
-        expect(newUrl).not.toBe(initialUrl);
-      } else {
-        console.warn('No navigation links found to test routing');
-      }
-    }
     expect(page.errors).toHaveLength(0);
   });
 

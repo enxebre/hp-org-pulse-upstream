@@ -4,7 +4,7 @@
 # Core's default CMD (node server/dev-server.js) auto-discovers all
 # modules in ./modules/, so no custom entrypoint is needed.
 
-FROM quay.io/org-pulse/org-pulse-core-backend:v2.0.83
+FROM quay.io/org-pulse/org-pulse-core-backend:v2.0.88
 
 USER root
 

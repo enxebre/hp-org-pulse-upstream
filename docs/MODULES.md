@@ -69,6 +69,7 @@ modules/your-module/
 | `client.navItems` | No | Sidebar navigation items |
 | `client.settingsComponent` | No | Vue component for the Settings page |
 | `client.sotuWidgets` | No | Array of widget declarations for the SOTU dashboard (see below) |
+| `client.landingBlocks` | No | Array of selectable blocks to display above the landing-page dashboard (see below) |
 | `server.entry` | No | Path to backend entry point |
 | `fixtures` | No | Object mapping fixture filenames to collection names for demo mode seeding (e.g., `{"data.json": "collection-name"}`) |
 
@@ -119,6 +120,35 @@ export const routes = {
 ```
 
 Use `defineAsyncComponent` for lazy loading.
+
+### Landing-page blocks
+
+A module can provide a block for the deployment-wide landing page by declaring it
+in `client.landingBlocks`. Components live in `client/blocks/` and use the
+`*Block.vue` naming convention. An administrator selects the active block in
+Settings → Landing Page; the selected block appears above the dashboard for all
+users.
+
+```json
+{
+  "client": {
+    "landingBlocks": [
+      {
+        "id": "strategic-initiatives",
+        "name": "Strategic Initiatives",
+        "description": "Quick launchers for strategic engineering initiatives.",
+        "component": "./client/blocks/StrategicInitiativesBlock.vue"
+      }
+    ]
+  }
+}
+```
+
+Each block requires a unique module-local `id`, display `name`, `description`,
+and component path. The landing-page configuration stores the selected block as
+a module-qualified ID (for example, `agentic-tools:strategic-initiatives`).
+Demo deployments can set `activeBlock` in `fixtures/landing-page-config.json` to
+preselect a block.
 
 ### Floating Widgets
 
