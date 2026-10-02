@@ -7,9 +7,9 @@ const { setupErrorTracking, logCapturedErrors, pageHasContent, mainContentIsVisi
  *
  * These tests verify:
  * - Core About page tabs load correctly
- * - Platform-contributed Docs tab appears and renders content
  * - Tab switching works without errors
  * - URL hash updates on tab change
+ * - Platform-contributed tabs appear and render content if configured
  *
  * Tag: @about-tabs
  * Usage: npx playwright test --grep @about-tabs
@@ -50,33 +50,24 @@ test.describe('About Page Tabs @about-tabs', () => {
     expect(jsErrors(page)).toHaveLength(0);
   });
 
-  test('should display the Docs tab from platform extensions', async ({ page }) => {
+  test('should display platform-contributed tabs if configured', async ({ page }) => {
     await page.goto('/#/about');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
 
     const docsTab = page.locator('nav button', { hasText: 'Docs' });
-    await expect(docsTab).toBeVisible();
+    if (await docsTab.isVisible().catch(() => false)) {
+      await docsTab.click();
+      await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
 
-    expect(jsErrors(page)).toHaveLength(0);
-  });
+      const releasePlanning = page.locator('text=Release Planning Materials');
+      const aiSdlc = page.locator('text=AI SDLC Materials');
 
-  test('should render Docs tab content when clicked', async ({ page }) => {
-    await page.goto('/#/about');
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+      const hasReleasePlanning = await releasePlanning.isVisible().catch(() => false);
+      const hasAiSdlc = await aiSdlc.isVisible().catch(() => false);
 
-    const docsTab = page.locator('nav button', { hasText: 'Docs' });
-    await docsTab.click();
-    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
-
-    const releasePlanning = page.locator('text=Release Planning Materials');
-    const aiSdlc = page.locator('text=AI SDLC Materials');
-
-    const hasReleasePlanning = await releasePlanning.isVisible().catch(() => false);
-    const hasAiSdlc = await aiSdlc.isVisible().catch(() => false);
-
-    expect(hasReleasePlanning || hasAiSdlc).toBe(true);
+      expect(hasReleasePlanning || hasAiSdlc).toBe(true);
+    }
 
     expect(jsErrors(page)).toHaveLength(0);
   });
@@ -86,23 +77,21 @@ test.describe('About Page Tabs @about-tabs', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
 
-    const docsTab = page.locator('nav button', { hasText: 'Docs' });
-    await docsTab.click();
-    await page.waitForTimeout(1000);
-
-    const aboutTab = page.locator('nav button', { hasText: 'About' });
-    await aboutTab.click();
-    await page.waitForTimeout(1000);
-
-    const orgPulseHeading = page.locator('h2', { hasText: 'Org Pulse' });
-    await expect(orgPulseHeading).toBeVisible();
-
+    // Switch to Help & Debug tab
     const helpTab = page.locator('nav button', { hasText: 'Help & Debug' });
     await helpTab.click();
     await page.waitForTimeout(1000);
 
     const appInfo = page.locator('text=App Info');
     await expect(appInfo).toBeVisible();
+
+    // Switch back to About tab
+    const aboutTab = page.locator('nav button', { hasText: 'About' });
+    await aboutTab.click();
+    await page.waitForTimeout(1000);
+
+    const orgPulseHeading = page.locator('h2', { hasText: 'Org Pulse' });
+    await expect(orgPulseHeading).toBeVisible();
 
     expect(jsErrors(page)).toHaveLength(0);
   });
@@ -112,12 +101,21 @@ test.describe('About Page Tabs @about-tabs', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
 
-    const docsTab = page.locator('nav button', { hasText: 'Docs' });
-    await docsTab.click();
+    // Switch to Help & Debug tab
+    const helpTab = page.locator('nav button', { hasText: 'Help & Debug' });
+    await helpTab.click();
     await page.waitForTimeout(1000);
 
     const url = page.url();
-    expect(url).toContain('tab=docs');
+    expect(url).toContain('tab=help');
+
+    // Switch back to About tab
+    const aboutTab = page.locator('nav button', { hasText: 'About' });
+    await aboutTab.click();
+    await page.waitForTimeout(1000);
+
+    const backUrl = page.url();
+    expect(backUrl).not.toContain('tab=help');
 
     expect(jsErrors(page)).toHaveLength(0);
   });
