@@ -956,6 +956,219 @@ Cached OpenShift Jira Solve Agent data with PR hydration and remote links. Issue
 
 ---
 
+## AI Impact — `data/ai-impact/`
+
+The AI Impact module tracks AI adoption across the HP Engineering. It is the
+only module here that writes more than one data file: ten in total, listed in
+`modules/ai-impact/module.json` under `export.files`. Some are fetched from Jira and
+GitLab by the module's own refresh handler; others are **pushed in** by external
+pipelines, per the display-layer constraint in `AGENTS.md`.
+
+| File | Purpose | Producer |
+|------|---------|----------|
+| `rfe-data.json` | RFE issues from Jira, with AI-involvement labels resolved | Module refresh (Jira) |
+| `autofix-data.json` | Autofix-tagged issues and stage-funnel metrics | Module refresh (Jira) |
+| `doc-data.json` | Documentation contribution issues and label events | Module refresh (Jira) |
+| `doc-mr-kpi-data.json` | Internal docs merge-request quality KPIs | Module refresh (GitLab) |
+| `component-onboarding-data.json` | Component onboarding status and target versions | Module refresh (Jira) |
+| `assessments.json` | RFE quality assessments, keyed by issue | Pushed via bulk API |
+| `test-plans.json` | Test plan reviews, keyed by feature | Pushed via bulk API |
+| `decomposer.json` | Epic-decomposer pipeline snapshot | Pushed via bulk API |
+| `features.json` | Feature reviews (legacy fallback store — see below) | Pushed via bulk API |
+| `config.json` | Module configuration (no PII) | Admin UI |
+
+### RFE Data — `data/ai-impact/rfe-data.json`
+
+Cached RFE issues fetched from Jira. The module's primary data file.
+
+```json
+{
+  "fetchedAt": "2026-03-30T12:00:00Z",
+  "issues": [
+    {
+      "key": "RFE-1234",
+      "summary": "Implement real-time collaboration features",
+      "status": "In Progress",
+      "priority": "High",
+      "created": "2026-03-25T10:00:00Z",
+      "createdLabelDate": "2026-03-26T14:30:00.000+0000",
+      "revisedLabelDate": "2026-03-27T09:15:00.000+0000",
+      "creator": "schen",
+      "creatorDisplayName": "Sarah Chen",
+      "components": ["Platform Core", "ML Models"],
+      "labels": ["rfe-creator-auto-created", "rfe-creator-auto-revised", "customer-request"],
+      "aiInvolvement": "both",
+      "linkedFeature": {
+        "key": "HPSTRAT-567",
+        "summary": "Strat: Real-time collaboration",
+        "status": "In Progress",
+        "fixVersions": ["RHOAI 2.16"]
+      }
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `aiInvolvement` | string | One of `both`, `created`, `revised`, `none` — derived from exact label matching at fetch time |
+| `createdLabelDate` | string \| null | ISO timestamp of the most recent changelog addition of the created label. Set only when `aiInvolvement` is `created` or `both`. Falls back to `created` if the label was present since issue creation. `null` when the label is absent |
+| `revisedLabelDate` | string \| null | Same logic as `createdLabelDate`, for the revised label |
+| `needsAttentionSince` | string \| null | ISO timestamp of the most recent changelog addition of `rfe-creator-needs-attention`. Lets the frontend age an item independently of pipeline run frequency |
+| `rubricPassSince` | string \| null | Same, for `rfe-creator-autofix-rubric-pass` |
+| `components` | array | Jira component names. Empty array if the issue has none |
+| `linkedFeature` | object \| null | Resolved from Jira issue links (type `Cloners`, outward to the configured linked project) |
+| `labels` | array | Raw Jira label array, preserved for reference |
+
+The `GET /api/modules/ai-impact/rfe-data` endpoint returns computed metrics alongside
+this issue list, including a `pipelineFriction` object (`needsAttentionPct`,
+`feasibilityBlockedPct`, and their period-over-period change and trend). The
+denominator is AI-touched RFEs only (`aiInvolvement !== 'none'`) within the selected
+window; trends are classified against `trendThresholdPp` from `config.json`.
+
+---
+
+### Jira Autofix — `data/ai-impact/autofix-data.json`
+
+The Autofix snapshot keeps the `issues` pipeline-labeled cohort and adds
+`policyEligibleIssues`, the gross Bug cohort returned by a separate policy query. The
+gross query excludes CVE summary or label markers and embargoed issues; it does *not*
+exclude closed status or mutable opt-out labels. `currentPolicyEligibleIssues` is a
+separate current non-excluded snapshot that removes current `no-autofix`,
+`auto-created` and `CVE` labels — a diagnostic snapshot, not a historical eligibility
+denominator.
+
+`metrics.stageFunnel` reports eligible, analyzed, PR proposed, PR merged, abandonment
+and conversions. Its `authoritative` flag is true only when canonical immutable events
+from the AIPCC-31384 Autofix outcome contract are available; Jira label and Forge-link
+fallbacks are explicitly non-authoritative. `metrics.pipelineCohort` carries the
+label-derived cohort counts that back the priority and effort charts.
+
+---
+
+### Feature Decomposer — `data/ai-impact/decomposer.json`
+
+Epic-decomposition results pushed from the **epic-decomposer pipeline**
+(`gitlab.com/redhat/rhel-ai/agentic-ci/epic-decomposer-results` →
+`epic-decomposer-dashboard`). The dashboard's `generate-dashboard.py` emits a canonical
+`data.json` that feeds both the GitLab-Pages dashboard and Org Pulse. The pipeline
+pushes the **whole** `data.json` as a single-document snapshot per run (not a per-item
+bulk array); Org Pulse validates the envelope leniently (`runs` array, `strategies`
+object, `aggregates` object; extra fields tolerated) and stores a **subset** — dropping
+`epic_bodies`, per-run `results`, per-epic signal maps and strategy `labels`, while
+keeping `aggregates`, slim `runs`, `mermaid_dag` and slim `epics[]` for the expandable
+strategy rows.
+
+```json
+{
+  "lastSyncedAt": "2026-07-24T21:21:48.739Z",
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-24T00:00:00Z",
+  "source": { "data_dir": "…" },
+  "signalNames": ["…"],
+  "investigationSignalNames": ["…"],
+  "counts": { "runs": 9, "strategies": 25 },
+  "aggregates": { "…": "verbatim from data.json" },
+  "runs": [
+    { "run_id": "…", "started": "…", "completed": "…", "duration_minutes": 10.7,
+      "total": 2, "passed": 2, "failed": 0, "errors": 0, "avg_score": 14,
+      "score_max": 14, "submitted_epics": 9 }
+  ],
+  "strategies": [
+    { "strat_id": "HPSTRAT-1", "title": "…", "priority": "Major",
+      "epic_count": 4, "critical_path_length": 3, "revised": true,
+      "mermaid_dag": "graph TD…",
+      "review": { "score": 14, "pass": true, "recommendation": "accept" },
+      "epics": [
+        { "epic_id": "HPSTRAT-1-E001", "title": "…", "type": "Implementation",
+          "implementation_type": "standard", "priority": "P0", "component": "MLflow",
+          "ai_implementability": "High", "jira_key": "RHAI-137", "dependencies": [] }
+      ],
+      "run_history": [{ "run_id": "…", "score": 14, "status": "passed", "epic_count": 2 }] }
+  ]
+}
+```
+
+| Method | Path | Auth | Purpose |
+|--------|------|------|---------|
+| `GET` | `/api/modules/ai-impact/decomposer` | `ai-impact:read` | Snapshot for the Feature Decomposer view (adds `jiraHost`) |
+| `GET` | `/api/modules/ai-impact/decomposer/status` | admin, `ai-impact:read` | `{ lastSyncedAt, generatedAt, counts }` |
+| `POST` | `/api/modules/ai-impact/decomposer` | admin, `ai-impact:write` | Push the canonical `data.json`; stores the projected subset. No-op in demo mode |
+| `DELETE` | `/api/modules/ai-impact/decomposer` | admin, `ai-impact:write` | Clears the snapshot (writes the empty skeleton, never `null`) |
+
+**Notes:**
+- The decomposer store is self-contained in `ai-impact`; decomposition results are an
+  AI-Impact-only concern.
+- KPI tiles and distribution charts render straight from the pre-computed `aggregates`
+  — Org Pulse does no re-aggregation (display-layer only). The "Showing" date filter
+  scopes the strategy list and volume-by-run trend; the `aggregates`-backed cards remain
+  all-time.
+- `mermaid_dag` is rendered client-side by `MermaidDiagram.vue`, which lazy-loads
+  `mermaid`.
+
+---
+
+### Config — `data/ai-impact/config.json`
+
+Admin-configurable settings for the module.
+
+```json
+{
+  "jiraProject": "RFE",
+  "linkedProject": "HPSTRAT",
+  "createdLabel": "rfe-creator-auto-created",
+  "revisedLabel": "rfe-creator-auto-revised",
+  "testExclusionLabel": "rfe-creator-skill-testing",
+  "linkTypeName": "Cloners",
+  "excludedStatuses": ["Closed"],
+  "lookbackMonths": 12,
+  "trendThresholdPp": 2
+}
+```
+
+**Notes:**
+- All string fields are validated against JQL injection (no quotes, parens, semicolons,
+  backslashes)
+- `lookbackMonths` must be an integer between 1 and 120
+- `trendThresholdPp` (0–50) is the percentage-point threshold for classifying trends as
+  growing or declining
+- Defaults are used when no config file exists
+
+---
+
+### Remaining AI Impact files
+
+All five share the same envelope convention: a sync timestamp, a count, and a map keyed
+by Jira issue key (or a flat array for the fetched-issue files). See the corresponding
+fixture in `fixtures/ai-impact/` for a complete worked example.
+
+| File | Top-level keys |
+|------|----------------|
+| `assessments.json` | `lastSyncedAt`, `totalAssessed`, `assessments` (map keyed by RFE key) |
+| `test-plans.json` | `lastSyncedAt`, `lastJiraSyncAt`, `totalTestPlans`, `testPlans` (map keyed by feature key) |
+| `doc-data.json` | `fetchedAt`, `cumulativeStats`, `issues[]`, `labelEvents[]` |
+| `doc-mr-kpi-data.json` | `fetchedAt`, `mergeRequests[]` (GitLab MR metadata: `iid`, `state`, `mergedAt`, `commitCount`, `firstReviewAt`, …) |
+| `component-onboarding-data.json` | `fetchedAt`, `totalComponents`, `components` (map keyed by onboarding issue key) |
+
+`doc-mr-kpi-data.json` is populated only when the optional
+`GITLAB_CEE_REDHAT_DOCS_TOKEN` module secret is set. Without it the fetch is skipped and
+the Documentation view renders its other panels normally.
+
+#### `features.json` — legacy fallback store
+
+`server/features/storage.js` prefers the unified store at
+`releases/execution/index.json` and `releases/execution/features/{KEY}.json`, falling
+back to `ai-impact/features.json` and then to an empty result. **The `releases` module is
+not deployed in this repository**, so the fallback is always what Feature Review reads
+(shape: `lastSyncedAt`, `totalFeatures`, `features` keyed by feature key).
+
+For the same reason the feature-ingest routes — `POST /features/bulk`,
+`PUT /features/:key` and `DELETE /features` — forward to the releases execution API on
+localhost and will return `502` until that module lands. These are admin-only write
+endpoints; every read path degrades cleanly without them.
+
+---
+
 ## Fixture Rules
 
 The `fixtures/` directory provides read-only demo data used when `DEMO_MODE=true`.

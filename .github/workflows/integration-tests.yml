@@ -55,6 +55,11 @@ jobs:
               - 'tests/integration/helpers.js'
               - 'modules/jira-solve-agent/**'
               - 'tests/integration/jira-solve-agent.spec.js'
+            ai-impact:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
+              - 'modules/ai-impact/**'
+              - 'tests/integration/ai-impact.spec.js'
             about-tabs:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'

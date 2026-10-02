@@ -12,6 +12,9 @@ COPY platform/ ./platform/
 # Add all non-core modules (core builder already has team-tracker)
 COPY modules/ ./modules/
 
+# ai-impact's Feature Decomposer lazy-loads mermaid; not provided by core
+RUN npm install --no-save mermaid
+
 RUN npm run build
 
 # Stage 2: Serve with hardened nginx
