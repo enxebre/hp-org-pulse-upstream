@@ -65,7 +65,7 @@ async function fetchGithubPrState(owner, repo, number, token) {
   const url = `https://api.github.com/repos/${owner}/${repo}/pulls/${number}`;
 
   try {
-    const headers = { 'User-Agent': 'rhai-org-pulse' };
+    const headers = { 'User-Agent': 'hp-org-pulse' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }

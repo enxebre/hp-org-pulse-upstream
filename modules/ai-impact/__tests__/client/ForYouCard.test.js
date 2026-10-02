@@ -5,7 +5,7 @@ import ForYouCard from '../../client/components/ForYouCard.vue'
 function makeItem(overrides = {}) {
   return {
     type: 'rfe',
-    key: 'RHAIRFE-100',
+    key: 'RFE-100',
     summary: 'Test item summary',
     components: ['Platform Core'],
     priority: 'High',
@@ -23,7 +23,7 @@ describe('ForYouCard', () => {
     const wrapper = mount(ForYouCard, {
       props: { item: makeItem() }
     })
-    expect(wrapper.text()).toContain('RHAIRFE-100')
+    expect(wrapper.text()).toContain('RFE-100')
     expect(wrapper.text()).toContain('Test item summary')
   })
 
@@ -102,7 +102,7 @@ describe('ForYouCard', () => {
     })
     const link = wrapper.find('a')
     expect(link.exists()).toBe(true)
-    expect(link.attributes('href')).toBe('https://jira.example.com/browse/RHAIRFE-100')
+    expect(link.attributes('href')).toBe('https://jira.example.com/browse/RFE-100')
   })
 
   it('shows stage hover popup with info icon', () => {

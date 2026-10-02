@@ -41,14 +41,14 @@
     "failed_strategies": 1,
     "recovered_strategies": 5,
     "failed_ids": [
-      "RHAISTRAT-1939"
+      "HPSTRAT-1939"
     ],
     "recovered_ids": [
-      "RHAISTRAT-2005",
-      "RHAISTRAT-2162",
-      "RHAISTRAT-2164",
-      "RHAISTRAT-2206",
-      "RHAISTRAT-2304"
+      "HPSTRAT-2005",
+      "HPSTRAT-2162",
+      "HPSTRAT-2164",
+      "HPSTRAT-2206",
+      "HPSTRAT-2304"
     ],
     "investigation_epic_count": 7,
     "implementability_distribution": {
@@ -304,7 +304,7 @@
   ],
   "strategies": [
     {
-      "strat_id": "RHAISTRAT-1678",
+      "strat_id": "HPSTRAT-1678",
       "title": "[TP] GenAI Studio MCP Discovery from Registry",
       "priority": "Major",
       "epic_count": 6,
@@ -318,83 +318,83 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1678-E001",
+          "epic_id": "HPSTRAT-1678-E001",
           "title": "Expose MCP Registry API Endpoints Through mlflow BFF",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-137",
+          "jira_key": "RFE-137",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1678-E002",
+          "epic_id": "HPSTRAT-1678-E002",
           "title": "GenAI Studio BFF Integration and MCP Server Browse UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-138",
+          "jira_key": "RFE-138",
           "dependencies": [
-            "RHAISTRAT-1678-E001"
+            "HPSTRAT-1678-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1678-E003",
+          "epic_id": "HPSTRAT-1678-E003",
           "title": "Real-Time MCP Server Updates via Event Streaming",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "Gen AI Studio",
           "ai_implementability": "Low",
-          "jira_key": "RHAI-139",
+          "jira_key": "RFE-139",
           "dependencies": [
-            "RHAISTRAT-1678-E002"
+            "HPSTRAT-1678-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1678-E004",
+          "epic_id": "HPSTRAT-1678-E004",
           "title": "MCP Registry Discovery User Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-140",
+          "jira_key": "RFE-140",
           "dependencies": [
-            "RHAISTRAT-1678-E001",
-            "RHAISTRAT-1678-E002",
-            "RHAISTRAT-1678-E003",
-            "RHAISTRAT-1678-E005",
-            "RHAISTRAT-1678-E006"
+            "HPSTRAT-1678-E001",
+            "HPSTRAT-1678-E002",
+            "HPSTRAT-1678-E003",
+            "HPSTRAT-1678-E005",
+            "HPSTRAT-1678-E006"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1678-E005",
+          "epic_id": "HPSTRAT-1678-E005",
           "title": "MCP Server Workflow Connect/Disconnect and Playground Panel Updates",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-141",
+          "jira_key": "RFE-141",
           "dependencies": [
-            "RHAISTRAT-1678-E002"
+            "HPSTRAT-1678-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1678-E006",
+          "epic_id": "HPSTRAT-1678-E006",
           "title": "Legacy ConfigMap Merge and Provenance Indicators",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-142",
+          "jira_key": "RFE-142",
           "dependencies": [
-            "RHAISTRAT-1678-E002"
+            "HPSTRAT-1678-E002"
           ]
         }
       ],
@@ -423,7 +423,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1630",
+      "strat_id": "HPSTRAT-1630",
       "title": "Skills Registry: Self-Hosted AI Skills Management",
       "priority": "Major",
       "epic_count": 8,
@@ -437,110 +437,110 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1630-E001",
+          "epic_id": "HPSTRAT-1630-E001",
           "title": "ODH Architecture Decision Resolution",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "Low",
-          "jira_key": "RHAI-36",
+          "jira_key": "RFE-36",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1630-E002",
+          "epic_id": "HPSTRAT-1630-E002",
           "title": "Upstream Skill Registry Adoption and Integration",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-37",
+          "jira_key": "RFE-37",
           "dependencies": [
-            "RHAISTRAT-1630-E001"
+            "HPSTRAT-1630-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1630-E003",
+          "epic_id": "HPSTRAT-1630-E003",
           "title": "mlflow-operator Aggregate ClusterRole Updates",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-38",
+          "jira_key": "RFE-38",
           "dependencies": [
-            "RHAISTRAT-1630-E001"
+            "HPSTRAT-1630-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1630-E004",
+          "epic_id": "HPSTRAT-1630-E004",
           "title": "Disconnected and Air-Gapped Validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-39",
+          "jira_key": "RFE-39",
           "dependencies": [
-            "RHAISTRAT-1630-E002"
+            "HPSTRAT-1630-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1630-E005",
+          "epic_id": "HPSTRAT-1630-E005",
           "title": "FIPS Compliance Verification",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-40",
+          "jira_key": "RFE-40",
           "dependencies": [
-            "RHAISTRAT-1630-E002"
+            "HPSTRAT-1630-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1630-E006",
+          "epic_id": "HPSTRAT-1630-E006",
           "title": "Prompt Injection Safety Scanning",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "MLflow",
           "ai_implementability": "Low",
-          "jira_key": "RHAI-41",
+          "jira_key": "RFE-41",
           "dependencies": [
-            "RHAISTRAT-1630-E002"
+            "HPSTRAT-1630-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1630-E007",
+          "epic_id": "HPSTRAT-1630-E007",
           "title": "Trace Integration Validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-42",
+          "jira_key": "RFE-42",
           "dependencies": [
-            "RHAISTRAT-1630-E002"
+            "HPSTRAT-1630-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1630-E008",
+          "epic_id": "HPSTRAT-1630-E008",
           "title": "Skills Registry Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "MLflow",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-43",
+          "jira_key": "RFE-43",
           "dependencies": [
-            "RHAISTRAT-1630-E002",
-            "RHAISTRAT-1630-E003",
-            "RHAISTRAT-1630-E004",
-            "RHAISTRAT-1630-E005",
-            "RHAISTRAT-1630-E006",
-            "RHAISTRAT-1630-E007"
+            "HPSTRAT-1630-E002",
+            "HPSTRAT-1630-E003",
+            "HPSTRAT-1630-E004",
+            "HPSTRAT-1630-E005",
+            "HPSTRAT-1630-E006",
+            "HPSTRAT-1630-E007"
           ]
         }
       ],
@@ -555,7 +555,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1586",
+      "strat_id": "HPSTRAT-1586",
       "title": "OTEL-based agent trace ingestion into managed MLflow via Kagenti",
       "priority": "Critical",
       "epic_count": 8,
@@ -569,112 +569,112 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1586-E001",
+          "epic_id": "HPSTRAT-1586-E001",
           "title": "SDK OTEL env var compliance investigation",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Agentic",
           "ai_implementability": "Low",
-          "jira_key": "RHAI-28",
+          "jira_key": "RFE-28",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1586-E002",
+          "epic_id": "HPSTRAT-1586-E002",
           "title": "MLflow OTLP ingestion and experiment header routing investigation",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-29",
+          "jira_key": "RFE-29",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1586-E003",
+          "epic_id": "HPSTRAT-1586-E003",
           "title": "Kagenti OTEL env var injection core implementation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Agentic",
           "ai_implementability": "High",
-          "jira_key": "RHAI-30",
+          "jira_key": "RFE-30",
           "dependencies": [
-            "RHAISTRAT-1586-E001",
-            "RHAISTRAT-1586-E002"
+            "HPSTRAT-1586-E001",
+            "HPSTRAT-1586-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1586-E004",
+          "epic_id": "HPSTRAT-1586-E004",
           "title": "Kagenti OTEL enhancements: cross-namespace, versioning, sampling",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Agentic",
           "ai_implementability": "High",
-          "jira_key": "RHAI-31",
+          "jira_key": "RFE-31",
           "dependencies": [
-            "RHAISTRAT-1586-E001",
-            "RHAISTRAT-1586-E003"
+            "HPSTRAT-1586-E001",
+            "HPSTRAT-1586-E003"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1586-E005",
+          "epic_id": "HPSTRAT-1586-E005",
           "title": "MLflow end-to-end raw OTEL trace ingestion validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-32",
+          "jira_key": "RFE-32",
           "dependencies": [
-            "RHAISTRAT-1586-E002",
-            "RHAISTRAT-1586-E003"
+            "HPSTRAT-1586-E002",
+            "HPSTRAT-1586-E003"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1586-E006",
+          "epic_id": "HPSTRAT-1586-E006",
           "title": "OTEL agent trace ingestion documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P0",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-33",
+          "jira_key": "RFE-33",
           "dependencies": [
-            "RHAISTRAT-1586-E003",
-            "RHAISTRAT-1586-E004",
-            "RHAISTRAT-1586-E005",
-            "RHAISTRAT-1586-E007",
-            "RHAISTRAT-1586-E008"
+            "HPSTRAT-1586-E003",
+            "HPSTRAT-1586-E004",
+            "HPSTRAT-1586-E005",
+            "HPSTRAT-1586-E007",
+            "HPSTRAT-1586-E008"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1586-E007",
+          "epic_id": "HPSTRAT-1586-E007",
           "title": "Braintrust and Arize Phoenix SDK trace ingestion validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-34",
+          "jira_key": "RFE-34",
           "dependencies": [
-            "RHAISTRAT-1586-E001",
-            "RHAISTRAT-1586-E005"
+            "HPSTRAT-1586-E001",
+            "HPSTRAT-1586-E005"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1586-E008",
+          "epic_id": "HPSTRAT-1586-E008",
           "title": "Langfuse SDK trace ingestion validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-35",
+          "jira_key": "RFE-35",
           "dependencies": [
-            "RHAISTRAT-1586-E001",
-            "RHAISTRAT-1586-E005"
+            "HPSTRAT-1586-E001",
+            "HPSTRAT-1586-E005"
           ]
         }
       ],
@@ -689,7 +689,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1576",
+      "strat_id": "HPSTRAT-1576",
       "title": "[TP] Surface MCP Endpoints in AI Asset Endpoints View",
       "priority": "Major",
       "epic_count": 2,
@@ -703,27 +703,27 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1576-E001",
+          "epic_id": "HPSTRAT-1576-E001",
           "title": "Surface MCP Endpoints in AI Asset Endpoints View",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-135",
+          "jira_key": "RFE-135",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1576-E002",
+          "epic_id": "HPSTRAT-1576-E002",
           "title": "MCP Endpoint Toolbar Filters (Lifecycle State and Type)",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-136",
+          "jira_key": "RFE-136",
           "dependencies": [
-            "RHAISTRAT-1576-E001"
+            "HPSTRAT-1576-E001"
           ]
         }
       ],
@@ -752,7 +752,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1535",
+      "strat_id": "HPSTRAT-1535",
       "title": "YAML Editor GA — Bi-Directional UI/YAML Toggle in Model Serving",
       "priority": "Critical",
       "epic_count": 5,
@@ -766,69 +766,69 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1535-E001",
+          "epic_id": "HPSTRAT-1535-E001",
           "title": "Bi-Directional Form/YAML Sync Engine",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-17",
+          "jira_key": "RFE-17",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1535-E002",
+          "epic_id": "HPSTRAT-1535-E002",
           "title": "YAML Editor Enhancements: Linting, Schema Validation, Drag-and-Drop, Telemetry",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-18",
+          "jira_key": "RFE-18",
           "dependencies": [
-            "RHAISTRAT-1535-E001"
+            "HPSTRAT-1535-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1535-E003",
+          "epic_id": "HPSTRAT-1535-E003",
           "title": "Multi-Resource YAML Editing",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-19",
+          "jira_key": "RFE-19",
           "dependencies": [
-            "RHAISTRAT-1535-E001"
+            "HPSTRAT-1535-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1535-E004",
+          "epic_id": "HPSTRAT-1535-E004",
           "title": "YAML Diff View",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-20",
+          "jira_key": "RFE-20",
           "dependencies": [
-            "RHAISTRAT-1535-E001"
+            "HPSTRAT-1535-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1535-E005",
+          "epic_id": "HPSTRAT-1535-E005",
           "title": "YAML Editor Product Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P0",
           "component": "Documentation",
           "ai_implementability": "Low",
-          "jira_key": "RHAI-21",
+          "jira_key": "RFE-21",
           "dependencies": [
-            "RHAISTRAT-1535-E001",
-            "RHAISTRAT-1535-E002",
-            "RHAISTRAT-1535-E003",
-            "RHAISTRAT-1535-E004"
+            "HPSTRAT-1535-E001",
+            "HPSTRAT-1535-E002",
+            "HPSTRAT-1535-E003",
+            "HPSTRAT-1535-E004"
           ]
         }
       ],
@@ -843,7 +843,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1436",
+      "strat_id": "HPSTRAT-1436",
       "title": "Agent Registry Backend: Metadata, Lifecycle, and Governance for RHOAI",
       "priority": "Major",
       "epic_count": 9,
@@ -857,123 +857,123 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1436-E001",
+          "epic_id": "HPSTRAT-1436-E001",
           "title": "MLflow Agent Schema and Protobuf Definitions",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-8",
+          "jira_key": "RFE-8",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1436-E002",
+          "epic_id": "HPSTRAT-1436-E002",
           "title": "MLflow Operator RBAC for Agent Pseudo-Resources",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-9",
+          "jira_key": "RFE-9",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1436-E003",
+          "epic_id": "HPSTRAT-1436-E003",
           "title": "License Validation for Agent Registry Dependencies",
           "type": "Implementation",
           "implementation_type": "license-validation",
           "priority": "P1",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-10",
+          "jira_key": "RFE-10",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1436-E004",
+          "epic_id": "HPSTRAT-1436-E004",
           "title": "Go SDK Agent CRUD Client Extension",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-11",
+          "jira_key": "RFE-11",
           "dependencies": [
-            "RHAISTRAT-1436-E001",
-            "RHAISTRAT-1436-E003"
+            "HPSTRAT-1436-E001",
+            "HPSTRAT-1436-E003"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1436-E005",
+          "epic_id": "HPSTRAT-1436-E005",
           "title": "Kagenti Sync Controller for Agent Registry",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AgentOps",
           "ai_implementability": "High",
-          "jira_key": "RHAI-12",
+          "jira_key": "RFE-12",
           "dependencies": [
-            "RHAISTRAT-1436-E004",
-            "RHAISTRAT-1436-E008"
+            "HPSTRAT-1436-E004",
+            "HPSTRAT-1436-E008"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1436-E006",
+          "epic_id": "HPSTRAT-1436-E006",
           "title": "Agent Registry Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-13",
+          "jira_key": "RFE-13",
           "dependencies": [
-            "RHAISTRAT-1436-E001",
-            "RHAISTRAT-1436-E002",
-            "RHAISTRAT-1436-E003",
-            "RHAISTRAT-1436-E004",
-            "RHAISTRAT-1436-E005",
-            "RHAISTRAT-1436-E007",
-            "RHAISTRAT-1436-E008",
-            "RHAISTRAT-1436-E009"
+            "HPSTRAT-1436-E001",
+            "HPSTRAT-1436-E002",
+            "HPSTRAT-1436-E003",
+            "HPSTRAT-1436-E004",
+            "HPSTRAT-1436-E005",
+            "HPSTRAT-1436-E007",
+            "HPSTRAT-1436-E008",
+            "HPSTRAT-1436-E009"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1436-E007",
+          "epic_id": "HPSTRAT-1436-E007",
           "title": "Agent Status Transition Enforcement",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-14",
+          "jira_key": "RFE-14",
           "dependencies": [
-            "RHAISTRAT-1436-E008"
+            "HPSTRAT-1436-E008"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1436-E008",
+          "epic_id": "HPSTRAT-1436-E008",
           "title": "MLflow Agent REST API and Workspace-Aware Store",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-15",
+          "jira_key": "RFE-15",
           "dependencies": [
-            "RHAISTRAT-1436-E001"
+            "HPSTRAT-1436-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1436-E009",
+          "epic_id": "HPSTRAT-1436-E009",
           "title": "MLflow Agent Python Client SDK",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-16",
+          "jira_key": "RFE-16",
           "dependencies": [
-            "RHAISTRAT-1436-E008"
+            "HPSTRAT-1436-E008"
           ]
         }
       ],
@@ -988,7 +988,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2162",
+      "strat_id": "HPSTRAT-2162",
       "title": "KALE Sample Notebook Catalog in JupyterLab Launcher",
       "priority": "Normal",
       "epic_count": 5,
@@ -1002,67 +1002,67 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2162-E001",
+          "epic_id": "HPSTRAT-2162-E001",
           "title": "KALE Sample Catalog Python API and RPC Backend",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Notebooks Extensions",
           "ai_implementability": "High",
-          "jira_key": "RHAI-74",
+          "jira_key": "RFE-74",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2162-E002",
+          "epic_id": "HPSTRAT-2162-E002",
           "title": "KALE Sample Catalog JupyterLab Frontend",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Notebooks Extensions",
           "ai_implementability": "High",
-          "jira_key": "RHAI-75",
+          "jira_key": "RFE-75",
           "dependencies": [
-            "RHAISTRAT-2162-E001"
+            "HPSTRAT-2162-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2162-E003",
+          "epic_id": "HPSTRAT-2162-E003",
           "title": "Sample Notebook Authoring and Image Packaging",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Notebooks Images",
           "ai_implementability": "High",
-          "jira_key": "RHAI-76",
+          "jira_key": "RFE-76",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2162-E004",
+          "epic_id": "HPSTRAT-2162-E004",
           "title": "KALE Sample Catalog Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P2",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-77",
+          "jira_key": "RFE-77",
           "dependencies": [
-            "RHAISTRAT-2162-E001",
-            "RHAISTRAT-2162-E002",
-            "RHAISTRAT-2162-E003",
-            "RHAISTRAT-2162-E005"
+            "HPSTRAT-2162-E001",
+            "HPSTRAT-2162-E002",
+            "HPSTRAT-2162-E003",
+            "HPSTRAT-2162-E005"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2162-E005",
+          "epic_id": "HPSTRAT-2162-E005",
           "title": "KALE Sample Catalog P1 Frontend Enhancements",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Notebooks Extensions",
           "ai_implementability": "High",
-          "jira_key": "RHAI-78",
+          "jira_key": "RFE-78",
           "dependencies": [
-            "RHAISTRAT-2162-E002"
+            "HPSTRAT-2162-E002"
           ]
         }
       ],
@@ -1084,13 +1084,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1748",
+      "strat_id": "HPSTRAT-1748",
       "title": "[TP] Model-prompt pairing in Gen AI Studio playground",
       "priority": "Major",
       "epic_count": 1,
       "critical_path_length": 1,
       "revised": false,
-      "mermaid_dag": "graph LR\n    E001[\"RHAISTRAT-1748-E001<br/>Model-Prompt Pairing\"]",
+      "mermaid_dag": "graph LR\n    E001[\"HPSTRAT-1748-E001<br/>Model-Prompt Pairing\"]",
       "review": {
         "score": 14,
         "pass": true,
@@ -1098,14 +1098,14 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1748-E001",
+          "epic_id": "HPSTRAT-1748-E001",
           "title": "Implement Model-Prompt Pairing in Gen AI Studio Playground",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-67",
+          "jira_key": "RFE-67",
           "dependencies": []
         }
       ],
@@ -1120,13 +1120,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1508",
+      "strat_id": "HPSTRAT-1508",
       "title": "CodeFlare SDK Multi-Worker Group Support",
       "priority": "Critical",
       "epic_count": 3,
       "critical_path_length": 3,
       "revised": false,
-      "mermaid_dag": "graph TD\n    E001[\"RHAISTRAT-1508-E001<br/>SDK Multi-Worker Group API<br/>P0\"]\n    E002[\"RHAISTRAT-1508-E002<br/>Heterogeneous Cluster Integration Tests<br/>P1\"]\n    E003[\"RHAISTRAT-1508-E003<br/>Multi-Worker Group Documentation<br/>P0 docs-authoring\"]\n\n    E001 --> E002\n    E001 --> E003\n    E002 --> E003",
+      "mermaid_dag": "graph TD\n    E001[\"HPSTRAT-1508-E001<br/>SDK Multi-Worker Group API<br/>P0\"]\n    E002[\"HPSTRAT-1508-E002<br/>Heterogeneous Cluster Integration Tests<br/>P1\"]\n    E003[\"HPSTRAT-1508-E003<br/>Multi-Worker Group Documentation<br/>P0 docs-authoring\"]\n\n    E001 --> E002\n    E001 --> E003\n    E002 --> E003",
       "review": {
         "score": 14,
         "pass": true,
@@ -1134,41 +1134,41 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1508-E001",
+          "epic_id": "HPSTRAT-1508-E001",
           "title": "CodeFlare SDK Multi-Worker Group API",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Distributed Workloads",
           "ai_implementability": "High",
-          "jira_key": "RHAI-64",
+          "jira_key": "RFE-64",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1508-E002",
+          "epic_id": "HPSTRAT-1508-E002",
           "title": "Heterogeneous Cluster Integration Tests",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Distributed Workloads",
           "ai_implementability": "High",
-          "jira_key": "RHAI-65",
+          "jira_key": "RFE-65",
           "dependencies": [
-            "RHAISTRAT-1508-E001"
+            "HPSTRAT-1508-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1508-E003",
+          "epic_id": "HPSTRAT-1508-E003",
           "title": "Multi-Worker Group Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P0",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-66",
+          "jira_key": "RFE-66",
           "dependencies": [
-            "RHAISTRAT-1508-E001",
-            "RHAISTRAT-1508-E002"
+            "HPSTRAT-1508-E001",
+            "HPSTRAT-1508-E002"
           ]
         }
       ],
@@ -1183,7 +1183,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1961",
+      "strat_id": "HPSTRAT-1961",
       "title": "Auto ML Test Data Support",
       "priority": "Major",
       "epic_count": 6,
@@ -1197,81 +1197,81 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1961-E001",
+          "epic_id": "HPSTRAT-1961-E001",
           "title": "AutoML Test Data Support in KFP Pipeline Components",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoML",
           "ai_implementability": "High",
-          "jira_key": "RHAI-68",
+          "jira_key": "RFE-68",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1961-E002",
+          "epic_id": "HPSTRAT-1961-E002",
           "title": "AutoML Test Dataset Input UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-69",
+          "jira_key": "RFE-69",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1961-E003",
+          "epic_id": "HPSTRAT-1961-E003",
           "title": "AutoML Test Dataset Connection API Support",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-70",
+          "jira_key": "RFE-70",
           "dependencies": [
-            "RHAISTRAT-1961-E002"
+            "HPSTRAT-1961-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1961-E004",
+          "epic_id": "HPSTRAT-1961-E004",
           "title": "AutoML Test Data Feature Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-71",
+          "jira_key": "RFE-71",
           "dependencies": [
-            "RHAISTRAT-1961-E001",
-            "RHAISTRAT-1961-E002",
-            "RHAISTRAT-1961-E003",
-            "RHAISTRAT-1961-E005",
-            "RHAISTRAT-1961-E006"
+            "HPSTRAT-1961-E001",
+            "HPSTRAT-1961-E002",
+            "HPSTRAT-1961-E003",
+            "HPSTRAT-1961-E005",
+            "HPSTRAT-1961-E006"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1961-E005",
+          "epic_id": "HPSTRAT-1961-E005",
           "title": "AutoML Test Dataset Schema Validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AutoML",
           "ai_implementability": "High",
-          "jira_key": "RHAI-72",
+          "jira_key": "RFE-72",
           "dependencies": [
-            "RHAISTRAT-1961-E001"
+            "HPSTRAT-1961-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1961-E006",
+          "epic_id": "HPSTRAT-1961-E006",
           "title": "AutoML Evaluation Method Display in Pipeline Results",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-73",
+          "jira_key": "RFE-73",
           "dependencies": [
-            "RHAISTRAT-1961-E002"
+            "HPSTRAT-1961-E002"
           ]
         }
       ],
@@ -1286,7 +1286,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2282",
+      "strat_id": "HPSTRAT-2282",
       "title": "Data Hub UI — Dashboard for Registry Management, Registration, and Discovery",
       "priority": "Major",
       "epic_count": 8,
@@ -1300,107 +1300,107 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2282-E001",
+          "epic_id": "HPSTRAT-2282-E001",
           "title": "Data Hub Module -- BFF Sidecar and React Frontend",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-101",
+          "jira_key": "RFE-101",
           "dependencies": [
-            "RHAISTRAT-2282-E003"
+            "HPSTRAT-2282-E003"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2282-E002",
+          "epic_id": "HPSTRAT-2282-E002",
           "title": "Konflux Onboarding -- Data Hub BFF Container Image",
           "type": "Implementation",
           "implementation_type": "konflux-onboarding",
           "priority": "P0",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-102",
+          "jira_key": "RFE-102",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2282-E003",
+          "epic_id": "HPSTRAT-2282-E003",
           "title": "License Validation -- Data Hub Module Dependencies",
           "type": "Implementation",
           "implementation_type": "license-validation",
           "priority": "P0",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-103",
+          "jira_key": "RFE-103",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2282-E004",
+          "epic_id": "HPSTRAT-2282-E004",
           "title": "Feature Flag Propagation for Data Hub UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Core Platform",
           "ai_implementability": "High",
-          "jira_key": "RHAI-104",
+          "jira_key": "RFE-104",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2282-E005",
+          "epic_id": "HPSTRAT-2282-E005",
           "title": "Data Dictionary Visual Schema Browser",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AI Core Dashboard",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-105",
+          "jira_key": "RFE-105",
           "dependencies": [
-            "RHAISTRAT-2282-E001"
+            "HPSTRAT-2282-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2282-E006",
+          "epic_id": "HPSTRAT-2282-E006",
           "title": "Documentation -- Data Hub UI User and Admin Guides",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-106",
+          "jira_key": "RFE-106",
           "dependencies": [
-            "RHAISTRAT-2282-E001",
-            "RHAISTRAT-2282-E002",
-            "RHAISTRAT-2282-E003",
-            "RHAISTRAT-2282-E004",
-            "RHAISTRAT-2282-E005",
-            "RHAISTRAT-2282-E007",
-            "RHAISTRAT-2282-E008"
+            "HPSTRAT-2282-E001",
+            "HPSTRAT-2282-E002",
+            "HPSTRAT-2282-E003",
+            "HPSTRAT-2282-E004",
+            "HPSTRAT-2282-E005",
+            "HPSTRAT-2282-E007",
+            "HPSTRAT-2282-E008"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2282-E007",
+          "epic_id": "HPSTRAT-2282-E007",
           "title": "Cross-Registry Search Orchestration",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-107",
+          "jira_key": "RFE-107",
           "dependencies": [
-            "RHAISTRAT-2282-E001"
+            "HPSTRAT-2282-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2282-E008",
+          "epic_id": "HPSTRAT-2282-E008",
           "title": "Connection Metadata Enrichment",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-108",
+          "jira_key": "RFE-108",
           "dependencies": [
-            "RHAISTRAT-2282-E001"
+            "HPSTRAT-2282-E001"
           ]
         }
       ],
@@ -1415,13 +1415,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2281",
+      "strat_id": "HPSTRAT-2281",
       "title": "Data Hub Backend — Metadata Contract and Registry API for Dataset Registration and Discovery",
       "priority": "Critical",
       "epic_count": 7,
       "critical_path_length": 4,
       "revised": true,
-      "mermaid_dag": "graph TD\n    E001[\"RHAISTRAT-2281-E001<br/>Core Iceberg Translation Layer<br/>(P0, Feature Store)\"]\n    E002[\"RHAISTRAT-2281-E002<br/>Search & Volume CRUD<br/>(P1, Feature Store)\"]\n    E003[\"RHAISTRAT-2281-E003<br/>Feature Flag & GitOps - feast-operator<br/>(P1, Feature Store)\"]\n    E004[\"RHAISTRAT-2281-E004<br/>Feature Flag - rhods-operator<br/>(P1, AI Core Platform)\"]\n    E005[\"RHAISTRAT-2281-E005<br/>Documentation<br/>(P0, Docs)\"]\n    E006[\"RHAISTRAT-2281-E006<br/>Config Endpoint & Agent Optimization<br/>(P2, Feature Store)\"]\n    E007[\"RHAISTRAT-2281-E007<br/>Observability<br/>(P0, Feature Store)\"]\n\n    E001 --> E002\n    E001 --> E006\n    E001 --> E007\n    E002 --> E006\n    E001 --> E005\n    E002 --> E005\n    E003 --> E005\n    E004 --> E005\n    E006 --> E005\n    E007 --> E005",
+      "mermaid_dag": "graph TD\n    E001[\"HPSTRAT-2281-E001<br/>Core Iceberg Translation Layer<br/>(P0, Feature Store)\"]\n    E002[\"HPSTRAT-2281-E002<br/>Search & Volume CRUD<br/>(P1, Feature Store)\"]\n    E003[\"HPSTRAT-2281-E003<br/>Feature Flag & GitOps - feast-operator<br/>(P1, Feature Store)\"]\n    E004[\"HPSTRAT-2281-E004<br/>Feature Flag - rhods-operator<br/>(P1, AI Core Platform)\"]\n    E005[\"HPSTRAT-2281-E005<br/>Documentation<br/>(P0, Docs)\"]\n    E006[\"HPSTRAT-2281-E006<br/>Config Endpoint & Agent Optimization<br/>(P2, Feature Store)\"]\n    E007[\"HPSTRAT-2281-E007<br/>Observability<br/>(P0, Feature Store)\"]\n\n    E001 --> E002\n    E001 --> E006\n    E001 --> E007\n    E002 --> E006\n    E001 --> E005\n    E002 --> E005\n    E003 --> E005\n    E004 --> E005\n    E006 --> E005\n    E007 --> E005",
       "review": {
         "score": 14,
         "pass": true,
@@ -1429,94 +1429,94 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2281-E001",
+          "epic_id": "HPSTRAT-2281-E001",
           "title": "Implement Core Iceberg REST Catalog Translation Layer with SSAR Access Control",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Feature Store",
           "ai_implementability": "High",
-          "jira_key": "RHAI-94",
+          "jira_key": "RFE-94",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2281-E002",
+          "epic_id": "HPSTRAT-2281-E002",
           "title": "Implement Search and Volume CRUD Endpoints",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Feature Store",
           "ai_implementability": "High",
-          "jira_key": "RHAI-95",
+          "jira_key": "RFE-95",
           "dependencies": [
-            "RHAISTRAT-2281-E001"
+            "HPSTRAT-2281-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2281-E003",
+          "epic_id": "HPSTRAT-2281-E003",
           "title": "Add DATACATALOG_ENABLED Feature Flag and GitOps Support to feast-operator",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Feature Store",
           "ai_implementability": "High",
-          "jira_key": "RHAI-96",
+          "jira_key": "RFE-96",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2281-E004",
+          "epic_id": "HPSTRAT-2281-E004",
           "title": "Propagate DATACATALOG_ENABLED Feature Flag via rhods-operator DSC Config",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Platform",
           "ai_implementability": "High",
-          "jira_key": "RHAI-97",
+          "jira_key": "RFE-97",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2281-E005",
+          "epic_id": "HPSTRAT-2281-E005",
           "title": "Author Data Hub Registry API Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P0",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-98",
+          "jira_key": "RFE-98",
           "dependencies": [
-            "RHAISTRAT-2281-E001",
-            "RHAISTRAT-2281-E002",
-            "RHAISTRAT-2281-E003",
-            "RHAISTRAT-2281-E004",
-            "RHAISTRAT-2281-E006",
-            "RHAISTRAT-2281-E007"
+            "HPSTRAT-2281-E001",
+            "HPSTRAT-2281-E002",
+            "HPSTRAT-2281-E003",
+            "HPSTRAT-2281-E004",
+            "HPSTRAT-2281-E006",
+            "HPSTRAT-2281-E007"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2281-E006",
+          "epic_id": "HPSTRAT-2281-E006",
           "title": "Implement Configuration Endpoint and Agent Context-Window Optimization",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "Feature Store",
           "ai_implementability": "High",
-          "jira_key": "RHAI-99",
+          "jira_key": "RFE-99",
           "dependencies": [
-            "RHAISTRAT-2281-E001",
-            "RHAISTRAT-2281-E002"
+            "HPSTRAT-2281-E001",
+            "HPSTRAT-2281-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2281-E007",
+          "epic_id": "HPSTRAT-2281-E007",
           "title": "Implement Observability for Iceberg REST Catalog Endpoints",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Feature Store",
           "ai_implementability": "High",
-          "jira_key": "RHAI-100",
+          "jira_key": "RFE-100",
           "dependencies": [
-            "RHAISTRAT-2281-E001"
+            "HPSTRAT-2281-E001"
           ]
         }
       ],
@@ -1531,7 +1531,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2238",
+      "strat_id": "HPSTRAT-2238",
       "title": "KServe client request audit logging — InferenceService",
       "priority": "Undefined",
       "epic_count": 10,
@@ -1545,134 +1545,134 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2238-E001",
+          "epic_id": "HPSTRAT-2238-E001",
           "title": "Investigate odh-kube-rbac-proxy audit capability and fork readiness",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-84",
+          "jira_key": "RFE-84",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2238-E002",
+          "epic_id": "HPSTRAT-2238-E002",
           "title": "odh-kube-rbac-proxy license validation",
           "type": "Implementation",
           "implementation_type": "license-validation",
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-85",
+          "jira_key": "RFE-85",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2238-E003",
+          "epic_id": "HPSTRAT-2238-E003",
           "title": "odh-kube-rbac-proxy Konflux onboarding",
           "type": "Implementation",
           "implementation_type": "konflux-onboarding",
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-86",
+          "jira_key": "RFE-86",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2238-E004",
+          "epic_id": "HPSTRAT-2238-E004",
           "title": "Switch KServe InferenceService sidecar to odh-kube-rbac-proxy",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-87",
+          "jira_key": "RFE-87",
           "dependencies": [
-            "RHAISTRAT-2238-E002"
+            "HPSTRAT-2238-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2238-E005",
+          "epic_id": "HPSTRAT-2238-E005",
           "title": "Implement audit logging capability in odh-kube-rbac-proxy",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-88",
+          "jira_key": "RFE-88",
           "dependencies": [
-            "RHAISTRAT-2238-E001",
-            "RHAISTRAT-2238-E002"
+            "HPSTRAT-2238-E001",
+            "HPSTRAT-2238-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2238-E006",
+          "epic_id": "HPSTRAT-2238-E006",
           "title": "KServe controller audit configuration propagation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-89",
+          "jira_key": "RFE-89",
           "dependencies": [
-            "RHAISTRAT-2238-E004",
-            "RHAISTRAT-2238-E005"
+            "HPSTRAT-2238-E004",
+            "HPSTRAT-2238-E005"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2238-E007",
+          "epic_id": "HPSTRAT-2238-E007",
           "title": "rhods-operator DSC CR audit logging configuration",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Core Platform",
           "ai_implementability": "High",
-          "jira_key": "RHAI-90",
+          "jira_key": "RFE-90",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2238-E008",
+          "epic_id": "HPSTRAT-2238-E008",
           "title": "Product documentation for InferenceService audit logging",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P2",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-91",
+          "jira_key": "RFE-91",
           "dependencies": [
-            "RHAISTRAT-2238-E002",
-            "RHAISTRAT-2238-E003",
-            "RHAISTRAT-2238-E004",
-            "RHAISTRAT-2238-E005",
-            "RHAISTRAT-2238-E006",
-            "RHAISTRAT-2238-E007",
-            "RHAISTRAT-2238-E009",
-            "RHAISTRAT-2238-E010"
+            "HPSTRAT-2238-E002",
+            "HPSTRAT-2238-E003",
+            "HPSTRAT-2238-E004",
+            "HPSTRAT-2238-E005",
+            "HPSTRAT-2238-E006",
+            "HPSTRAT-2238-E007",
+            "HPSTRAT-2238-E009",
+            "HPSTRAT-2238-E010"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2238-E009",
+          "epic_id": "HPSTRAT-2238-E009",
           "title": "Audit log trace correlation via W3C traceparent header",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-92",
+          "jira_key": "RFE-92",
           "dependencies": [
-            "RHAISTRAT-2238-E005"
+            "HPSTRAT-2238-E005"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2238-E010",
+          "epic_id": "HPSTRAT-2238-E010",
           "title": "Per-InferenceService audit logging override",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-93",
+          "jira_key": "RFE-93",
           "dependencies": [
-            "RHAISTRAT-2238-E006"
+            "HPSTRAT-2238-E006"
           ]
         }
       ],
@@ -1687,7 +1687,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2164",
+      "strat_id": "HPSTRAT-2164",
       "title": "Native RayService Kueue Integration",
       "priority": "Critical",
       "epic_count": 4,
@@ -1701,51 +1701,51 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2164-E001",
+          "epic_id": "HPSTRAT-2164-E001",
           "title": "KubeRay v1.6.1 Suspend/Resume Validation and Image Rebuild",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "KubeRay",
           "ai_implementability": "High",
-          "jira_key": "RHAI-109",
+          "jira_key": "RFE-109",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2164-E002",
+          "epic_id": "HPSTRAT-2164-E002",
           "title": "RayService Kueue Workload Type Integration in rhods-operator",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Workload Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-110",
+          "jira_key": "RFE-110",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2164-E003",
+          "epic_id": "HPSTRAT-2164-E003",
           "title": "HardwareProfile Queue Auto-Injection for RayService",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "Workload Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-111",
+          "jira_key": "RFE-111",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2164-E004",
+          "epic_id": "HPSTRAT-2164-E004",
           "title": "RayService Kueue Integration Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P0",
           "component": "Documentation",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-112",
+          "jira_key": "RFE-112",
           "dependencies": [
-            "RHAISTRAT-2164-E001",
-            "RHAISTRAT-2164-E002",
-            "RHAISTRAT-2164-E003"
+            "HPSTRAT-2164-E001",
+            "HPSTRAT-2164-E002",
+            "HPSTRAT-2164-E003"
           ]
         }
       ],
@@ -1767,7 +1767,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1579",
+      "strat_id": "HPSTRAT-1579",
       "title": "MaaS Endpoint Registration and Consumption in MLflow Experiments",
       "priority": "Major",
       "epic_count": 5,
@@ -1781,7 +1781,7 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1579-BRANCH-B-E005",
+          "epic_id": "HPSTRAT-1579-BRANCH-B-E005",
           "title": "MaaS API Enhancement for MLflow Endpoint Discovery",
           "type": "Implementation",
           "implementation_type": null,
@@ -1790,72 +1790,72 @@
           "ai_implementability": null,
           "jira_key": null,
           "dependencies": [
-            "RHAISTRAT-1579-E001"
+            "HPSTRAT-1579-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1579-E001",
+          "epic_id": "HPSTRAT-1579-E001",
           "title": "MaaS API Contract Validation for MLflow Integration",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Model as a Service",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-150",
+          "jira_key": "RFE-150",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1579-E002",
+          "epic_id": "HPSTRAT-1579-E002",
           "title": "MLflow AI Gateway Key Management and Endpoint Configuration Module Extraction",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "MLflow",
           "ai_implementability": "High",
-          "jira_key": "RHAI-151",
+          "jira_key": "RFE-151",
           "dependencies": [
-            "RHAISTRAT-1579-E001"
+            "HPSTRAT-1579-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1579-E003",
+          "epic_id": "HPSTRAT-1579-E003",
           "title": "Dashboard API Key and Online Scorer Configuration Extension for MLflow",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-152",
+          "jira_key": "RFE-152",
           "dependencies": [
-            "RHAISTRAT-1579-E002"
+            "HPSTRAT-1579-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1579-E004",
+          "epic_id": "HPSTRAT-1579-E004",
           "title": "MaaS Endpoint Registration and MLflow Integration Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-153",
+          "jira_key": "RFE-153",
           "dependencies": [
-            "RHAISTRAT-1579-E002",
-            "RHAISTRAT-1579-E003",
-            "RHAISTRAT-1579-E005"
+            "HPSTRAT-1579-E002",
+            "HPSTRAT-1579-E003",
+            "HPSTRAT-1579-E005"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1579-E005",
+          "epic_id": "HPSTRAT-1579-E005",
           "title": "MaaS Subscription Status Surfacing in Dashboard API Key Flow",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "Gen AI Studio",
           "ai_implementability": "High",
-          "jira_key": "RHAI-154",
+          "jira_key": "RFE-154",
           "dependencies": [
-            "RHAISTRAT-1579-E002"
+            "HPSTRAT-1579-E002"
           ]
         }
       ],
@@ -1877,7 +1877,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2304",
+      "strat_id": "HPSTRAT-2304",
       "title": "vLLM CPU container image for Red Hat AI Inference on IBM Power and IBM Z",
       "priority": "Critical",
       "epic_count": 5,
@@ -1891,58 +1891,58 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2304-E001",
+          "epic_id": "HPSTRAT-2304-E001",
           "title": "vllm-cpu ppc64le AIPCC Base Image Migration",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "vLLM",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-118",
+          "jira_key": "RFE-118",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2304-E002",
+          "epic_id": "HPSTRAT-2304-E002",
           "title": "vllm-cpu s390x AIPCC Base Image Migration",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "vLLM",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-119",
+          "jira_key": "RFE-119",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2304-E003",
+          "epic_id": "HPSTRAT-2304-E003",
           "title": "Konflux Multi-Arch Pipeline for vllm-cpu Power/Z",
           "type": "Implementation",
           "implementation_type": "konflux-onboarding",
           "priority": "P0",
           "component": "vLLM",
           "ai_implementability": "High",
-          "jira_key": "RHAI-120",
+          "jira_key": "RFE-120",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2304-E004",
+          "epic_id": "HPSTRAT-2304-E004",
           "title": "Update vLLM CPU Runtime Template Digests for Power/Z",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Model Runtimes",
           "ai_implementability": "High",
-          "jira_key": "RHAI-121",
+          "jira_key": "RFE-121",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2304-E005",
+          "epic_id": "HPSTRAT-2304-E005",
           "title": "Add vLLM CPU Power/Z Images to Operator CSV relatedImages",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "OpenShift AI Productization",
           "ai_implementability": "High",
-          "jira_key": "RHAI-122",
+          "jira_key": "RFE-122",
           "dependencies": []
         }
       ],
@@ -1964,13 +1964,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2314",
+      "strat_id": "HPSTRAT-2314",
       "title": "Autoscaling for canary rollouts in RawDeployment",
       "priority": "Major",
       "epic_count": 4,
       "critical_path_length": 3,
       "revised": false,
-      "mermaid_dag": "graph LR\n    E001[\"RHAISTRAT-2314-E001<br/>KServe HPA canary autoscaling<br/>P0\"]\n    E002[\"RHAISTRAT-2314-E002<br/>KServe KEDA canary autoscaling<br/>P1\"]\n    E003[\"RHAISTRAT-2314-E003<br/>odh-model-controller canary metrics<br/>P1\"]\n    E004[\"RHAISTRAT-2314-E004<br/>Documentation<br/>P1\"]\n\n    E001 --> E002\n    E001 --> E004\n    E002 --> E004\n    E003 --> E004",
+      "mermaid_dag": "graph LR\n    E001[\"HPSTRAT-2314-E001<br/>KServe HPA canary autoscaling<br/>P0\"]\n    E002[\"HPSTRAT-2314-E002<br/>KServe KEDA canary autoscaling<br/>P1\"]\n    E003[\"HPSTRAT-2314-E003<br/>odh-model-controller canary metrics<br/>P1\"]\n    E004[\"HPSTRAT-2314-E004<br/>Documentation<br/>P1\"]\n\n    E001 --> E002\n    E001 --> E004\n    E002 --> E004\n    E003 --> E004",
       "review": {
         "score": 14,
         "pass": true,
@@ -1978,53 +1978,53 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2314-E001",
+          "epic_id": "HPSTRAT-2314-E001",
           "title": "KServe HPA canary autoscaling for RawDeployment",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-123",
+          "jira_key": "RFE-123",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2314-E002",
+          "epic_id": "HPSTRAT-2314-E002",
           "title": "KServe KEDA canary autoscaling for RawDeployment",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-124",
+          "jira_key": "RFE-124",
           "dependencies": [
-            "RHAISTRAT-2314-E001"
+            "HPSTRAT-2314-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2314-E003",
+          "epic_id": "HPSTRAT-2314-E003",
           "title": "odh-model-controller canary metrics and KEDA plumbing",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-125",
+          "jira_key": "RFE-125",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2314-E004",
+          "epic_id": "HPSTRAT-2314-E004",
           "title": "Canary autoscaling documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-126",
+          "jira_key": "RFE-126",
           "dependencies": [
-            "RHAISTRAT-2314-E001",
-            "RHAISTRAT-2314-E002",
-            "RHAISTRAT-2314-E003"
+            "HPSTRAT-2314-E001",
+            "HPSTRAT-2314-E002",
+            "HPSTRAT-2314-E003"
           ]
         }
       ],
@@ -2039,13 +2039,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2206",
+      "strat_id": "HPSTRAT-2206",
       "title": "Usage Telemetry for AutoRAG User Workflow and Adoption Tracking",
       "priority": "Critical",
       "epic_count": 4,
       "critical_path_length": 2,
       "revised": true,
-      "mermaid_dag": "graph LR\n    E001[\"RHAISTRAT-2206-E001<br/>Event Taxonomy & Config Telemetry<br/>P0\"]\n    E002[\"RHAISTRAT-2206-E002<br/>Extended Telemetry Events<br/>P1\"]\n    E003[\"RHAISTRAT-2206-E003<br/>Results Engagement Telemetry<br/>P2\"]\n    E004[\"RHAISTRAT-2206-E004<br/>Run Lifecycle & Exit Telemetry<br/>P0\"]\n\n    E001 --> E002\n    E001 --> E003\n    E001 --> E004",
+      "mermaid_dag": "graph LR\n    E001[\"HPSTRAT-2206-E001<br/>Event Taxonomy & Config Telemetry<br/>P0\"]\n    E002[\"HPSTRAT-2206-E002<br/>Extended Telemetry Events<br/>P1\"]\n    E003[\"HPSTRAT-2206-E003<br/>Results Engagement Telemetry<br/>P2\"]\n    E004[\"HPSTRAT-2206-E004<br/>Run Lifecycle & Exit Telemetry<br/>P0\"]\n\n    E001 --> E002\n    E001 --> E003\n    E001 --> E004",
       "review": {
         "score": 14,
         "pass": true,
@@ -2053,53 +2053,53 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2206-E001",
+          "epic_id": "HPSTRAT-2206-E001",
           "title": "AutoRAG Event Taxonomy and Configuration Telemetry",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-170",
+          "jira_key": "RFE-170",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2206-E002",
+          "epic_id": "HPSTRAT-2206-E002",
           "title": "Extended AutoRAG Telemetry Events",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-171",
+          "jira_key": "RFE-171",
           "dependencies": [
-            "RHAISTRAT-2206-E001"
+            "HPSTRAT-2206-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2206-E003",
+          "epic_id": "HPSTRAT-2206-E003",
           "title": "AutoRAG Results Engagement Telemetry",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-172",
+          "jira_key": "RFE-172",
           "dependencies": [
-            "RHAISTRAT-2206-E001"
+            "HPSTRAT-2206-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2206-E004",
+          "epic_id": "HPSTRAT-2206-E004",
           "title": "AutoRAG Run Lifecycle and Exit Telemetry",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-173",
+          "jira_key": "RFE-173",
           "dependencies": [
-            "RHAISTRAT-2206-E001"
+            "HPSTRAT-2206-E001"
           ]
         }
       ],
@@ -2121,13 +2121,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2199",
+      "strat_id": "HPSTRAT-2199",
       "title": "Usage telemetry for Auto ML feature adoption",
       "priority": "Critical",
       "epic_count": 3,
       "critical_path_length": 1,
       "revised": true,
-      "mermaid_dag": "graph LR\n    E001[\"RHAISTRAT-2199-E001<br/>Core telemetry (P0)\"]\n    E002[\"RHAISTRAT-2199-E002<br/>Download/registration/S3 telemetry (P1)\"]\n    E003[\"RHAISTRAT-2199-E003<br/>Leaderboard telemetry (P2)\"]",
+      "mermaid_dag": "graph LR\n    E001[\"HPSTRAT-2199-E001<br/>Core telemetry (P0)\"]\n    E002[\"HPSTRAT-2199-E002<br/>Download/registration/S3 telemetry (P1)\"]\n    E003[\"HPSTRAT-2199-E003<br/>Leaderboard telemetry (P2)\"]",
       "review": {
         "score": 14,
         "pass": true,
@@ -2135,36 +2135,36 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2199-E001",
+          "epic_id": "HPSTRAT-2199-E001",
           "title": "Instrument AutoML core telemetry for pipeline runs, run management, and metric review",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoML",
           "ai_implementability": "High",
-          "jira_key": "RHAI-143",
+          "jira_key": "RFE-143",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2199-E002",
+          "epic_id": "HPSTRAT-2199-E002",
           "title": "Add telemetry for AutoML download tracking, model registration, and S3 connection creation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AutoML",
           "ai_implementability": "High",
-          "jira_key": "RHAI-144",
+          "jira_key": "RFE-144",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2199-E003",
+          "epic_id": "HPSTRAT-2199-E003",
           "title": "Add telemetry for AutoML leaderboard interaction patterns",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AutoML",
           "ai_implementability": "High",
-          "jira_key": "RHAI-145",
+          "jira_key": "RFE-145",
           "dependencies": []
         }
       ],
@@ -2179,7 +2179,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2005",
+      "strat_id": "HPSTRAT-2005",
       "title": "Downstream Feature Request: Standards-Based Confidential Model Serving in RHOAI",
       "priority": "Major",
       "epic_count": 9,
@@ -2193,125 +2193,125 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2005-E001",
+          "epic_id": "HPSTRAT-2005-E001",
           "title": "Phase 0 PoC: CDH Lifecycle, CoCo Networking, and Attestation Timing Validation",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-155",
+          "jira_key": "RFE-155",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2005-E002",
+          "epic_id": "HPSTRAT-2005-E002",
           "title": "KServe InferenceService CRD Extension and Webhooks",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-156",
+          "jira_key": "RFE-156",
           "dependencies": [
-            "RHAISTRAT-2005-E001"
+            "HPSTRAT-2005-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2005-E003",
+          "epic_id": "HPSTRAT-2005-E003",
           "title": "KServe LLMInferenceService Confidential Mode",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-157",
+          "jira_key": "RFE-157",
           "dependencies": [
-            "RHAISTRAT-2005-E001",
-            "RHAISTRAT-2005-E002",
-            "RHAISTRAT-2005-E009"
+            "HPSTRAT-2005-E001",
+            "HPSTRAT-2005-E002",
+            "HPSTRAT-2005-E009"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2005-E004",
+          "epic_id": "HPSTRAT-2005-E004",
           "title": "odh-model-controller Confidential Mode Awareness",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-158",
+          "jira_key": "RFE-158",
           "dependencies": [
-            "RHAISTRAT-2005-E001",
-            "RHAISTRAT-2005-E002"
+            "HPSTRAT-2005-E001",
+            "HPSTRAT-2005-E002"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2005-E005",
+          "epic_id": "HPSTRAT-2005-E005",
           "title": "rhods-operator OSC and RHBOT Prerequisite Validation",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Platform",
           "ai_implementability": "High",
-          "jira_key": "RHAI-159",
+          "jira_key": "RFE-159",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2005-E006",
+          "epic_id": "HPSTRAT-2005-E006",
           "title": "odh-dashboard Confidential Mode UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-160",
+          "jira_key": "RFE-160",
           "dependencies": [
-            "RHAISTRAT-2005-E005"
+            "HPSTRAT-2005-E005"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2005-E007",
+          "epic_id": "HPSTRAT-2005-E007",
           "title": "odh-dashboard TEE Attestation Status Display",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AI Core Dashboard",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-161",
+          "jira_key": "RFE-161",
           "dependencies": [
-            "RHAISTRAT-2005-E006"
+            "HPSTRAT-2005-E006"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2005-E008",
+          "epic_id": "HPSTRAT-2005-E008",
           "title": "Confidential Model Serving Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-162",
+          "jira_key": "RFE-162",
           "dependencies": [
-            "RHAISTRAT-2005-E002",
-            "RHAISTRAT-2005-E003",
-            "RHAISTRAT-2005-E004",
-            "RHAISTRAT-2005-E005",
-            "RHAISTRAT-2005-E006",
-            "RHAISTRAT-2005-E007",
-            "RHAISTRAT-2005-E009"
+            "HPSTRAT-2005-E002",
+            "HPSTRAT-2005-E003",
+            "HPSTRAT-2005-E004",
+            "HPSTRAT-2005-E005",
+            "HPSTRAT-2005-E006",
+            "HPSTRAT-2005-E007",
+            "HPSTRAT-2005-E009"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2005-E009",
+          "epic_id": "HPSTRAT-2005-E009",
           "title": "KServe Storage-Initializer Confidential Mode",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-163",
+          "jira_key": "RFE-163",
           "dependencies": [
-            "RHAISTRAT-2005-E001"
+            "HPSTRAT-2005-E001"
           ]
         }
       ],
@@ -2333,7 +2333,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1570",
+      "strat_id": "HPSTRAT-1570",
       "title": "EvalHub UI: Actionable Failure Diagnostics for Evaluation Jobs",
       "priority": "Major",
       "epic_count": 5,
@@ -2347,66 +2347,66 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1570-E001",
+          "epic_id": "HPSTRAT-1570-E001",
           "title": "EvalHub UI Failure Detail Panel with BFF Log Route Handlers",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-130",
+          "jira_key": "RFE-130",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1570-E002",
+          "epic_id": "HPSTRAT-1570-E002",
           "title": "EvalHub UI Inline Log Display for Failed Evaluation Jobs",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-131",
+          "jira_key": "RFE-131",
           "dependencies": [
-            "RHAISTRAT-1570-E001"
+            "HPSTRAT-1570-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1570-E003",
+          "epic_id": "HPSTRAT-1570-E003",
           "title": "EvalHub UI Per-Benchmark Error and Warning Display",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-132",
+          "jira_key": "RFE-132",
           "dependencies": [
-            "RHAISTRAT-1570-E001"
+            "HPSTRAT-1570-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1570-E004",
+          "epic_id": "HPSTRAT-1570-E004",
           "title": "EvalHub UI Partially Failed State Handling",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-133",
+          "jira_key": "RFE-133",
           "dependencies": [
-            "RHAISTRAT-1570-E001"
+            "HPSTRAT-1570-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1570-E005",
+          "epic_id": "HPSTRAT-1570-E005",
           "title": "EvalHub UI Failure Categorization via message_code",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-134",
+          "jira_key": "RFE-134",
           "dependencies": [
-            "RHAISTRAT-1570-E001"
+            "HPSTRAT-1570-E001"
           ]
         }
       ],
@@ -2421,13 +2421,13 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1569",
+      "strat_id": "HPSTRAT-1569",
       "title": "EvalHub UI: Real-Time Evaluation Job Progress and State Visibility",
       "priority": "Major",
       "epic_count": 3,
       "critical_path_length": 2,
       "revised": true,
-      "mermaid_dag": "graph LR\n    E001[\"RHAISTRAT-1569-E001<br/>Real-Time Progress & State Visibility\"]\n    E002[\"RHAISTRAT-1569-E002<br/>Pre-Start vs. Runtime Failure Distinction\"]\n    E003[\"RHAISTRAT-1569-E003<br/>Benchmark Progress, Elapsed Time & Tab Optimization\"]\n    E001 --> E002\n    E001 --> E003",
+      "mermaid_dag": "graph LR\n    E001[\"HPSTRAT-1569-E001<br/>Real-Time Progress & State Visibility\"]\n    E002[\"HPSTRAT-1569-E002<br/>Pre-Start vs. Runtime Failure Distinction\"]\n    E003[\"HPSTRAT-1569-E003<br/>Benchmark Progress, Elapsed Time & Tab Optimization\"]\n    E001 --> E002\n    E001 --> E003",
       "review": {
         "score": 14,
         "pass": true,
@@ -2435,40 +2435,40 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1569-E001",
+          "epic_id": "HPSTRAT-1569-E001",
           "title": "Real-Time Evaluation Job Progress and State Visibility in EvalHub UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Evaluations",
           "ai_implementability": "High",
-          "jira_key": "RHAI-127",
+          "jira_key": "RFE-127",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1569-E002",
+          "epic_id": "HPSTRAT-1569-E002",
           "title": "Pre-Start vs. Runtime Failure Distinction in EvalHub UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "AI Evaluations",
           "ai_implementability": "High",
-          "jira_key": "RHAI-128",
+          "jira_key": "RFE-128",
           "dependencies": [
-            "RHAISTRAT-1569-E001"
+            "HPSTRAT-1569-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1569-E003",
+          "epic_id": "HPSTRAT-1569-E003",
           "title": "Benchmark Progress, Elapsed Time, and Background Tab Optimization in EvalHub UI",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Evaluations",
           "ai_implementability": "High",
-          "jira_key": "RHAI-129",
+          "jira_key": "RFE-129",
           "dependencies": [
-            "RHAISTRAT-1569-E001"
+            "HPSTRAT-1569-E001"
           ]
         }
       ],
@@ -2483,7 +2483,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2351",
+      "strat_id": "HPSTRAT-2351",
       "title": "AutoRAG: Relationship-Enriched Retrieval",
       "priority": "Normal",
       "epic_count": 6,
@@ -2497,81 +2497,81 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2351-E001",
+          "epic_id": "HPSTRAT-2351-E001",
           "title": "Validate AI4RAGExperiment multi-template support",
           "type": "Investigation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-174",
+          "jira_key": "RFE-174",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2351-E002",
+          "epic_id": "HPSTRAT-2351-E002",
           "title": "Entity extraction pipeline for relationship-enriched retrieval",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-175",
+          "jira_key": "RFE-175",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2351-E003",
+          "epic_id": "HPSTRAT-2351-E003",
           "title": "odh-autorag runtime image update for ai4rag with relationship enrichment",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-176",
+          "jira_key": "RFE-176",
           "dependencies": [
-            "RHAISTRAT-2351-E006"
+            "HPSTRAT-2351-E006"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2351-E004",
+          "epic_id": "HPSTRAT-2351-E004",
           "title": "DSPO image reference update for odh-autorag",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AI Pipelines",
           "ai_implementability": "High",
-          "jira_key": "RHAI-177",
+          "jira_key": "RFE-177",
           "dependencies": [
-            "RHAISTRAT-2351-E003"
+            "HPSTRAT-2351-E003"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2351-E005",
+          "epic_id": "HPSTRAT-2351-E005",
           "title": "User documentation for relationship-enriched AutoRAG",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P2",
           "component": "Documentation",
           "ai_implementability": "High",
-          "jira_key": "RHAI-178",
+          "jira_key": "RFE-178",
           "dependencies": [
-            "RHAISTRAT-2351-E002",
-            "RHAISTRAT-2351-E006",
-            "RHAISTRAT-2351-E003",
-            "RHAISTRAT-2351-E004"
+            "HPSTRAT-2351-E002",
+            "HPSTRAT-2351-E006",
+            "HPSTRAT-2351-E003",
+            "HPSTRAT-2351-E004"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2351-E006",
+          "epic_id": "HPSTRAT-2351-E006",
           "title": "Relationship-enriched RAG template with search space extensions",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "AutoRAG",
           "ai_implementability": "High",
-          "jira_key": "RHAI-179",
+          "jira_key": "RFE-179",
           "dependencies": [
-            "RHAISTRAT-2351-E001",
-            "RHAISTRAT-2351-E002"
+            "HPSTRAT-2351-E001",
+            "HPSTRAT-2351-E002"
           ]
         }
       ],
@@ -2586,7 +2586,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-2140",
+      "strat_id": "HPSTRAT-2140",
       "title": "LoRA-Aware Request Routing for Distributed inference with llm-d",
       "priority": "Major",
       "epic_count": 6,
@@ -2600,79 +2600,79 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-2140-E001",
+          "epic_id": "HPSTRAT-2140-E001",
           "title": "EPP LoRA Adapter-Aware Scoring and Routing",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "llm-d",
           "ai_implementability": "High",
-          "jira_key": "RHAI-164",
+          "jira_key": "RFE-164",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2140-E002",
+          "epic_id": "HPSTRAT-2140-E002",
           "title": "KV Prefix Cache Adapter Scoping",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "llm-d",
           "ai_implementability": "High",
-          "jira_key": "RHAI-165",
+          "jira_key": "RFE-165",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2140-E003",
+          "epic_id": "HPSTRAT-2140-E003",
           "title": "KServe EndpointPickerConfig Migration for Adapter Scorer",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P0",
           "component": "Serving Orchestration",
           "ai_implementability": "High",
-          "jira_key": "RHAI-166",
+          "jira_key": "RFE-166",
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-2140-E004",
+          "epic_id": "HPSTRAT-2140-E004",
           "title": "MoE Group-Level Adapter Warmth Assessment",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P2",
           "component": "llm-d",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-167",
+          "jira_key": "RFE-167",
           "dependencies": [
-            "RHAISTRAT-2140-E001"
+            "HPSTRAT-2140-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2140-E005",
+          "epic_id": "HPSTRAT-2140-E005",
           "title": "Adapter Routing Dashboard Panels",
           "type": "Implementation",
           "implementation_type": null,
           "priority": "P1",
           "component": "AI Core Dashboard",
           "ai_implementability": "High",
-          "jira_key": "RHAI-168",
+          "jira_key": "RFE-168",
           "dependencies": [
-            "RHAISTRAT-2140-E001"
+            "HPSTRAT-2140-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-2140-E006",
+          "epic_id": "HPSTRAT-2140-E006",
           "title": "Adapter-Aware Routing Documentation",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
           "priority": "P1",
           "component": "Documentation",
           "ai_implementability": "Medium",
-          "jira_key": "RHAI-169",
+          "jira_key": "RFE-169",
           "dependencies": [
-            "RHAISTRAT-2140-E001",
-            "RHAISTRAT-2140-E002",
-            "RHAISTRAT-2140-E003",
-            "RHAISTRAT-2140-E004",
-            "RHAISTRAT-2140-E005"
+            "HPSTRAT-2140-E001",
+            "HPSTRAT-2140-E002",
+            "HPSTRAT-2140-E003",
+            "HPSTRAT-2140-E004",
+            "HPSTRAT-2140-E005"
           ]
         }
       ],
@@ -2687,7 +2687,7 @@
       ]
     },
     {
-      "strat_id": "RHAISTRAT-1939",
+      "strat_id": "HPSTRAT-1939",
       "title": "[GA] Gen AI Studio General Availability",
       "priority": "Critical",
       "epic_count": 11,
@@ -2701,7 +2701,7 @@
       },
       "epics": [
         {
-          "epic_id": "RHAISTRAT-1939-E001",
+          "epic_id": "HPSTRAT-1939-E001",
           "title": "OGX API Engineering Spike",
           "type": "Investigation",
           "implementation_type": null,
@@ -2712,7 +2712,7 @@
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1939-E002",
+          "epic_id": "HPSTRAT-1939-E002",
           "title": "NeMo Guardrails GA Readiness Assessment",
           "type": "Investigation",
           "implementation_type": null,
@@ -2723,7 +2723,7 @@
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1939-E003",
+          "epic_id": "HPSTRAT-1939-E003",
           "title": "OGX GA Readiness: 5-API Stability and CRD Migration",
           "type": "Implementation",
           "implementation_type": null,
@@ -2732,11 +2732,11 @@
           "ai_implementability": "High",
           "jira_key": null,
           "dependencies": [
-            "RHAISTRAT-1939-E001"
+            "HPSTRAT-1939-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1939-E004",
+          "epic_id": "HPSTRAT-1939-E004",
           "title": "Gen AI Studio Feature Flag Remediation",
           "type": "Implementation",
           "implementation_type": null,
@@ -2745,11 +2745,11 @@
           "ai_implementability": "High",
           "jira_key": null,
           "dependencies": [
-            "RHAISTRAT-1939-E001"
+            "HPSTRAT-1939-E001"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1939-E005",
+          "epic_id": "HPSTRAT-1939-E005",
           "title": "Model Serving GA Path Validation",
           "type": "Implementation",
           "implementation_type": null,
@@ -2760,7 +2760,7 @@
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1939-E006",
+          "epic_id": "HPSTRAT-1939-E006",
           "title": "OGX GA Labeling in Platform Operator",
           "type": "Implementation",
           "implementation_type": null,
@@ -2771,7 +2771,7 @@
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1939-E007",
+          "epic_id": "HPSTRAT-1939-E007",
           "title": "GenAI Studio GA Support Documentation and Runbooks",
           "type": "Implementation",
           "implementation_type": "docs-authoring",
@@ -2780,18 +2780,18 @@
           "ai_implementability": "High",
           "jira_key": null,
           "dependencies": [
-            "RHAISTRAT-1939-E003",
-            "RHAISTRAT-1939-E004",
-            "RHAISTRAT-1939-E005",
-            "RHAISTRAT-1939-E006",
-            "RHAISTRAT-1939-E008",
-            "RHAISTRAT-1939-E009",
-            "RHAISTRAT-1939-E010",
-            "RHAISTRAT-1939-E011"
+            "HPSTRAT-1939-E003",
+            "HPSTRAT-1939-E004",
+            "HPSTRAT-1939-E005",
+            "HPSTRAT-1939-E006",
+            "HPSTRAT-1939-E008",
+            "HPSTRAT-1939-E009",
+            "HPSTRAT-1939-E010",
+            "HPSTRAT-1939-E011"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1939-E008",
+          "epic_id": "HPSTRAT-1939-E008",
           "title": "GenAI Studio Performance Baselines and Monitoring",
           "type": "Implementation",
           "implementation_type": null,
@@ -2800,13 +2800,13 @@
           "ai_implementability": "Medium",
           "jira_key": null,
           "dependencies": [
-            "RHAISTRAT-1939-E004",
-            "RHAISTRAT-1939-E009",
-            "RHAISTRAT-1939-E010"
+            "HPSTRAT-1939-E004",
+            "HPSTRAT-1939-E009",
+            "HPSTRAT-1939-E010"
           ]
         },
         {
-          "epic_id": "RHAISTRAT-1939-E009",
+          "epic_id": "HPSTRAT-1939-E009",
           "title": "Agent Configuration Persistence Hardening",
           "type": "Implementation",
           "implementation_type": null,
@@ -2817,7 +2817,7 @@
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1939-E010",
+          "epic_id": "HPSTRAT-1939-E010",
           "title": "Gen AI Studio UX Debt and Error Handling",
           "type": "Implementation",
           "implementation_type": null,
@@ -2828,7 +2828,7 @@
           "dependencies": []
         },
         {
-          "epic_id": "RHAISTRAT-1939-E011",
+          "epic_id": "HPSTRAT-1939-E011",
           "title": "NeMo Guardrails Feature Flag Configuration",
           "type": "Implementation",
           "implementation_type": null,
@@ -2837,7 +2837,7 @@
           "ai_implementability": "High",
           "jira_key": null,
           "dependencies": [
-            "RHAISTRAT-1939-E002"
+            "HPSTRAT-1939-E002"
           ]
         }
       ],

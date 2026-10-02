@@ -37,8 +37,8 @@ function makeSnapshot() {
     },
     runs: [{ run_id: 'r1', started: '2026-07-20T00:00:00Z', submitted_epics: 9, total: 2 }],
     strategies: [
-      { strat_id: 'RHAISTRAT-1', title: 'GenAI Studio MCP Discovery', priority: 'Major', epic_count: 4, critical_path_length: 3, revised: false, mermaid_dag: 'graph TD', review: { score: 14, pass: true, recommendation: 'accept' }, epics: [], run_history: [] },
-      { strat_id: 'RHAISTRAT-2', title: 'Other unrelated work', priority: 'Minor', epic_count: 5, critical_path_length: 2, revised: false, mermaid_dag: '', review: { score: 10, pass: false, recommendation: 'revise' }, epics: [], run_history: [] }
+      { strat_id: 'HPSTRAT-1', title: 'GenAI Studio MCP Discovery', priority: 'Major', epic_count: 4, critical_path_length: 3, revised: false, mermaid_dag: 'graph TD', review: { score: 14, pass: true, recommendation: 'accept' }, epics: [], run_history: [] },
+      { strat_id: 'HPSTRAT-2', title: 'Other unrelated work', priority: 'Minor', epic_count: 5, critical_path_length: 2, revised: false, mermaid_dag: '', review: { score: 10, pass: false, recommendation: 'revise' }, epics: [], run_history: [] }
     ],
     jiraHost: 'https://redhat.atlassian.net'
   };
@@ -79,15 +79,15 @@ describe('DecomposerContent', () => {
     expect(wrapper.find('input[type="text"]').exists()).toBe(true);
     // fixture strategies have no run dates → view "All time" to see the list
     await wrapper.find('#decomposer-showing').setValue('all');
-    expect(wrapper.text()).toContain('RHAISTRAT-1');
+    expect(wrapper.text()).toContain('HPSTRAT-1');
     expect(wrapper.text()).toContain('GenAI Studio MCP Discovery');
   });
 
   it('links strategy ids to Jira using jiraHost', async () => {
     const wrapper = mount(DecomposerContent, { props: { snapshot: makeSnapshot() } });
     await wrapper.find('#decomposer-showing').setValue('all');
-    const link = wrapper.findAll('a').find(a => a.text() === 'RHAISTRAT-1');
-    expect(link.attributes('href')).toBe('https://redhat.atlassian.net/browse/RHAISTRAT-1');
+    const link = wrapper.findAll('a').find(a => a.text() === 'HPSTRAT-1');
+    expect(link.attributes('href')).toBe('https://redhat.atlassian.net/browse/HPSTRAT-1');
     expect(link.attributes('target')).toBe('_blank');
   });
 

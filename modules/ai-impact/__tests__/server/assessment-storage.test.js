@@ -75,11 +75,11 @@ describe('trimForHistory', () => {
 describe('upsertAssessment', () => {
   it('creates a new entry', () => {
     const data = makeEmptyData();
-    const status = upsertAssessment(data, 'RHAIRFE-1', makeAssessment());
+    const status = upsertAssessment(data, 'RFE-1', makeAssessment());
     expect(status).toBe('created');
-    expect(data.assessments['RHAIRFE-1']).toBeDefined();
-    expect(data.assessments['RHAIRFE-1'].latest.total).toBe(8);
-    expect(data.assessments['RHAIRFE-1'].history).toEqual([]);
+    expect(data.assessments['RFE-1']).toBeDefined();
+    expect(data.assessments['RFE-1'].latest.total).toBe(8);
+    expect(data.assessments['RFE-1'].history).toEqual([]);
   });
 
   it('returns unchanged for same assessedAt (idempotent)', () => {

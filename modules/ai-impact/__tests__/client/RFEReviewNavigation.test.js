@@ -44,8 +44,8 @@ import RFEReviewView from '../../client/views/RFEReviewView.vue';
 vi.mock('../../client/composables/useAIImpact.js', () => ({
   useAIImpact: () => ({
     rfeData: ref({ issues: [
-      { key: 'RHAIRFE-1', summary: 'RFE with feature', created: '2026-01-01', aiInvolvement: 'created', creatorDisplayName: 'Alice', priority: 'Major', status: 'New' },
-      { key: 'RHAIRFE-2', summary: 'RFE without feature', created: '2026-01-01', aiInvolvement: 'none', creatorDisplayName: 'Bob', priority: 'Minor', status: 'New' }
+      { key: 'RFE-1', summary: 'RFE with feature', created: '2026-01-01', aiInvolvement: 'created', creatorDisplayName: 'Alice', priority: 'Major', status: 'New' },
+      { key: 'RFE-2', summary: 'RFE without feature', created: '2026-01-01', aiInvolvement: 'none', creatorDisplayName: 'Bob', priority: 'Minor', status: 'New' }
     ], jiraHost: 'https://jira.example.com', fetchedAt: '2026-01-01' }),
     loading: ref(false),
     error: ref(null),
@@ -64,7 +64,7 @@ vi.mock('../../client/composables/useAssessments.js', () => ({
 vi.mock('../../client/composables/useFeatures.js', () => ({
   useFeatures: () => ({
     features: ref({
-      'RHAISTRAT-10': { key: 'RHAISTRAT-10', title: 'Linked Feature', sourceRfe: 'RHAIRFE-1', status: 'In Progress' }
+      'HPSTRAT-10': { key: 'HPSTRAT-10', title: 'Linked Feature', sourceRfe: 'RFE-1', status: 'In Progress' }
     }),
     loadFeatures: vi.fn()
   })
@@ -104,22 +104,22 @@ describe('RFEReviewView navigation', () => {
     const wrapper = mountView();
     const phaseContent = wrapper.findComponent(PhaseContentStub);
 
-    phaseContent.vm.$emit('selectRFE', { key: 'RHAIRFE-1', summary: 'RFE with feature' });
+    phaseContent.vm.$emit('selectRFE', { key: 'RFE-1', summary: 'RFE with feature' });
     await nextTick();
 
     expect(mockCrossNavigate).not.toHaveBeenCalled();
-    expect(moduleNav.navigateTo).toHaveBeenCalledWith('rfe-review', { select: 'RHAIRFE-1' });
+    expect(moduleNav.navigateTo).toHaveBeenCalledWith('rfe-review', { select: 'RFE-1' });
   });
 
   it('opens modal when RFE has no linked feature', async () => {
     const wrapper = mountView();
     const phaseContent = wrapper.findComponent(PhaseContentStub);
 
-    phaseContent.vm.$emit('selectRFE', { key: 'RHAIRFE-2', summary: 'RFE without feature' });
+    phaseContent.vm.$emit('selectRFE', { key: 'RFE-2', summary: 'RFE without feature' });
     await nextTick();
 
     expect(mockCrossNavigate).not.toHaveBeenCalled();
-    expect(moduleNav.navigateTo).toHaveBeenCalledWith('rfe-review', { select: 'RHAIRFE-2' });
+    expect(moduleNav.navigateTo).toHaveBeenCalledWith('rfe-review', { select: 'RFE-2' });
   });
 
   it('passes rfeToFeature prop to PhaseContent', () => {
@@ -127,7 +127,7 @@ describe('RFEReviewView navigation', () => {
     const phaseContent = wrapper.findComponent(PhaseContentStub);
 
     expect(phaseContent.props('rfeToFeature')).toEqual({
-      'RHAIRFE-1': { key: 'RHAISTRAT-10', summary: 'Linked Feature', status: 'In Progress', fixVersions: [] }
+      'RFE-1': { key: 'HPSTRAT-10', summary: 'Linked Feature', status: 'In Progress', fixVersions: [] }
     });
   });
 });

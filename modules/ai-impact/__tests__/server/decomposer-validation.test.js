@@ -6,7 +6,7 @@ function makeValid() {
     schema_version: '1.0',
     generated_at: '2026-07-24T00:00:00Z',
     runs: [{ run_id: 'r1', started: '2026-07-01T00:00:00Z' }],
-    strategies: { 'RHAISTRAT-1': { strat_id: 'RHAISTRAT-1' } },
+    strategies: { 'HPSTRAT-1': { strat_id: 'HPSTRAT-1' } },
     aggregates: { unique_strategies: 1 }
   };
 }

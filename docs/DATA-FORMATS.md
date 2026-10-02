@@ -958,7 +958,7 @@ Cached OpenShift Jira Solve Agent data with PR hydration and remote links. Issue
 
 ## AI Impact — `data/ai-impact/`
 
-The AI Impact module tracks AI adoption across the RHAI delivery pipeline. It is the
+The AI Impact module tracks AI adoption across the HP Engineering. It is the
 only module here that writes more than one data file: ten in total, listed in
 `modules/ai-impact/module.json` under `export.files`. Some are fetched from Jira and
 GitLab by the module's own refresh handler; others are **pushed in** by external
@@ -986,7 +986,7 @@ Cached RFE issues fetched from Jira. The module's primary data file.
   "fetchedAt": "2026-03-30T12:00:00Z",
   "issues": [
     {
-      "key": "RHAIRFE-1234",
+      "key": "RFE-1234",
       "summary": "Implement real-time collaboration features",
       "status": "In Progress",
       "priority": "High",
@@ -999,7 +999,7 @@ Cached RFE issues fetched from Jira. The module's primary data file.
       "labels": ["rfe-creator-auto-created", "rfe-creator-auto-revised", "customer-request"],
       "aiInvolvement": "both",
       "linkedFeature": {
-        "key": "RHAISTRAT-567",
+        "key": "HPSTRAT-567",
         "summary": "Strat: Real-time collaboration",
         "status": "In Progress",
         "fixVersions": ["RHOAI 2.16"]
@@ -1075,12 +1075,12 @@ strategy rows.
       "score_max": 14, "submitted_epics": 9 }
   ],
   "strategies": [
-    { "strat_id": "RHAISTRAT-1", "title": "…", "priority": "Major",
+    { "strat_id": "HPSTRAT-1", "title": "…", "priority": "Major",
       "epic_count": 4, "critical_path_length": 3, "revised": true,
       "mermaid_dag": "graph TD…",
       "review": { "score": 14, "pass": true, "recommendation": "accept" },
       "epics": [
-        { "epic_id": "RHAISTRAT-1-E001", "title": "…", "type": "Implementation",
+        { "epic_id": "HPSTRAT-1-E001", "title": "…", "type": "Implementation",
           "implementation_type": "standard", "priority": "P0", "component": "MLflow",
           "ai_implementability": "High", "jira_key": "RHAI-137", "dependencies": [] }
       ],
@@ -1114,8 +1114,8 @@ Admin-configurable settings for the module.
 
 ```json
 {
-  "jiraProject": "RHAIRFE",
-  "linkedProject": "RHAISTRAT",
+  "jiraProject": "RFE",
+  "linkedProject": "HPSTRAT",
   "createdLabel": "rfe-creator-auto-created",
   "revisedLabel": "rfe-creator-auto-revised",
   "testExclusionLabel": "rfe-creator-skill-testing",

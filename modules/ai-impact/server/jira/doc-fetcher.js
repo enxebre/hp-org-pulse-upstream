@@ -221,7 +221,7 @@ async function resolveChildCcsEpics(jiraRequest, issues) {
 }
 
 // MR link resolution uses three strategies (best-effort heuristic, deduped):
-//   1. CCS tree: RHAISTRAT → CCS epic → child tasks → customfield_10875
+//   1. CCS tree: HPSTRAT → CCS epic → child tasks → customfield_10875
 //   2. Direct field: issues with ai1st-doc-invoked → customfield_10875 on the issue itself
 //   3. MR title cross-reference: match Jira keys parsed from GitLab MR titles
 
@@ -295,7 +295,7 @@ function resolveMRLinksFromInvokedField(issues, rawIssues, config) {
   }
 }
 
-const JIRA_KEY_RE = /\b(RHAISTRAT|RHOAIENG)-\d+\b/gi;
+const JIRA_KEY_RE = /\b(HPSTRAT|RHOAIENG)-\d+\b/gi;
 
 function resolveMRLinksFromKpiData(issues, mrKpiData) {
   if (!mrKpiData?.mergeRequests) return;
@@ -364,7 +364,7 @@ async function fetchDocActivityEvents(jiraRequest, config) {
   validateJqlSafeString(docContributedLabel, 'docContributedLabel');
   validateJqlSafeString(docInvokedLabel, 'docInvokedLabel');
 
-  const jql = `project IN ("RHAISTRAT", "RHOAIENG") AND labels IN ("${docInvokedLabel}", "${docContributedLabel}") AND updated >= -30d ORDER BY updated DESC`;
+  const jql = `project IN ("HPSTRAT", "RHOAIENG") AND labels IN ("${docInvokedLabel}", "${docContributedLabel}") AND updated >= -30d ORDER BY updated DESC`;
   const fields = 'labels';
 
   const rawIssues = await fetchAllJqlResults(jiraRequest, jql, fields, { expand: 'changelog' });
@@ -400,11 +400,11 @@ async function fetchDocCumulativeStats(jiraRequest, config) {
     allResolvedContributed,
     stratsResolvedContributed
   ] = await Promise.all([
-    count(`project = "RHAISTRAT" AND labels = "${docContributedLabel}"`),
-    count(`project IN ("RHAISTRAT", "RHOAIENG") AND labels = "${docContributedLabel}"`),
-    count(`project IN ("RHAISTRAT", "RHOAIENG") AND labels = "${docInvokedLabel}"`),
-    count(`project IN ("RHAISTRAT", "RHOAIENG") AND status IN ("Resolved", "Closed") AND labels = "${docContributedLabel}"`),
-    count(`project = "RHAISTRAT" AND status IN ("Resolved", "Closed") AND labels = "${docContributedLabel}"`)
+    count(`project = "HPSTRAT" AND labels = "${docContributedLabel}"`),
+    count(`project IN ("HPSTRAT", "RHOAIENG") AND labels = "${docContributedLabel}"`),
+    count(`project IN ("HPSTRAT", "RHOAIENG") AND labels = "${docInvokedLabel}"`),
+    count(`project IN ("HPSTRAT", "RHOAIENG") AND status IN ("Resolved", "Closed") AND labels = "${docContributedLabel}"`),
+    count(`project = "HPSTRAT" AND status IN ("Resolved", "Closed") AND labels = "${docContributedLabel}"`)
   ]);
 
   return {

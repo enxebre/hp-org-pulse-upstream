@@ -2,7 +2,7 @@
   "lastSyncedAt": "2026-04-18T12:00:00Z",
   "totalAssessed": 10,
   "assessments": {
-    "RHAIRFE-1001": {
+    "RFE-1001": {
       "latest": {
         "scores": { "what": 2, "why": 2, "how": 2, "task": 1, "size": 2 },
         "total": 9,
@@ -28,7 +28,7 @@
         }
       ]
     },
-    "RHAIRFE-1002": {
+    "RFE-1002": {
       "latest": {
         "scores": { "what": 1, "why": 0, "how": 1, "task": 0, "size": 1 },
         "total": 3,
@@ -47,7 +47,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1003": {
+    "RFE-1003": {
       "latest": {
         "scores": { "what": 2, "why": 2, "how": 1, "task": 2, "size": 1 },
         "total": 8,
@@ -79,7 +79,7 @@
         }
       ]
     },
-    "RHAIRFE-1004": {
+    "RFE-1004": {
       "latest": {
         "scores": { "what": 1, "why": 1, "how": 0, "task": 0, "size": 1 },
         "total": 3,
@@ -98,7 +98,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1005": {
+    "RFE-1005": {
       "latest": {
         "scores": { "what": 2, "why": 2, "how": 2, "task": 2, "size": 2 },
         "total": 10,
@@ -117,7 +117,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1006": {
+    "RFE-1006": {
       "latest": {
         "scores": { "what": 1, "why": 1, "how": 1, "task": 1, "size": 1 },
         "total": 5,
@@ -136,7 +136,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1007": {
+    "RFE-1007": {
       "latest": {
         "scores": { "what": 2, "why": 1, "how": 2, "task": 1, "size": 2 },
         "total": 8,
@@ -155,7 +155,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1008": {
+    "RFE-1008": {
       "latest": {
         "scores": { "what": 0, "why": 0, "how": 0, "task": 0, "size": 1 },
         "total": 1,
@@ -174,7 +174,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1009": {
+    "RFE-1009": {
       "latest": {
         "scores": { "what": 2, "why": 2, "how": 1, "task": 1, "size": 0 },
         "total": 6,
@@ -193,7 +193,7 @@
       },
       "history": []
     },
-    "RHAIRFE-1010": {
+    "RFE-1010": {
       "latest": {
         "scores": { "what": 1, "why": 1, "how": 1, "task": 0, "size": 1 },
         "total": 4,

@@ -151,11 +151,11 @@ describe('GET /assessments/:key', () => {
       latest: makeValidBody(),
       history: [{ scores: {}, total: 3, passFail: 'FAIL', assessedAt: '2026-04-10T00:00:00Z' }]
     };
-    const data = { lastSyncedAt: 'x', totalAssessed: 1, assessments: { 'RHAIRFE-1': entry } };
+    const data = { lastSyncedAt: 'x', totalAssessed: 1, assessments: { 'RFE-1': entry } };
     const { router, routes } = createRouter();
     registerAssessmentRoutes(router, makeContext(data));
 
-    const { res } = await callHandler(routes, 'GET', '/assessments/:key', {}, { key: 'RHAIRFE-1' });
+    const { res } = await callHandler(routes, 'GET', '/assessments/:key', {}, { key: 'RFE-1' });
     const payload = res.json.mock.calls[0][0];
     expect(payload.latest).toBeDefined();
     expect(payload.history).toHaveLength(1);
@@ -176,7 +176,7 @@ describe('PUT /assessments/:key', () => {
     const { router, routes } = createRouter();
     registerAssessmentRoutes(router, makeContext(null));
 
-    const { res } = await callHandler(routes, 'PUT', '/assessments/:key', makeValidBody(), { key: 'RHAIRFE-1' });
+    const { res } = await callHandler(routes, 'PUT', '/assessments/:key', makeValidBody(), { key: 'RFE-1' });
     expect(res.json).toHaveBeenCalledWith({ status: 'created' });
   });
 
@@ -184,7 +184,7 @@ describe('PUT /assessments/:key', () => {
     const { router, routes } = createRouter();
     registerAssessmentRoutes(router, makeContext(null));
 
-    const { res } = await callHandler(routes, 'PUT', '/assessments/:key', { bad: true }, { key: 'RHAIRFE-1' });
+    const { res } = await callHandler(routes, 'PUT', '/assessments/:key', { bad: true }, { key: 'RFE-1' });
     expect(res.status).toHaveBeenCalledWith(400);
   });
 });

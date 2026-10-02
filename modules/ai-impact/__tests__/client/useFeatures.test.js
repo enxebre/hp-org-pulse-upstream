@@ -26,8 +26,8 @@ describe('useFeatures', () => {
       lastSyncedAt: '2026-04-19T12:00:00Z',
       totalFeatures: 2,
       features: {
-        'RHAISTRAT-1': { key: 'RHAISTRAT-1', scores: { total: 7 }, recommendation: 'approve' },
-        'RHAISTRAT-2': { key: 'RHAISTRAT-2', scores: { total: 4 }, recommendation: 'revise' }
+        'HPSTRAT-1': { key: 'HPSTRAT-1', scores: { total: 7 }, recommendation: 'approve' },
+        'HPSTRAT-2': { key: 'HPSTRAT-2', scores: { total: 4 }, recommendation: 'revise' }
       }
     };
     mockApiRequest.mockResolvedValue(mockData);
@@ -61,15 +61,15 @@ describe('useFeatures', () => {
 
   it('loadFeatureDetail fetches full detail for a key', async () => {
     const detail = {
-      latest: { key: 'RHAISTRAT-1', scores: { total: 7 } },
+      latest: { key: 'HPSTRAT-1', scores: { total: 7 } },
       history: [{ scores: { total: 5 }, reviewedAt: '2026-04-10T00:00:00Z' }]
     };
     mockApiRequest.mockResolvedValue(detail);
 
     const { loadFeatureDetail } = useFeatures();
-    const result = await loadFeatureDetail('RHAISTRAT-1');
+    const result = await loadFeatureDetail('HPSTRAT-1');
 
-    expect(mockApiRequest).toHaveBeenCalledWith('/modules/ai-impact/features/RHAISTRAT-1');
+    expect(mockApiRequest).toHaveBeenCalledWith('/modules/ai-impact/features/HPSTRAT-1');
     expect(result).toEqual(detail);
   });
 
@@ -78,8 +78,8 @@ describe('useFeatures', () => {
     mockApiRequest.mockResolvedValue(detail);
 
     const { loadFeatureDetail } = useFeatures();
-    await loadFeatureDetail('RHAISTRAT-1');
-    const result2 = await loadFeatureDetail('RHAISTRAT-1');
+    await loadFeatureDetail('HPSTRAT-1');
+    const result2 = await loadFeatureDetail('HPSTRAT-1');
 
     expect(mockApiRequest).toHaveBeenCalledTimes(1);
     expect(result2).toEqual(detail);

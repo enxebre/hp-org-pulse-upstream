@@ -2,11 +2,11 @@
   "lastSyncedAt": "2026-07-15T00:00:00Z",
   "totalFeatures": 12,
   "features": {
-    "RHAISTRAT-1168": {
+    "HPSTRAT-1168": {
       "latest": {
-        "key": "RHAISTRAT-1168",
+        "key": "HPSTRAT-1168",
         "title": "GPU-as-a-Service Observability Dashboard",
-        "sourceRfe": "RHAIRFE-1001",
+        "sourceRfe": "RFE-1001",
         "priority": "Major",
         "status": "Refined",
         "size": "L",
@@ -57,11 +57,11 @@
         }
       ]
     },
-    "RHAISTRAT-1169": {
+    "HPSTRAT-1169": {
       "latest": {
-        "key": "RHAISTRAT-1169",
+        "key": "HPSTRAT-1169",
         "title": "Model Serving Autoscaling for High-Throughput Inference",
-        "sourceRfe": "RHAIRFE-1001",
+        "sourceRfe": "RFE-1001",
         "priority": "Critical",
         "status": "In Progress",
         "size": "XL",
@@ -95,11 +95,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1170": {
+    "HPSTRAT-1170": {
       "latest": {
-        "key": "RHAISTRAT-1170",
+        "key": "HPSTRAT-1170",
         "title": "LLM Fine-Tuning with Custom Datasets",
-        "sourceRfe": "RHAIRFE-1003",
+        "sourceRfe": "RFE-1003",
         "priority": "Critical",
         "status": "Refined",
         "size": "XL",
@@ -146,11 +146,11 @@
         }
       ]
     },
-    "RHAISTRAT-1171": {
+    "HPSTRAT-1171": {
       "latest": {
-        "key": "RHAISTRAT-1171",
+        "key": "HPSTRAT-1171",
         "title": "A/B Testing Framework for Model Endpoints",
-        "sourceRfe": "RHAIRFE-1005",
+        "sourceRfe": "RFE-1005",
         "priority": "Major",
         "status": "New",
         "size": "M",
@@ -183,11 +183,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1172": {
+    "HPSTRAT-1172": {
       "latest": {
-        "key": "RHAISTRAT-1172",
+        "key": "HPSTRAT-1172",
         "title": "Distributed Training Pipeline Orchestration",
-        "sourceRfe": "RHAIRFE-1009",
+        "sourceRfe": "RFE-1009",
         "priority": "Major",
         "status": "Refined",
         "size": "L",
@@ -220,11 +220,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1173": {
+    "HPSTRAT-1173": {
       "latest": {
-        "key": "RHAISTRAT-1173",
+        "key": "HPSTRAT-1173",
         "title": "GPU Memory Monitoring Dashboard",
-        "sourceRfe": "RHAIRFE-1002",
+        "sourceRfe": "RFE-1002",
         "priority": "Minor",
         "status": "Refined",
         "size": "S",
@@ -261,11 +261,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1174": {
+    "HPSTRAT-1174": {
       "latest": {
-        "key": "RHAISTRAT-1174",
+        "key": "HPSTRAT-1174",
         "title": "Data Quality Validation for Training Pipelines",
-        "sourceRfe": "RHAIRFE-1006",
+        "sourceRfe": "RFE-1006",
         "priority": "Normal",
         "status": "New",
         "size": "M",
@@ -297,11 +297,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1175": {
+    "HPSTRAT-1175": {
       "latest": {
-        "key": "RHAISTRAT-1175",
+        "key": "HPSTRAT-1175",
         "title": "RBAC for Shared Model Registry",
-        "sourceRfe": "RHAIRFE-1007",
+        "sourceRfe": "RFE-1007",
         "priority": "Major",
         "status": "Refined",
         "size": "L",
@@ -335,11 +335,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1176": {
+    "HPSTRAT-1176": {
       "latest": {
-        "key": "RHAISTRAT-1176",
+        "key": "HPSTRAT-1176",
         "title": "Custom Runtime Images for Jupyter Notebooks",
-        "sourceRfe": "RHAIRFE-1008",
+        "sourceRfe": "RFE-1008",
         "priority": "Normal",
         "status": "New",
         "size": null,
@@ -373,11 +373,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1177": {
+    "HPSTRAT-1177": {
       "latest": {
-        "key": "RHAISTRAT-1177",
+        "key": "HPSTRAT-1177",
         "title": "Real-Time Model Deployment Latency Optimization",
-        "sourceRfe": "RHAIRFE-1010",
+        "sourceRfe": "RFE-1010",
         "priority": "Blocker",
         "status": "In Progress",
         "size": "XL",
@@ -411,11 +411,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1178": {
+    "HPSTRAT-1178": {
       "latest": {
-        "key": "RHAISTRAT-1178",
+        "key": "HPSTRAT-1178",
         "title": "OpenTelemetry Tracing for Pipeline Debugging",
-        "sourceRfe": "RHAIRFE-1004",
+        "sourceRfe": "RFE-1004",
         "priority": "Minor",
         "status": "New",
         "size": "S",
@@ -462,11 +462,11 @@
         }
       ]
     },
-    "RHAISTRAT-1179": {
+    "HPSTRAT-1179": {
       "latest": {
-        "key": "RHAISTRAT-1179",
+        "key": "HPSTRAT-1179",
         "title": "Federated Learning for Distributed Model Training",
-        "sourceRfe": "RHAIRFE-1009",
+        "sourceRfe": "RFE-1009",
         "priority": "Critical",
         "status": "Refined",
         "size": "XL",

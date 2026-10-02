@@ -3,36 +3,36 @@ import { extractLinkedKey } from '../../server/jira/link-resolver.js';
 
 const CONFIG = {
   linkTypeName: 'Cloners',
-  linkedProject: 'RHAISTRAT'
+  linkedProject: 'HPSTRAT'
 };
 
 describe('extractLinkedKey', () => {
   it('returns correct key for matching link type and project', () => {
     const links = [
-      { type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-123' } }
+      { type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-123' } }
     ];
-    expect(extractLinkedKey(links, CONFIG)).toBe('RHAISTRAT-123');
+    expect(extractLinkedKey(links, CONFIG)).toBe('HPSTRAT-123');
   });
 
   it('returns null for non-matching link types', () => {
     const links = [
-      { type: { name: 'Blocks' }, outwardIssue: { key: 'RHAISTRAT-123' } }
+      { type: { name: 'Blocks' }, outwardIssue: { key: 'HPSTRAT-123' } }
     ];
     expect(extractLinkedKey(links, CONFIG)).toBeNull();
   });
 
   it('returns key from inwardIssue when outwardIssue is absent', () => {
     const links = [
-      { type: { name: 'Cloners' }, inwardIssue: { key: 'RHAISTRAT-123' } }
+      { type: { name: 'Cloners' }, inwardIssue: { key: 'HPSTRAT-123' } }
     ];
-    expect(extractLinkedKey(links, CONFIG)).toBe('RHAISTRAT-123');
+    expect(extractLinkedKey(links, CONFIG)).toBe('HPSTRAT-123');
   });
 
   it('prefers outwardIssue over inwardIssue when both are present', () => {
     const links = [
-      { type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-100' }, inwardIssue: { key: 'RHAISTRAT-200' } }
+      { type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-100' }, inwardIssue: { key: 'HPSTRAT-200' } }
     ];
-    expect(extractLinkedKey(links, CONFIG)).toBe('RHAISTRAT-100');
+    expect(extractLinkedKey(links, CONFIG)).toBe('HPSTRAT-100');
   });
 
   it('returns null when inwardIssue is a different project', () => {
@@ -51,11 +51,11 @@ describe('extractLinkedKey', () => {
 
   it('returns first matching link key', () => {
     const links = [
-      { type: { name: 'Blocks' }, outwardIssue: { key: 'RHAISTRAT-100' } },
-      { type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-200' } },
-      { type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-300' } }
+      { type: { name: 'Blocks' }, outwardIssue: { key: 'HPSTRAT-100' } },
+      { type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-200' } },
+      { type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-300' } }
     ];
-    expect(extractLinkedKey(links, CONFIG)).toBe('RHAISTRAT-200');
+    expect(extractLinkedKey(links, CONFIG)).toBe('HPSTRAT-200');
   });
 
   it('returns null for empty links', () => {
@@ -85,46 +85,46 @@ describe('resolveLinkedFeatures', () => {
 
   it('deduplicates linked keys across multiple RFEs', async () => {
     const mockJiraRequest = makeJiraRequest([
-      { key: 'RHAISTRAT-1', fields: { summary: 'Strat 1', status: { name: 'Active' }, fixVersions: [] } }
+      { key: 'HPSTRAT-1', fields: { summary: 'Strat 1', status: { name: 'Active' }, fixVersions: [] } }
     ]);
 
     const issues = [
-      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-1' } }], linkedFeature: null },
-      { key: 'RFE-2', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-1' } }], linkedFeature: null }
+      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-1' } }], linkedFeature: null },
+      { key: 'RFE-2', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-1' } }], linkedFeature: null }
     ];
 
     const result = await resolveLinkedFeatures(mockJiraRequest, issues, CONFIG);
 
     // Only one JQL call since both link to the same key
     expect(mockJiraRequest).toHaveBeenCalledTimes(1);
-    expect(result[0].linkedFeature.key).toBe('RHAISTRAT-1');
-    expect(result[1].linkedFeature.key).toBe('RHAISTRAT-1');
+    expect(result[0].linkedFeature.key).toBe('HPSTRAT-1');
+    expect(result[1].linkedFeature.key).toBe('HPSTRAT-1');
   });
 
   it('maps results back to correct RFE indices', async () => {
     const mockJiraRequest = makeJiraRequest([
-      { key: 'RHAISTRAT-A', fields: { summary: 'Strat A', status: { name: 'Done' }, fixVersions: [{ name: 'v2.16' }] } },
-      { key: 'RHAISTRAT-B', fields: { summary: 'Strat B', status: { name: 'New' }, fixVersions: [] } }
+      { key: 'HPSTRAT-A', fields: { summary: 'Strat A', status: { name: 'Done' }, fixVersions: [{ name: 'v2.16' }] } },
+      { key: 'HPSTRAT-B', fields: { summary: 'Strat B', status: { name: 'New' }, fixVersions: [] } }
     ]);
 
     const issues = [
-      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-A' } }], linkedFeature: null },
+      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-A' } }], linkedFeature: null },
       { key: 'RFE-2', _rawIssueLinks: [], linkedFeature: null },
-      { key: 'RFE-3', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-B' } }], linkedFeature: null }
+      { key: 'RFE-3', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-B' } }], linkedFeature: null }
     ];
 
     const result = await resolveLinkedFeatures(mockJiraRequest, issues, CONFIG);
 
-    expect(result[0].linkedFeature).toEqual({ key: 'RHAISTRAT-A', summary: 'Strat A', status: 'Done', fixVersions: ['v2.16'] });
+    expect(result[0].linkedFeature).toEqual({ key: 'HPSTRAT-A', summary: 'Strat A', status: 'Done', fixVersions: ['v2.16'] });
     expect(result[1].linkedFeature).toBeNull();
-    expect(result[2].linkedFeature).toEqual({ key: 'RHAISTRAT-B', summary: 'Strat B', status: 'New', fixVersions: [] });
+    expect(result[2].linkedFeature).toEqual({ key: 'HPSTRAT-B', summary: 'Strat B', status: 'New', fixVersions: [] });
   });
 
   it('handles missing linked issues (deleted in Jira)', async () => {
     const mockJiraRequest = makeJiraRequest([]); // key not found
 
     const issues = [
-      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-DELETED' } }], linkedFeature: null }
+      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-DELETED' } }], linkedFeature: null }
     ];
 
     const result = await resolveLinkedFeatures(mockJiraRequest, issues, CONFIG);
@@ -134,11 +134,11 @@ describe('resolveLinkedFeatures', () => {
 
   it('cleans up _rawIssueLinks from output', async () => {
     const mockJiraRequest = makeJiraRequest([
-      { key: 'RHAISTRAT-1', fields: { summary: 'Test', status: { name: 'Done' }, fixVersions: [] } }
+      { key: 'HPSTRAT-1', fields: { summary: 'Test', status: { name: 'Done' }, fixVersions: [] } }
     ]);
 
     const issues = [
-      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-1' } }], linkedFeature: null },
+      { key: 'RFE-1', _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-1' } }], linkedFeature: null },
       { key: 'RFE-2', _rawIssueLinks: [], linkedFeature: null }
     ];
 
@@ -170,7 +170,7 @@ describe('resolveLinkedFeatures', () => {
     for (let i = 0; i < 120; i++) {
       issues.push({
         key: `RFE-${i}`,
-        _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: `RHAISTRAT-${i}` } }],
+        _rawIssueLinks: [{ type: { name: 'Cloners' }, outwardIssue: { key: `HPSTRAT-${i}` } }],
         linkedFeature: null
       });
     }

@@ -17,7 +17,7 @@ const DEFAULT_CONFIG = {
 describe('processIssue', () => {
   it('extracts fields and detects doc labels', () => {
     const issue = {
-      key: 'RHAISTRAT-100',
+      key: 'HPSTRAT-100',
       fields: {
         summary: 'Feature needing docs',
         status: { name: 'Review' },
@@ -48,7 +48,7 @@ describe('processIssue', () => {
     }
 
     const result = processIssue(issue, DEFAULT_CONFIG)
-    expect(result.key).toBe('RHAISTRAT-100')
+    expect(result.key).toBe('HPSTRAT-100')
     expect(result.summary).toBe('Feature needing docs')
     expect(result.status).toBe('Review')
     expect(result.hasDocContributed).toBe(true)
@@ -63,7 +63,7 @@ describe('processIssue', () => {
 
   it('handles issue without doc labels', () => {
     const issue = {
-      key: 'RHAISTRAT-200',
+      key: 'HPSTRAT-200',
       fields: {
         summary: 'Untouched feature',
         status: { name: 'Review' },
@@ -85,7 +85,7 @@ describe('processIssue', () => {
 
   it('detects skip label', () => {
     const issue = {
-      key: 'RHAISTRAT-250',
+      key: 'HPSTRAT-250',
       fields: {
         summary: 'Already documented feature',
         status: { name: 'Review' },
@@ -113,7 +113,7 @@ describe('processIssue', () => {
 
   it('handles missing optional fields', () => {
     const issue = {
-      key: 'RHAISTRAT-300',
+      key: 'HPSTRAT-300',
       fields: {
         summary: 'Minimal issue',
         status: null,

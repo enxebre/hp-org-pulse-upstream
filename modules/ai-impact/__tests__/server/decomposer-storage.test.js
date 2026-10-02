@@ -29,12 +29,12 @@ function makeDoc() {
         avg_score: 14,
         score_max: 14,
         submitted_epics: 9,
-        results: [{ strat_id: 'RHAISTRAT-1', status: 'passed', epic_count: 4, score: 14 }]
+        results: [{ strat_id: 'HPSTRAT-1', status: 'passed', epic_count: 4, score: 14 }]
       }
     ],
     strategies: {
-      'RHAISTRAT-1': {
-        strat_id: 'RHAISTRAT-1',
+      'HPSTRAT-1': {
+        strat_id: 'HPSTRAT-1',
         title: 'Test Strategy',
         priority: 'Major',
         labels: ['epic-decomposer-auto-created'],
@@ -45,7 +45,7 @@ function makeDoc() {
         review: { score: 14, pass: true, recommendation: 'accept', issues: [], error: null },
         epics: [
           {
-            epic_id: 'RHAISTRAT-1-E001',
+            epic_id: 'HPSTRAT-1-E001',
             title: 'Epic one',
             type: 'Implementation',
             implementation_type: 'standard',
@@ -65,7 +65,7 @@ function makeDoc() {
       }
     },
     aggregates: { unique_strategies: 1, total_epics: 2, pass_rate: 100 },
-    epic_bodies: { 'RHAISTRAT-1-E001': '# lots of markdown' }
+    epic_bodies: { 'HPSTRAT-1-E001': '# lots of markdown' }
   };
 }
 
@@ -86,7 +86,7 @@ describe('projectSnapshot', () => {
     expect(snap.strategies).toHaveLength(1);
     expect(snap).not.toHaveProperty('epic_bodies');
     const s = snap.strategies[0];
-    expect(s.strat_id).toBe('RHAISTRAT-1');
+    expect(s.strat_id).toBe('HPSTRAT-1');
     // DAG + slim epics kept for the expandable row
     expect(s.mermaid_dag).toContain('graph TD');
     expect(s.epics[0].jira_key).toBe('RHAI-137');
@@ -140,7 +140,7 @@ describe('slim helpers', () => {
   });
 
   it('slimStrategy keeps review verdict fields', () => {
-    const s = slimStrategy(makeDoc().strategies['RHAISTRAT-1']);
+    const s = slimStrategy(makeDoc().strategies['HPSTRAT-1']);
     expect(s.review).toEqual({ score: 14, pass: true, recommendation: 'accept' });
     expect(s.review).not.toHaveProperty('issues');
   });

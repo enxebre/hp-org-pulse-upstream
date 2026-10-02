@@ -68,9 +68,9 @@ describe('useAssessments', () => {
     mockApiRequest.mockResolvedValue(detail);
 
     const { loadAssessmentDetail } = useAssessments();
-    const result = await loadAssessmentDetail('RHAIRFE-1');
+    const result = await loadAssessmentDetail('RFE-1');
 
-    expect(mockApiRequest).toHaveBeenCalledWith('/modules/ai-impact/assessments/RHAIRFE-1');
+    expect(mockApiRequest).toHaveBeenCalledWith('/modules/ai-impact/assessments/RFE-1');
     expect(result).toEqual(detail);
   });
 
@@ -79,8 +79,8 @@ describe('useAssessments', () => {
     mockApiRequest.mockResolvedValue(detail);
 
     const { loadAssessmentDetail } = useAssessments();
-    await loadAssessmentDetail('RHAIRFE-1');
-    const result2 = await loadAssessmentDetail('RHAIRFE-1');
+    await loadAssessmentDetail('RFE-1');
+    const result2 = await loadAssessmentDetail('RFE-1');
 
     // Only one API call should have been made
     expect(mockApiRequest).toHaveBeenCalledTimes(1);

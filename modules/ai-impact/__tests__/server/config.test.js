@@ -11,7 +11,7 @@ describe('getConfig', () => {
     const readFromStorage = vi.fn().mockResolvedValue({ jiraProject: 'CUSTOM' });
     const config = await getConfig(readFromStorage);
     expect(config.jiraProject).toBe('CUSTOM');
-    expect(config.linkedProject).toBe('RHAISTRAT'); // default
+    expect(config.linkedProject).toBe('HPSTRAT'); // default
   });
 });
 
@@ -48,7 +48,7 @@ describe('saveConfig', () => {
     const config = await getConfig(readFn);
 
     expect(config.jiraProject).toBe('CUSTOM');
-    expect(config.linkedProject).toBe('RHAISTRAT');
+    expect(config.linkedProject).toBe('HPSTRAT');
     expect(config.autofixProjects).toEqual(DEFAULT_CONFIG.autofixProjects);
     expect(config).toEqual({ ...DEFAULT_CONFIG, jiraProject: 'CUSTOM' });
   });
@@ -104,7 +104,7 @@ describe('saveConfig', () => {
 
 describe('validateJqlSafeString', () => {
   it('accepts safe strings', () => {
-    expect(() => validateJqlSafeString('RHAIRFE', 'test')).not.toThrow();
+    expect(() => validateJqlSafeString('RFE', 'test')).not.toThrow();
     expect(() => validateJqlSafeString('rfe-creator-', 'test')).not.toThrow();
   });
 

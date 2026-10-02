@@ -1455,7 +1455,7 @@
     },
     {
       "key": "AIPCC-14320",
-      "summary": "RHAI pipeline `uv run migrate-onboarding` is unable to migrate several ROCm 7.1 packages",
+      "summary": "HP Engineering pipeline `uv run migrate-onboarding` is unable to migrate several ROCm 7.1 packages",
       "status": "Closed",
       "issueType": "Bug",
       "priority": "Undefined",
@@ -1649,7 +1649,7 @@
     },
     {
       "key": "AIPCC-14074",
-      "summary": "Unsloth package is in the rhai-innovations collection for CPU, but requires a GPU",
+      "summary": "Unsloth package is in the hp-components collection for CPU, but requires a GPU",
       "status": "Closed",
       "issueType": "Bug",
       "priority": "Undefined",
@@ -1673,7 +1673,7 @@
     },
     {
       "key": "AIPCC-14062",
-      "summary": "RHAI pipeline is missing xformers for cpu-ubi9 aarch64",
+      "summary": "HP Engineering pipeline is missing xformers for cpu-ubi9 aarch64",
       "status": "Closed",
       "issueType": "Bug",
       "priority": "Major",

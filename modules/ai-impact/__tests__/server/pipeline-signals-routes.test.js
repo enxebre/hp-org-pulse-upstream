@@ -24,9 +24,9 @@ function makeContext(storageOverrides = {}) {
     'ai-impact/rfe-data.json': {
       issues: [
         {
-          key: 'RHAIRFE-100',
+          key: 'RFE-100',
           aiInvolvement: 'both',
-          linkedFeature: { key: 'RHAISTRAT-123', status: 'In Progress' }
+          linkedFeature: { key: 'HPSTRAT-123', status: 'In Progress' }
         }
       ]
     },
@@ -82,22 +82,22 @@ describe('pipeline-signals routes', () => {
     registerPipelineSignalRoutes(router, makeContext());
 
     const { res } = await callHandler(routes, 'GET', '/pipeline-signals/:featureKey', {
-      params: { featureKey: 'RHAISTRAT-123' }
+      params: { featureKey: 'HPSTRAT-123' }
     });
 
     const payload = res.json.mock.calls[0][0];
-    expect(payload.featureKey).toBe('RHAISTRAT-123');
+    expect(payload.featureKey).toBe('HPSTRAT-123');
     expect(payload.phases).toBeDefined();
     expect(payload.phases['rfe-review']).toBeDefined();
     expect(payload.phases['rfe-review'].completed).toBe(true);
-    expect(payload.phases['rfe-review'].linkedKey).toBe('RHAIRFE-100');
+    expect(payload.phases['rfe-review'].linkedKey).toBe('RFE-100');
     expect(payload.phases['feature-review']).toBeDefined();
     expect(payload.phases['decomposer']).toBeDefined();
     expect(payload.phases['test-plan-review']).toBeDefined();
     expect(payload.phases['documentation']).toBeDefined();
     expect(payload.phases['build-release']).toBeDefined();
     expect(payload.jiraHost).toBeTruthy();
-    expect(payload.rfeKey).toBe('RHAIRFE-100');
+    expect(payload.rfeKey).toBe('RFE-100');
   });
 
   it('returns 400 for invalid feature key format', async () => {
@@ -156,7 +156,7 @@ describe('pipeline-signals routes', () => {
     registerPipelineSignalRoutes(router, ctx);
 
     const { res } = await callHandler(routes, 'GET', '/pipeline-signals/:featureKey', {
-      params: { featureKey: 'RHAISTRAT-123' }
+      params: { featureKey: 'HPSTRAT-123' }
     });
 
     expect(res.status).toHaveBeenCalledWith(500);
@@ -171,11 +171,11 @@ describe('pipeline-signals routes', () => {
     }));
 
     const { res } = await callHandler(routes, 'GET', '/pipeline-signals/:featureKey', {
-      params: { featureKey: 'RHAISTRAT-999' }
+      params: { featureKey: 'HPSTRAT-999' }
     });
 
     const payload = res.json.mock.calls[0][0];
-    expect(payload.featureKey).toBe('RHAISTRAT-999');
+    expect(payload.featureKey).toBe('HPSTRAT-999');
     expect(payload.rfeKey).toBeNull();
     expect(Object.keys(payload.phases)).toHaveLength(6);
     expect(payload.phases['rfe-review'].completed).toBe(false);

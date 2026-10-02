@@ -19,8 +19,8 @@ function makeDoc() {
     investigation_signal_names: [],
     runs: [{ run_id: 'r1', started: '2026-07-20T00:00:00Z', submitted_epics: 9, total: 2, results: [] }],
     strategies: {
-      'RHAISTRAT-1': { strat_id: 'RHAISTRAT-1', title: 'A', review: { pass: true }, epics: [], run_history: [] },
-      'RHAISTRAT-2': { strat_id: 'RHAISTRAT-2', title: 'B', review: { pass: false }, epics: [], run_history: [] }
+      'HPSTRAT-1': { strat_id: 'HPSTRAT-1', title: 'A', review: { pass: true }, epics: [], run_history: [] },
+      'HPSTRAT-2': { strat_id: 'HPSTRAT-2', title: 'B', review: { pass: false }, epics: [], run_history: [] }
     },
     aggregates: { unique_strategies: 2, total_epics: 9 },
     epic_bodies: { x: 'md' }

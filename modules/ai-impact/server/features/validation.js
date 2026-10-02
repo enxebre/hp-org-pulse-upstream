@@ -53,9 +53,9 @@ function validateFeature(body) {
     errors.push('title must be a non-empty string');
   }
 
-  // sourceRfe: required, must start with RHAIRFE-
-  if (typeof body.sourceRfe !== 'string' || !body.sourceRfe.startsWith('RHAIRFE-')) {
-    errors.push('sourceRfe must be a string starting with "RHAIRFE-"');
+  // sourceRfe: required, must start with RFE-
+  if (typeof body.sourceRfe !== 'string' || !body.sourceRfe.startsWith('RFE-')) {
+    errors.push('sourceRfe must be a string starting with "RFE-"');
   }
 
   // priority: required enum

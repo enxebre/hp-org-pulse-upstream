@@ -7,7 +7,7 @@ const { readComponentOnboarding, projectComponent } = require('../component-onbo
  * Resolve pipeline signals for a given feature key by joining across all
  * AI Impact data stores.
  *
- * @param {string} featureKey - RHAISTRAT-xxx or RHOAIENG-xxx
+ * @param {string} featureKey - HPSTRAT-xxx or RHOAIENG-xxx
  * @param {Function} readFromStorage - storage read function
  * @param {object} [options]
  * @param {string} [options.jiraHost] - Jira base URL

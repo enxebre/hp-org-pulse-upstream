@@ -10,9 +10,9 @@ import {
 
 function makeTestPlan(overrides = {}) {
   return {
-    key: 'RHAISTRAT-1168',
+    key: 'HPSTRAT-1168',
     feature: 'GPU Observability',
-    sourceKey: 'RHAISTRAT-1168',
+    sourceKey: 'HPSTRAT-1168',
     score: 8,
     verdict: 'Ready',
     scores: { specificity: 2, grounding: 2, scope_fidelity: 2, actionability: 1, consistency: 1 },

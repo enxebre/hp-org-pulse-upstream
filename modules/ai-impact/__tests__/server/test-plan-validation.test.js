@@ -4,7 +4,7 @@ import { validateTestPlan, deriveHumanReviewStatus, CRITERIA, VERDICTS, HUMAN_RE
 function makeValid(overrides = {}) {
   return {
     feature: 'GPU Observability',
-    sourceKey: 'RHAISTRAT-1168',
+    sourceKey: 'HPSTRAT-1168',
     score: 8,
     verdict: 'Ready',
     scores: { specificity: 2, grounding: 2, scope_fidelity: 2, actionability: 1, consistency: 1 },
@@ -20,7 +20,7 @@ describe('validateTestPlan', () => {
     expect(result.valid).toBe(true);
     expect(result.data.score).toBe(8);
     expect(result.data.verdict).toBe('Ready');
-    expect(result.data.sourceKey).toBe('RHAISTRAT-1168');
+    expect(result.data.sourceKey).toBe('HPSTRAT-1168');
   });
 
   it('accepts a minimal valid test plan (optional fields omitted)', () => {
@@ -99,8 +99,8 @@ describe('validateTestPlan', () => {
     expect(validateTestPlan(makeValid({ sourceKey: 'RHOAIENG-12345' })).valid).toBe(true);
   });
 
-  it('accepts RHAIRFE sourceKey', () => {
-    expect(validateTestPlan(makeValid({ sourceKey: 'RHAIRFE-999' })).valid).toBe(true);
+  it('accepts RFE sourceKey', () => {
+    expect(validateTestPlan(makeValid({ sourceKey: 'RFE-999' })).valid).toBe(true);
   });
 
   it('rejects beforeScore without beforeScores', () => {
@@ -128,7 +128,7 @@ describe('validateTestPlan', () => {
   it('normalizes snake_case to camelCase', () => {
     const result = validateTestPlan({
       feature: 'Test',
-      source_key: 'RHAISTRAT-100',
+      source_key: 'HPSTRAT-100',
       score: 5,
       verdict: 'Revise',
       scores: { specificity: 1, grounding: 1, scope_fidelity: 1, actionability: 1, consistency: 1 },
@@ -137,7 +137,7 @@ describe('validateTestPlan', () => {
       reviewed_at: '2026-05-11T00:00:00Z'
     });
     expect(result.valid).toBe(true);
-    expect(result.data.sourceKey).toBe('RHAISTRAT-100');
+    expect(result.data.sourceKey).toBe('HPSTRAT-100');
     expect(result.data.autoRevised).toBe(true);
     expect(result.data.testCaseCount).toBe(7);
   });
@@ -219,10 +219,10 @@ describe('validateTestPlan', () => {
   describe('gitlabPath', () => {
     it('accepts valid gitlabPath string', () => {
       const result = validateTestPlan(makeValid({
-        gitlabPath: 'RHAISTRAT/20260510-120000-RHAISTRAT-1168/gpu_observability_dashboard'
+        gitlabPath: 'HPSTRAT/20260510-120000-HPSTRAT-1168/gpu_observability_dashboard'
       }));
       expect(result.valid).toBe(true);
-      expect(result.data.gitlabPath).toBe('RHAISTRAT/20260510-120000-RHAISTRAT-1168/gpu_observability_dashboard');
+      expect(result.data.gitlabPath).toBe('HPSTRAT/20260510-120000-HPSTRAT-1168/gpu_observability_dashboard');
     });
 
     it('accepts omitted gitlabPath (optional field)', () => {

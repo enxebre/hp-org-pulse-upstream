@@ -16,10 +16,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-1373"
+          "HPSTRAT-1373"
         ],
         "featureTitles": {
-          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+          "HPSTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
         },
         "labels": [
           "bundle-changes-done",
@@ -73,10 +73,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-1373"
+          "HPSTRAT-1373"
         ],
         "featureTitles": {
-          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+          "HPSTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
         },
         "labels": [
           "bundle-changes-done",
@@ -130,10 +130,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-1373"
+          "HPSTRAT-1373"
         ],
         "featureTitles": {
-          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+          "HPSTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
         },
         "labels": [
           "auto-merge-setup-done",
@@ -192,10 +192,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-1373"
+          "HPSTRAT-1373"
         ],
         "featureTitles": {
-          "RHAISTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
+          "HPSTRAT-1373": "Rename Llama Stack to remove Meta trademark dependency ahead of GA"
         },
         "labels": [
           "auto-merge-setup-done",
@@ -302,10 +302,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-964"
+          "HPSTRAT-964"
         ],
         "featureTitles": {
-          "RHAISTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
+          "HPSTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
         },
         "labels": [
           "component-onboarding",
@@ -360,10 +360,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-964"
+          "HPSTRAT-964"
         ],
         "featureTitles": {
-          "RHAISTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
+          "HPSTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
         },
         "labels": [
           "component-onboarding",
@@ -414,10 +414,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-853"
+          "HPSTRAT-853"
         ],
         "featureTitles": {
-          "RHAISTRAT-853": "Implement Model Cache in RHOAI"
+          "HPSTRAT-853": "Implement Model Cache in RHOAI"
         },
         "labels": [
           "auto-merge-setup-done",
@@ -475,10 +475,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-853"
+          "HPSTRAT-853"
         ],
         "featureTitles": {
-          "RHAISTRAT-853": "Implement Model Cache in RHOAI"
+          "HPSTRAT-853": "Implement Model Cache in RHOAI"
         },
         "labels": [
           "auto-merge-setup-done",
@@ -533,10 +533,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-964"
+          "HPSTRAT-964"
         ],
         "featureTitles": {
-          "RHAISTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
+          "HPSTRAT-964": "Implement batch inference compatible with OpenAI batch APIs in llm-d- DP"
         },
         "labels": [
           "component-onboarding",
@@ -591,10 +591,10 @@
         "contextPath": ".",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-502"
+          "HPSTRAT-502"
         ],
         "featureTitles": {
-          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+          "HPSTRAT-502": "Migrate RHOAI build system to Konflux"
         },
         "labels": [
           "devops-onboarding"
@@ -637,10 +637,10 @@
         "contextPath": ".",
         "isOperator": true,
         "linkedFeatures": [
-          "RHAISTRAT-502"
+          "HPSTRAT-502"
         ],
         "featureTitles": {
-          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+          "HPSTRAT-502": "Migrate RHOAI build system to Konflux"
         },
         "labels": [
           "devops-onboarding"
@@ -683,10 +683,10 @@
         "contextPath": ".",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-502"
+          "HPSTRAT-502"
         ],
         "featureTitles": {
-          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+          "HPSTRAT-502": "Migrate RHOAI build system to Konflux"
         },
         "labels": [
           "devops-onboarding"
@@ -729,10 +729,10 @@
         "contextPath": ".",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-502"
+          "HPSTRAT-502"
         ],
         "featureTitles": {
-          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+          "HPSTRAT-502": "Migrate RHOAI build system to Konflux"
         },
         "labels": [
           "devops-onboarding"
@@ -775,10 +775,10 @@
         "contextPath": ".",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-502"
+          "HPSTRAT-502"
         ],
         "featureTitles": {
-          "RHAISTRAT-502": "Migrate RHOAI build system to Konflux"
+          "HPSTRAT-502": "Migrate RHOAI build system to Konflux"
         },
         "labels": [
           "devops-onboarding"
@@ -821,10 +821,10 @@
         "contextPath": "",
         "isOperator": false,
         "linkedFeatures": [
-          "RHAISTRAT-853"
+          "HPSTRAT-853"
         ],
         "featureTitles": {
-          "RHAISTRAT-853": "Implement Model Cache in RHOAI"
+          "HPSTRAT-853": "Implement Model Cache in RHOAI"
         },
         "labels": [
           "component-onboarding",

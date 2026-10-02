@@ -5,7 +5,7 @@ function makeFeature(daysAgo, recommendation = 'approve', { needsAttention = fal
   const reviewedAt = new Date();
   reviewedAt.setDate(reviewedAt.getDate() - daysAgo);
   return {
-    key: `RHAISTRAT-${Math.random().toString(36).slice(2, 6)}`,
+    key: `HPSTRAT-${Math.random().toString(36).slice(2, 6)}`,
     title: 'Test Feature',
     recommendation,
     needsAttention,

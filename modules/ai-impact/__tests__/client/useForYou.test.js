@@ -42,12 +42,12 @@ import { useForYou } from '../../client/composables/useForYou.js'
 
 describe('classifyRfe', () => {
   it('returns null when linkedFeature is present (skipped)', () => {
-    const rfe = { labels: [], linkedFeature: { key: 'RHAISTRAT-1' } }
+    const rfe = { labels: [], linkedFeature: { key: 'HPSTRAT-1' } }
     expect(classifyRfe(rfe)).toBeNull()
   })
 
   it('returns null even with needs-attention if linkedFeature exists', () => {
-    const rfe = { labels: ['rfe-creator-needs-attention'], linkedFeature: { key: 'RHAISTRAT-1' } }
+    const rfe = { labels: ['rfe-creator-needs-attention'], linkedFeature: { key: 'HPSTRAT-1' } }
     expect(classifyRfe(rfe)).toBeNull()
   })
 

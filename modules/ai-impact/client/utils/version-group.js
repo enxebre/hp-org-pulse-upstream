@@ -30,17 +30,17 @@ export function extractVersionGroup(name) {
   s = s.replace(/\s+release$/i, '').trim()
 
   // Drop leading product tokens so we key on version + phase only.
-  s = s.replace(/^(?:rhoai|rhaiis|rhaii|rhelai|rhai)\s+/, '')
+  s = s.replace(/^(?:rhoai|rhaiis|rhaii|rhelai)\s+/, '')
 
   // Version-first: "3 5 ea1 rhoai" / "3 5 ga rhoai"
-  let m = s.match(/^(\d+(?:\s+\d+)*)\s+(ga|ea\d+)\s+(?:rhoai|rhaiis|rhaii|rhelai|rhai)$/)
+  let m = s.match(/^(\d+(?:\s+\d+)*)\s+(ga|ea\d+)\s+(?:rhoai|rhaiis|rhaii|rhelai)$/)
   if (m) {
     const ver = m[1].replace(/\s+/g, '.')
     return m[2] === 'ga' ? ver : `${ver}.${m[2].toUpperCase()}`
   }
 
   // Version-first without phase: "3 5 rhoai"
-  m = s.match(/^(\d+(?:\s+\d+)*)\s+(?:rhoai|rhaiis|rhaii|rhelai|rhai)$/)
+  m = s.match(/^(\d+(?:\s+\d+)*)\s+(?:rhoai|rhaiis|rhaii|rhelai)$/)
   if (m) return m[1].replace(/\s+/g, '.')
 
   // Product already stripped — "3 5 ea1" / "3 5 ga" / "3 5"

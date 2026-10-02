@@ -2,7 +2,7 @@
   "fetchedAt": "2026-07-21T12:00:00Z",
   "issues": [
     {
-      "key": "RHAIRFE-1001",
+      "key": "RFE-1001",
       "summary": "Implement model serving autoscaling for high-throughput inference",
       "status": "In Progress",
       "priority": "High",
@@ -21,7 +21,7 @@
       "needsAttentionSince": null,
       "rubricPassSince": null,
       "linkedFeature": {
-        "key": "RHAISTRAT-1168",
+        "key": "HPSTRAT-1168",
         "summary": "GPU-as-a-Service Observability Dashboard",
         "status": "Refined",
         "fixVersions": [
@@ -30,7 +30,7 @@
       }
     },
     {
-      "key": "RHAIRFE-1002",
+      "key": "RFE-1002",
       "summary": "Add GPU memory monitoring dashboard for notebook users",
       "status": "New",
       "priority": "Medium",
@@ -51,7 +51,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1003",
+      "key": "RFE-1003",
       "summary": "Support for fine-tuning LLMs with custom datasets",
       "status": "In Review",
       "priority": "Critical",
@@ -71,7 +71,7 @@
       "needsAttentionSince": null,
       "rubricPassSince": "2026-04-27T10:30:00Z",
       "linkedFeature": {
-        "key": "RHAISTRAT-502",
+        "key": "HPSTRAT-502",
         "summary": "Strat: LLM fine-tuning capability",
         "status": "Planning",
         "fixVersions": [
@@ -80,7 +80,7 @@
       }
     },
     {
-      "key": "RHAIRFE-1004",
+      "key": "RFE-1004",
       "summary": "Integrate OpenTelemetry tracing for pipeline debugging",
       "status": "New",
       "priority": "Low",
@@ -97,7 +97,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1005",
+      "key": "RFE-1005",
       "summary": "Multi-model A/B testing framework for inference endpoints",
       "status": "In Progress",
       "priority": "High",
@@ -119,7 +119,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1006",
+      "key": "RFE-1006",
       "summary": "Automated data quality validation for training pipelines",
       "status": "New",
       "priority": "Medium",
@@ -139,7 +139,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1007",
+      "key": "RFE-1007",
       "summary": "Role-based access control for shared model registry",
       "status": "In Review",
       "priority": "High",
@@ -159,7 +159,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1008",
+      "key": "RFE-1008",
       "summary": "Support custom runtime images for Jupyter notebooks",
       "status": "New",
       "priority": "Medium",
@@ -181,7 +181,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1009",
+      "key": "RFE-1009",
       "summary": "Federated learning support for distributed model training",
       "status": "In Progress",
       "priority": "Critical",
@@ -203,7 +203,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1010",
+      "key": "RFE-1010",
       "summary": "Improve model deployment latency for real-time applications",
       "status": "New",
       "priority": "High",
@@ -221,7 +221,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1016",
+      "key": "RFE-1016",
       "summary": "Enable custom metrics collection for deployed model endpoints",
       "status": "New",
       "priority": "Medium",
@@ -241,7 +241,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1017",
+      "key": "RFE-1017",
       "summary": "Implement batch inference scheduling with priority queues",
       "status": "In Review",
       "priority": "High",
@@ -262,7 +262,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1018",
+      "key": "RFE-1018",
       "summary": "Add support for neuromorphic hardware accelerators in serving runtime",
       "status": "New",
       "priority": "Low",
@@ -282,7 +282,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1024",
+      "key": "RFE-1024",
       "summary": "Expose per-request latency percentiles in model serving metrics",
       "status": "New",
       "priority": "Medium",
@@ -302,7 +302,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1025",
+      "key": "RFE-1025",
       "summary": "Add experiment comparison view for hyperparameter tuning runs",
       "status": "New",
       "priority": "High",
@@ -324,7 +324,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1026",
+      "key": "RFE-1026",
       "summary": "Cross-cluster model weight synchronization for geo-distributed serving",
       "status": "New",
       "priority": "Critical",
@@ -345,7 +345,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1019",
+      "key": "RFE-1019",
       "summary": "Automated model drift detection with configurable alert thresholds",
       "status": "New",
       "priority": "High",
@@ -366,7 +366,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1020",
+      "key": "RFE-1020",
       "summary": "Real-time feature store integration with sub-millisecond retrieval latency",
       "status": "New",
       "priority": "Critical",
@@ -387,7 +387,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1021",
+      "key": "RFE-1021",
       "summary": "Improve pipeline step caching for faster iterative reruns",
       "status": "In Review",
       "priority": "Medium",
@@ -408,7 +408,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1022",
+      "key": "RFE-1022",
       "summary": "Multi-cluster model serving with automatic traffic failover",
       "status": "In Progress",
       "priority": "High",
@@ -430,7 +430,7 @@
       "linkedFeature": null
     },
     {
-      "key": "RHAIRFE-1023",
+      "key": "RFE-1023",
       "summary": "Integrate compliance audit logging for regulated ML workloads",
       "status": "In Review",
       "priority": "High",

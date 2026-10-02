@@ -53,10 +53,10 @@ describe('FeatureReviewContent', () => {
 
   it('renders metrics and list when features exist', () => {
     const features = {
-      'RHAISTRAT-1': {
-        key: 'RHAISTRAT-1',
+      'HPSTRAT-1': {
+        key: 'HPSTRAT-1',
         title: 'Test Feature',
-        sourceRfe: 'RHAIRFE-1',
+        sourceRfe: 'RFE-1',
         priority: 'Major',
         status: 'New',
         size: 'M',

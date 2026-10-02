@@ -5,7 +5,7 @@ function makePlan(daysAgo, verdict = 'Ready', { autoRevised = false, humanReview
   const reviewedAt = new Date();
   reviewedAt.setDate(reviewedAt.getDate() - daysAgo);
   return {
-    key: `RHAISTRAT-${Math.random().toString(36).slice(2, 6)}`,
+    key: `HPSTRAT-${Math.random().toString(36).slice(2, 6)}`,
     feature: 'Test Feature',
     verdict,
     score: verdict === 'Ready' ? 9 : verdict === 'Revise' ? 6 : 3,

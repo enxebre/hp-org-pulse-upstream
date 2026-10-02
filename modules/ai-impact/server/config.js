@@ -1,6 +1,6 @@
 const DEFAULT_CONFIG = {
-  jiraProject: 'RHAIRFE',
-  linkedProject: 'RHAISTRAT',
+  jiraProject: 'RFE',
+  linkedProject: 'HPSTRAT',
   createdLabel: 'rfe-creator-auto-created',
   revisedLabel: 'rfe-creator-auto-revised',
   testExclusionLabel: 'rfe-creator-skill-testing',
@@ -8,11 +8,11 @@ const DEFAULT_CONFIG = {
   excludedStatuses: ['Closed'],
   lookbackMonths: 0,
   trendThresholdPp: 2,
-  autofixProjects: ['AIPCC', 'RHOAIENG', 'RHAIENG', 'RHAIFIRST', 'INFERENG', 'JN'],
+  autofixProjects: ['AIPCC', 'RHOAIENG', 'RFE', 'ENGPROD', 'INFERENG', 'JN'],
   // Null means project-wide policy cohort. Set to component names to scope it.
   autofixComponents: null,
   autofixCreatedAfter: null,
-  docProject: 'RHAISTRAT',
+  docProject: 'HPSTRAT',
   docRequiredStatuses: ['Review', 'Release Pending'],
   docRequiredFieldId: 'customfield_10665',
   docContributedLabel: 'ai1st-doc-contributed',

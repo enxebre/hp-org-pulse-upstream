@@ -11,9 +11,9 @@ import { applyJiraFields, syncTestPlanData, extractSignOffInfo } from '../../ser
 function makeEntry(overrides = {}) {
   return {
     latest: {
-      key: 'RHAISTRAT-1168',
+      key: 'HPSTRAT-1168',
       feature: 'GPU Observability',
-      sourceKey: 'RHAISTRAT-1168',
+      sourceKey: 'HPSTRAT-1168',
       score: 8,
       verdict: 'Ready',
       scores: { specificity: 2, grounding: 2, scope_fidelity: 2, actionability: 1, consistency: 1 },
@@ -49,7 +49,7 @@ describe('applyJiraFields', () => {
   it('returns unchanged when nothing differs', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           jiraTitle: 'GPU Observability',
           jiraStatus: 'Refined',
           jiraPriority: 'Major',
@@ -58,7 +58,7 @@ describe('applyJiraFields', () => {
       }
     };
     const issue = {
-      key: 'RHAISTRAT-1168',
+      key: 'HPSTRAT-1168',
       fields: {
         summary: 'GPU Observability',
         status: { name: 'Refined' },
@@ -72,7 +72,7 @@ describe('applyJiraFields', () => {
   it('returns updated when jiraTitle/jiraStatus/jiraPriority change but not humanReviewStatus', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           jiraTitle: 'Old Title',
           jiraStatus: 'New',
           jiraPriority: 'Minor',
@@ -82,7 +82,7 @@ describe('applyJiraFields', () => {
       }
     };
     const issue = {
-      key: 'RHAISTRAT-1168',
+      key: 'HPSTRAT-1168',
       fields: {
         summary: 'New Title',
         status: { name: 'In Progress' },
@@ -92,42 +92,42 @@ describe('applyJiraFields', () => {
     };
     const result = applyJiraFields(data, issue);
     expect(result).toBe('updated');
-    expect(data.testPlans['RHAISTRAT-1168'].latest.jiraTitle).toBe('New Title');
-    expect(data.testPlans['RHAISTRAT-1168'].latest.jiraStatus).toBe('In Progress');
-    expect(data.testPlans['RHAISTRAT-1168'].latest.jiraPriority).toBe('Critical');
+    expect(data.testPlans['HPSTRAT-1168'].latest.jiraTitle).toBe('New Title');
+    expect(data.testPlans['HPSTRAT-1168'].latest.jiraStatus).toBe('In Progress');
+    expect(data.testPlans['HPSTRAT-1168'].latest.jiraPriority).toBe('Critical');
     // No history entry created
-    expect(data.testPlans['RHAISTRAT-1168'].history).toHaveLength(0);
+    expect(data.testPlans['HPSTRAT-1168'].history).toHaveLength(0);
   });
 
   it('returns status_changed and creates history when humanReviewStatus changes', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           labels: ['test-plan-auto-created'],
           humanReviewStatus: 'awaiting-review'
         })
       }
     };
-    const issue = makeJiraIssue('RHAISTRAT-1168');
+    const issue = makeJiraIssue('HPSTRAT-1168');
     const result = applyJiraFields(data, issue);
     expect(result).toBe('status_changed');
-    expect(data.testPlans['RHAISTRAT-1168'].latest.humanReviewStatus).toBe('approved');
-    expect(data.testPlans['RHAISTRAT-1168'].latest.labels).toContain('test-plan-human-sign-off');
+    expect(data.testPlans['HPSTRAT-1168'].latest.humanReviewStatus).toBe('approved');
+    expect(data.testPlans['HPSTRAT-1168'].latest.labels).toContain('test-plan-human-sign-off');
     // History should have the previous state
-    expect(data.testPlans['RHAISTRAT-1168'].history).toHaveLength(1);
+    expect(data.testPlans['HPSTRAT-1168'].history).toHaveLength(1);
   });
 
   it('derives needs-review from rubric-fail label', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           labels: ['test-plan-auto-created'],
           humanReviewStatus: 'awaiting-review'
         })
       }
     };
     const issue = {
-      key: 'RHAISTRAT-1168',
+      key: 'HPSTRAT-1168',
       fields: {
         summary: 'Test Plan Title',
         status: { name: 'In Progress' },
@@ -137,26 +137,26 @@ describe('applyJiraFields', () => {
     };
     const result = applyJiraFields(data, issue);
     expect(result).toBe('status_changed');
-    expect(data.testPlans['RHAISTRAT-1168'].latest.humanReviewStatus).toBe('needs-review');
+    expect(data.testPlans['HPSTRAT-1168'].latest.humanReviewStatus).toBe('needs-review');
   });
 
   it('returns unchanged for unknown test plan key', () => {
     const data = { testPlans: {} };
-    const issue = makeJiraIssue('RHAISTRAT-999');
+    const issue = makeJiraIssue('HPSTRAT-999');
     expect(applyJiraFields(data, issue)).toBe('unchanged');
   });
 
   it('stores approvedBy/approvedAt from changelog when sign-off label is added', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           labels: ['test-plan-auto-created'],
           humanReviewStatus: 'awaiting-review'
         })
       }
     };
     const issue = {
-      ...makeJiraIssue('RHAISTRAT-1168'),
+      ...makeJiraIssue('HPSTRAT-1168'),
       changelog: {
         histories: [{
           created: '2026-05-10T14:30:00.000+0000',
@@ -170,7 +170,7 @@ describe('applyJiraFields', () => {
       }
     };
     applyJiraFields(data, issue);
-    const latest = data.testPlans['RHAISTRAT-1168'].latest;
+    const latest = data.testPlans['HPSTRAT-1168'].latest;
     expect(latest.approvedBy).toBe('Alice Nguyen');
     expect(latest.approvedAt).toBe('2026-05-10T14:30:00.000+0000');
   });
@@ -178,7 +178,7 @@ describe('applyJiraFields', () => {
   it('clears approval info when sign-off label is removed', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           approvedBy: 'Alice Nguyen',
           approvedAt: '2026-05-10T14:30:00.000+0000',
           humanReviewStatus: 'approved',
@@ -187,7 +187,7 @@ describe('applyJiraFields', () => {
       }
     };
     const issue = {
-      key: 'RHAISTRAT-1168',
+      key: 'HPSTRAT-1168',
       fields: {
         summary: 'GPU Observability',
         status: { name: 'In Progress' },
@@ -196,7 +196,7 @@ describe('applyJiraFields', () => {
       }
     };
     applyJiraFields(data, issue);
-    const latest = data.testPlans['RHAISTRAT-1168'].latest;
+    const latest = data.testPlans['HPSTRAT-1168'].latest;
     expect(latest.humanReviewStatus).toBe('awaiting-review');
     expect(latest.approvedBy).toBeUndefined();
     expect(latest.approvedAt).toBeUndefined();
@@ -205,15 +205,15 @@ describe('applyJiraFields', () => {
   it('preserves scores and verdict when updating from Jira', () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           labels: ['test-plan-auto-created'],
           humanReviewStatus: 'awaiting-review'
         })
       }
     };
-    const issue = makeJiraIssue('RHAISTRAT-1168');
+    const issue = makeJiraIssue('HPSTRAT-1168');
     applyJiraFields(data, issue);
-    const latest = data.testPlans['RHAISTRAT-1168'].latest;
+    const latest = data.testPlans['HPSTRAT-1168'].latest;
     expect(latest.score).toBe(8);
     expect(latest.verdict).toBe('Ready');
     expect(latest.reviewedAt).toBe('2026-05-10T12:00:00Z');
@@ -232,10 +232,10 @@ describe('applyJiraFields', () => {
       autoRevised: false,
       reviewedAt: `2026-01-${String(i + 1).padStart(2, '0')}T00:00:00Z`
     }));
-    const data = { testPlans: { 'RHAISTRAT-1168': entry } };
-    const issue = makeJiraIssue('RHAISTRAT-1168');
+    const data = { testPlans: { 'HPSTRAT-1168': entry } };
+    const issue = makeJiraIssue('HPSTRAT-1168');
     applyJiraFields(data, issue);
-    expect(data.testPlans['RHAISTRAT-1168'].history).toHaveLength(20);
+    expect(data.testPlans['HPSTRAT-1168'].history).toHaveLength(20);
   });
 });
 
@@ -332,7 +332,7 @@ describe('syncTestPlanData', () => {
   it('fetches test plans in batches and applies updates', async () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry({
+        'HPSTRAT-1168': makeEntry({
           labels: ['test-plan-auto-created'],
           humanReviewStatus: 'awaiting-review'
         })
@@ -340,7 +340,7 @@ describe('syncTestPlanData', () => {
     };
 
     const mockFetch = vi.fn().mockResolvedValue([
-      makeJiraIssue('RHAISTRAT-1168')
+      makeJiraIssue('HPSTRAT-1168')
     ]);
 
     const result = await syncTestPlanData(data, mockFetch);
@@ -355,7 +355,7 @@ describe('syncTestPlanData', () => {
   it('counts test plans not found in Jira', async () => {
     const data = {
       testPlans: {
-        'RHAISTRAT-1168': makeEntry()
+        'HPSTRAT-1168': makeEntry()
       }
     };
 
@@ -369,7 +369,7 @@ describe('syncTestPlanData', () => {
   it('handles batch errors gracefully and continues', async () => {
     const testPlans = {};
     for (let i = 0; i < 60; i++) {
-      testPlans[`RHAISTRAT-${i}`] = makeEntry({ key: `RHAISTRAT-${i}` });
+      testPlans[`HPSTRAT-${i}`] = makeEntry({ key: `HPSTRAT-${i}` });
     }
     const data = { testPlans };
 

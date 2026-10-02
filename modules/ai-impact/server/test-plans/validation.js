@@ -38,8 +38,8 @@ function validateTestPlan(body) {
   }
 
   // sourceKey: required, pattern match
-  if (typeof b.sourceKey !== 'string' || !/^(RHAISTRAT|RHOAIENG|RHAIRFE)-\d+$/.test(b.sourceKey)) {
-    errors.push('sourceKey must match pattern RHAISTRAT-NNN, RHOAIENG-NNN, or RHAIRFE-NNN');
+  if (typeof b.sourceKey !== 'string' || !/^(HPSTRAT|RHOAIENG|RFE)-\d+$/.test(b.sourceKey)) {
+    errors.push('sourceKey must match pattern HPSTRAT-NNN, RHOAIENG-NNN, or RFE-NNN');
   }
 
   // scores: object with 5 criteria, each 0-2 integer

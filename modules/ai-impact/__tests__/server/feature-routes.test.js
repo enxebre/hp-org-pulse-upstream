@@ -12,9 +12,9 @@ import registerFeatureRoutes from '../../server/features/routes.js';
 
 function makeValidBody() {
   return {
-    key: 'RHAISTRAT-1168',
+    key: 'HPSTRAT-1168',
     title: 'GPU-as-a-Service Observability',
-    sourceRfe: 'RHAIRFE-262',
+    sourceRfe: 'RFE-262',
     priority: 'Major',
     status: 'Refined',
     size: 'L',
@@ -128,9 +128,9 @@ describe('GET /features', () => {
       features: {
         A: {
           latest: {
-            key: 'RHAISTRAT-1',
+            key: 'HPSTRAT-1',
             title: 'Test',
-            sourceRfe: 'RHAIRFE-1',
+            sourceRfe: 'RFE-1',
             priority: 'Major',
             status: 'New',
             size: 'M',
@@ -178,11 +178,11 @@ describe('GET /features/:key', () => {
       latest: makeValidBody(),
       history: [{ scores: {}, recommendation: 'revise', needsAttention: false, humanReviewStatus: 'needs-review', reviewedAt: '2026-04-10T00:00:00Z' }]
     };
-    const data = { lastSyncedAt: 'x', totalFeatures: 1, features: { 'RHAISTRAT-1': entry } };
+    const data = { lastSyncedAt: 'x', totalFeatures: 1, features: { 'HPSTRAT-1': entry } };
     const { router, routes } = createRouter();
     registerFeatureRoutes(router, makeContext(data));
 
-    const { res } = await callHandler(routes, 'GET', '/features/:key', {}, { key: 'RHAISTRAT-1' });
+    const { res } = await callHandler(routes, 'GET', '/features/:key', {}, { key: 'HPSTRAT-1' });
     const payload = res.json.mock.calls[0][0];
     expect(payload.latest).toBeDefined();
     expect(payload.history).toHaveLength(1);
@@ -209,7 +209,7 @@ describe('PUT /features/:key', () => {
     const { router, routes } = createRouter();
     registerFeatureRoutes(router, makeContext(null));
 
-    const { res } = await callHandler(routes, 'PUT', '/features/:key', makeValidBody(), { key: 'RHAISTRAT-1168' });
+    const { res } = await callHandler(routes, 'PUT', '/features/:key', makeValidBody(), { key: 'HPSTRAT-1168' });
     expect(res.json).toHaveBeenCalledWith({ status: 'created' });
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/api/modules/releases/execution/ai-review/bulk'),
@@ -221,7 +221,7 @@ describe('PUT /features/:key', () => {
     const { router, routes } = createRouter();
     registerFeatureRoutes(router, makeContext(null));
 
-    const { res } = await callHandler(routes, 'PUT', '/features/:key', { bad: true }, { key: 'RHAISTRAT-1' });
+    const { res } = await callHandler(routes, 'PUT', '/features/:key', { bad: true }, { key: 'HPSTRAT-1' });
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
@@ -235,7 +235,7 @@ describe('PUT /features/:key', () => {
     const { router, routes } = createRouter();
     registerFeatureRoutes(router, makeContext(null));
 
-    const { res } = await callHandler(routes, 'PUT', '/features/:key', makeValidBody(), { key: 'RHAISTRAT-1168' });
+    const { res } = await callHandler(routes, 'PUT', '/features/:key', makeValidBody(), { key: 'HPSTRAT-1168' });
     expect(res.status).toHaveBeenCalledWith(502);
   });
 });
@@ -254,7 +254,7 @@ describe('POST /features/bulk', () => {
     const body = {
       features: [
         makeValidBody(),
-        { ...makeValidBody(), key: 'RHAISTRAT-1169', reviewedAt: '2026-04-20T00:00:00Z' }
+        { ...makeValidBody(), key: 'HPSTRAT-1169', reviewedAt: '2026-04-20T00:00:00Z' }
       ]
     };
     const { res } = await callHandler(routes, 'POST', '/features/bulk', body);
@@ -275,7 +275,7 @@ describe('POST /features/bulk', () => {
     const { router, routes } = createRouter();
     registerFeatureRoutes(router, makeContext(null));
 
-    const features = Array.from({ length: 5001 }, (_, i) => ({ ...makeValidBody(), key: `RHAISTRAT-${i}` }));
+    const features = Array.from({ length: 5001 }, (_, i) => ({ ...makeValidBody(), key: `HPSTRAT-${i}` }));
     const { res } = await callHandler(routes, 'POST', '/features/bulk', { features });
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json.mock.calls[0][0].error).toContain('5000');
@@ -294,7 +294,7 @@ describe('POST /features/bulk', () => {
     const body = {
       features: [
         makeValidBody(),
-        { key: 'RHAISTRAT-BAD', scores: 'invalid' },
+        { key: 'HPSTRAT-BAD', scores: 'invalid' },
         { noKey: true }
       ]
     };
@@ -316,7 +316,7 @@ describe('POST /features/bulk', () => {
 
     const entry = makeValidBody();
     delete entry.key;
-    entry.strat_id = 'RHAISTRAT-999';
+    entry.strat_id = 'HPSTRAT-999';
 
     const body = { features: [entry] };
     const { res } = await callHandler(routes, 'POST', '/features/bulk', body);

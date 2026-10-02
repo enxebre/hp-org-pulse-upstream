@@ -1,7 +1,7 @@
 {
   "name": "AI Impact",
   "slug": "ai-impact",
-  "description": "Track AI adoption across the RHAI delivery pipeline",
+  "description": "Track AI adoption across HP Engineering",
   "icon": "sparkles",
   "order": 5,
   "client": {

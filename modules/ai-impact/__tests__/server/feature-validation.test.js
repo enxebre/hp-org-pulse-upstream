@@ -3,9 +3,9 @@ import { validateFeature, DIMENSIONS, PRIORITIES, RECOMMENDATIONS } from '../../
 
 function makeValidFeature(overrides = {}) {
   return {
-    key: 'RHAISTRAT-1168',
+    key: 'HPSTRAT-1168',
     title: 'GPU-as-a-Service Observability',
-    sourceRfe: 'RHAIRFE-262',
+    sourceRfe: 'RFE-262',
     priority: 'Major',
     status: 'Refined',
     size: 'L',
@@ -25,7 +25,7 @@ describe('validateFeature', () => {
   it('accepts a valid full feature', () => {
     const result = validateFeature(makeValidFeature());
     expect(result.valid).toBe(true);
-    expect(result.data.key).toBe('RHAISTRAT-1168');
+    expect(result.data.key).toBe('HPSTRAT-1168');
     expect(result.data.scores.total).toBe(6);
     expect(result.data.recommendation).toBe('approve');
     expect(result.data.reviewedAt).toBe('2026-04-19T01:30:35Z');
@@ -85,7 +85,7 @@ describe('validateFeature', () => {
     expect(result.valid).toBe(false);
   });
 
-  it('accepts non-RHAISTRAT key prefixes', () => {
+  it('accepts non-HPSTRAT key prefixes', () => {
     const result = validateFeature(makeValidFeature({ key: 'STRAT-123' }));
     expect(result.valid).toBe(true);
     expect(result.data.key).toBe('STRAT-123');
@@ -98,8 +98,8 @@ describe('validateFeature', () => {
   });
 
   // sourceRfe validation
-  it('rejects sourceRfe not starting with RHAIRFE-', () => {
-    const result = validateFeature(makeValidFeature({ sourceRfe: 'RHAISTRAT-123' }));
+  it('rejects sourceRfe not starting with RFE-', () => {
+    const result = validateFeature(makeValidFeature({ sourceRfe: 'HPSTRAT-123' }));
     expect(result.valid).toBe(false);
   });
 
@@ -218,19 +218,19 @@ describe('validateFeature', () => {
   it('normalizes strat_id → key', () => {
     const f = makeValidFeature();
     delete f.key;
-    f.strat_id = 'RHAISTRAT-999';
+    f.strat_id = 'HPSTRAT-999';
     const result = validateFeature(f);
     expect(result.valid).toBe(true);
-    expect(result.data.key).toBe('RHAISTRAT-999');
+    expect(result.data.key).toBe('HPSTRAT-999');
   });
 
   it('normalizes source_rfe → sourceRfe', () => {
     const f = makeValidFeature();
     delete f.sourceRfe;
-    f.source_rfe = 'RHAIRFE-100';
+    f.source_rfe = 'RFE-100';
     const result = validateFeature(f);
     expect(result.valid).toBe(true);
-    expect(result.data.sourceRfe).toBe('RHAIRFE-100');
+    expect(result.data.sourceRfe).toBe('RFE-100');
   });
 
   it('normalizes needs_attention → needsAttention', () => {
@@ -280,10 +280,10 @@ describe('validateFeature', () => {
   });
 
   it('prefers camelCase over snake_case when both present', () => {
-    const f = makeValidFeature({ key: 'RHAISTRAT-1', strat_id: 'RHAISTRAT-2' });
+    const f = makeValidFeature({ key: 'HPSTRAT-1', strat_id: 'HPSTRAT-2' });
     const result = validateFeature(f);
     expect(result.valid).toBe(true);
-    expect(result.data.key).toBe('RHAISTRAT-1');
+    expect(result.data.key).toBe('HPSTRAT-1');
   });
 
   // Extra fields are ignored

@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { processIssue, extractLabelDate } from '../../server/jira/rfe-fetcher.js';
 
 const DEFAULT_CONFIG = {
-  jiraProject: 'RHAIRFE',
-  linkedProject: 'RHAISTRAT',
+  jiraProject: 'RFE',
+  linkedProject: 'HPSTRAT',
   createdLabel: 'rfe-creator-auto-created',
   revisedLabel: 'rfe-creator-auto-revised',
   testExclusionLabel: 'rfe-creator-skill-testing',
@@ -15,7 +15,7 @@ const DEFAULT_CONFIG = {
 
 function makeIssue(overrides = {}) {
   return {
-    key: 'RHAIRFE-1',
+    key: 'RFE-1',
     fields: {
       summary: 'Test RFE',
       status: { name: 'New' },
@@ -117,7 +117,7 @@ describe('processIssue', () => {
   it('processes an issue correctly', () => {
     const issue = makeIssue({ labels: ['rfe-creator-auto-created'] });
     const result = processIssue(issue, DEFAULT_CONFIG);
-    expect(result.key).toBe('RHAIRFE-1');
+    expect(result.key).toBe('RFE-1');
     expect(result.summary).toBe('Test RFE');
     expect(result.status).toBe('New');
     expect(result.priority).toBe('High');
@@ -127,7 +127,7 @@ describe('processIssue', () => {
   });
 
   it('preserves _rawIssueLinks for link-resolver', () => {
-    const links = [{ type: { name: 'Cloners' }, outwardIssue: { key: 'RHAISTRAT-1' } }];
+    const links = [{ type: { name: 'Cloners' }, outwardIssue: { key: 'HPSTRAT-1' } }];
     const issue = makeIssue({ issuelinks: links });
     const result = processIssue(issue, DEFAULT_CONFIG);
     expect(result._rawIssueLinks).toEqual(links);

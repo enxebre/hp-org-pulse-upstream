@@ -40,7 +40,7 @@ function trimForHistory(assessment) {
 /**
  * Upsert a single assessment into the data object (mutates in place).
  * @param {object} data - The full assessments data object
- * @param {string} rfeKey - The RFE key (e.g. "RHAIRFE-123")
+ * @param {string} rfeKey - The RFE key (e.g. "RFE-123")
  * @param {object} assessment - The validated assessment data
  * @returns {'created' | 'updated' | 'unchanged'}
  */

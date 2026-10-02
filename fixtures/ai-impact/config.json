@@ -1,6 +1,6 @@
 {
-  "jiraProject": "RHAIRFE",
-  "linkedProject": "RHAISTRAT",
+  "jiraProject": "RFE",
+  "linkedProject": "HPSTRAT",
   "createdLabel": "rfe-creator-auto-created",
   "revisedLabel": "rfe-creator-auto-revised",
   "testExclusionLabel": "rfe-creator-skill-testing",

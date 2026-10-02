@@ -3,11 +3,11 @@
   "lastJiraSyncAt": "2026-07-15T00:00:00Z",
   "totalTestPlans": 7,
   "testPlans": {
-    "RHAISTRAT-1168": {
+    "HPSTRAT-1168": {
       "latest": {
-        "key": "RHAISTRAT-1168",
+        "key": "HPSTRAT-1168",
         "feature": "GPU-as-a-Service Observability Dashboard",
-        "sourceKey": "RHAISTRAT-1168",
+        "sourceKey": "HPSTRAT-1168",
         "score": 9,
         "verdict": "Ready",
         "scores": {
@@ -53,7 +53,7 @@
         "approvedBy": "Alice Nguyen",
         "approvedAt": "2026-07-15T00:00:00Z",
         "reviewedAt": "2026-07-14T00:00:00Z",
-        "gitlabPath": "RHAISTRAT/20260510-120000-RHAISTRAT-1168/gpu_observability_dashboard"
+        "gitlabPath": "HPSTRAT/20260510-120000-HPSTRAT-1168/gpu_observability_dashboard"
       },
       "history": [
         {
@@ -71,11 +71,11 @@
         }
       ]
     },
-    "RHAISTRAT-1169": {
+    "HPSTRAT-1169": {
       "latest": {
-        "key": "RHAISTRAT-1169",
+        "key": "HPSTRAT-1169",
         "feature": "Model Serving Autoscaling for High-Throughput Inference",
-        "sourceKey": "RHAISTRAT-1169",
+        "sourceKey": "HPSTRAT-1169",
         "score": 5,
         "verdict": "Revise",
         "scores": {
@@ -109,11 +109,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1170": {
+    "HPSTRAT-1170": {
       "latest": {
-        "key": "RHAISTRAT-1170",
+        "key": "HPSTRAT-1170",
         "feature": "Training Operator GPU Scheduling Improvements",
-        "sourceKey": "RHAISTRAT-1170",
+        "sourceKey": "HPSTRAT-1170",
         "score": 3,
         "verdict": "Rework",
         "scores": {
@@ -146,11 +146,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1171": {
+    "HPSTRAT-1171": {
       "latest": {
-        "key": "RHAISTRAT-1171",
+        "key": "HPSTRAT-1171",
         "feature": "Model Registry RBAC and Multi-Tenancy",
-        "sourceKey": "RHAISTRAT-1171",
+        "sourceKey": "HPSTRAT-1171",
         "score": 10,
         "verdict": "Ready",
         "scores": {
@@ -191,11 +191,11 @@
       },
       "history": []
     },
-    "RHAISTRAT-1172": {
+    "HPSTRAT-1172": {
       "latest": {
-        "key": "RHAISTRAT-1172",
+        "key": "HPSTRAT-1172",
         "feature": "Notebook Image Lifecycle Management",
-        "sourceKey": "RHAISTRAT-1172",
+        "sourceKey": "HPSTRAT-1172",
         "score": 8,
         "verdict": "Ready",
         "scores": {
@@ -286,11 +286,11 @@
         }
       ]
     },
-    "RHAISTRAT-1175": {
+    "HPSTRAT-1175": {
       "latest": {
-        "key": "RHAISTRAT-1175",
+        "key": "HPSTRAT-1175",
         "feature": "Distributed Training with Ray on OpenShift",
-        "sourceKey": "RHAISTRAT-1175",
+        "sourceKey": "HPSTRAT-1175",
         "score": 6,
         "verdict": "Revise",
         "scores": {

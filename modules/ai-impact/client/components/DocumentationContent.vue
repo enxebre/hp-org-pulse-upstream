@@ -210,11 +210,11 @@ function jiraJqlUrl(jql) {
 }
 
 const cumulativeJqls = computed(() => ({
-  stratsContributed: 'project = "RHAISTRAT" AND labels = "ai1st-doc-contributed"',
-  allContributed: 'project IN ("RHAISTRAT", "RHOAIENG") AND labels = "ai1st-doc-contributed"',
-  allInvoked: 'project IN ("RHAISTRAT", "RHOAIENG") AND labels = "ai1st-doc-invoked"',
-  allResolvedContributed: 'project IN ("RHAISTRAT", "RHOAIENG") AND status IN ("Resolved", "Closed") AND labels = "ai1st-doc-contributed"',
-  stratsResolvedContributed: 'project = "RHAISTRAT" AND status IN ("Resolved", "Closed") AND labels = "ai1st-doc-contributed"'
+  featuresContributed: 'project = "HPSTRAT" AND labels = "ai1st-doc-contributed"',
+  allContributed: 'project IN ("HPSTRAT", "RHOAIENG") AND labels = "ai1st-doc-contributed"',
+  allInvoked: 'project IN ("HPSTRAT", "RHOAIENG") AND labels = "ai1st-doc-invoked"',
+  allResolvedContributed: 'project IN ("HPSTRAT", "RHOAIENG") AND status IN ("Resolved", "Closed") AND labels = "ai1st-doc-contributed"',
+  featuresResolvedContributed: 'project = "HPSTRAT" AND status IN ("Resolved", "Closed") AND labels = "ai1st-doc-contributed"'
 }))
 
 const MR_STATUS_ICONS = {
@@ -298,8 +298,8 @@ function mrLabel(url) {
         <div class="px-6 pt-6" v-if="cumulativeStats">
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
-              <a :href="jiraJqlUrl(cumulativeJqls.stratsContributed)" target="_blank" rel="noopener" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:underline">{{ cumulativeStats.stratsContributed }}</a>
-              <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">RHAISTRATs with AI Generated docs</div>
+              <a :href="jiraJqlUrl(cumulativeJqls.featuresContributed)" target="_blank" rel="noopener" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:underline">{{ cumulativeStats.featuresContributed }}</a>
+              <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">HP Features with AI Generated docs</div>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
               <a :href="jiraJqlUrl(cumulativeJqls.allContributed)" target="_blank" rel="noopener" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:underline">{{ cumulativeStats.allContributed }}</a>
@@ -314,8 +314,8 @@ function mrLabel(url) {
               <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Resolved/Closed with AI Generated docs</div>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
-              <a :href="jiraJqlUrl(cumulativeJqls.stratsResolvedContributed)" target="_blank" rel="noopener" class="text-2xl font-bold text-green-600 dark:text-green-400 hover:underline">{{ cumulativeStats.stratsResolvedContributed }}</a>
-              <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">RHAISTRATs Resolved/Closed with AI Generated docs</div>
+              <a :href="jiraJqlUrl(cumulativeJqls.featuresResolvedContributed)" target="_blank" rel="noopener" class="text-2xl font-bold text-green-600 dark:text-green-400 hover:underline">{{ cumulativeStats.featuresResolvedContributed }}</a>
+              <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">HP Features Resolved/Closed with AI Generated docs</div>
             </div>
           </div>
         </div>
@@ -332,7 +332,7 @@ function mrLabel(url) {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div class="absolute left-0 top-6 z-10 hidden group-hover:block w-64 p-3 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:shadow-gray-900/50">
-                    RHAISTRAT issues in Review or Release Pending with "Product Documentation Required" = Yes. This demand signal is independent of the AI-First tool. Use trend to inspect rising/stable/decreasing for doc demand.
+                    HPSTRAT issues in Review or Release Pending with "Product Documentation Required" = Yes. This demand signal is independent of the AI-First tool. Use trend to inspect rising/stable/decreasing for doc demand.
                   </div>
                 </div>
               </div>
@@ -420,7 +420,7 @@ function mrLabel(url) {
               </div>
             </div>
             <div class="px-5 py-2.5 border-b border-gray-200 dark:border-gray-700 bg-indigo-50 dark:bg-indigo-500/10 text-xs text-gray-600 dark:text-gray-400">
-              To trigger AI-First documentation, add the label <code class="px-1.5 py-0.5 rounded-md bg-gray-200/80 dark:bg-gray-700/80 text-gray-800 dark:text-gray-200 font-mono text-[11px] border border-gray-300/60 dark:border-gray-600/60">ai1st-doc-start</code> to the Jira issue (preferably RHAISTRAT, but not required). <a href="#/ai-impact/ai-factory-guide?section=documentation" class="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">See AI Factory Guide for more info</a>.
+              To trigger AI-First documentation, add the label <code class="px-1.5 py-0.5 rounded-md bg-gray-200/80 dark:bg-gray-700/80 text-gray-800 dark:text-gray-200 font-mono text-[11px] border border-gray-300/60 dark:border-gray-600/60">ai1st-doc-start</code> to the Jira issue (preferably HPSTRAT, but not required). <a href="#/ai-impact/ai-factory-guide?section=documentation" class="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">See AI Factory Guide for more info</a>.
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">

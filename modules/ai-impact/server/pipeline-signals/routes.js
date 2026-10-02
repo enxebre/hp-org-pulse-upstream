@@ -28,7 +28,7 @@ module.exports = function registerPipelineSignalRoutes(router, context) {
    *         required: true
    *         schema:
    *           type: string
-   *         description: Feature Jira key (e.g. RHAISTRAT-1234 or RHOAIENG-567)
+   *         description: Feature Jira key (e.g. HPSTRAT-1234 or RHOAIENG-567)
    *     responses:
    *       200:
    *         description: Pipeline signals for all phases

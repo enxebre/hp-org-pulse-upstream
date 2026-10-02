@@ -14,7 +14,7 @@ export const enablementCategories = [
     id: 'rfe-builder',
     title: 'RFE Builder',
     section: 'ai-sdlc',
-    slackChannel: { name: '#wg-rhai-rfe-builder', url: 'https://app.slack.com/client/E030G10V24F/C0AMPLH0Y9G' },
+    slackChannel: { name: '#team-hp-engineering-productivity', url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
     links: [
       { label: 'Enablement Recording', icon: 'Video', url: 'https://drive.google.com/file/d/1qZomlB-TK2FODtmvjzpMeH_g5qpuAOh-/view?usp=sharing' },
       { label: 'Enablement Slides', icon: 'Presentation', url: 'https://docs.google.com/presentation/d/1O-F8naJxAfYtcXjTJHySYjeLtrKfb1OHhtyhoItya0s/edit?usp=sharing' },
@@ -26,7 +26,7 @@ export const enablementCategories = [
     id: 'strat-builder',
     title: 'STRAT Builder',
     section: 'ai-sdlc',
-    slackChannel: { name: '#wg-rhai-strat-refine-review', url: 'https://app.slack.com/client/E030G10V24F/C0APA0E2J3Z' },
+    slackChannel: { name: '#team-hp-engineering-productivity', url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
     links: [
       { label: 'Enablement Recording', icon: 'Video', url: 'https://drive.google.com/file/d/1dXtifXiAsbnZtfiU9-vKUCEvfLX5ANvg/view' },
       { label: 'Enablement Slides', icon: 'Presentation', url: 'https://docs.google.com/presentation/d/1oBIyJo30MSuig9Q1Qokq-6yclm_OL9htbWV91_YWMFs/edit?slide=id.g3dc5b8ade0b_0_14#slide=id.g3dc5b8ade0b_0_14' },
@@ -47,7 +47,7 @@ export const enablementCategories = [
     id: 'ai-quality',
     title: 'AI Quality',
     section: 'ai-sdlc',
-    slackChannel: { name: '#wg-rhai-quality-eng-builder', url: 'https://app.slack.com/client/E030G10V24F/C0ANMTUF5FW' },
+    slackChannel: { name: '#team-hp-engineering-productivity', url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
     links: [
       { label: 'Enablement Recording', icon: 'Video', url: 'https://drive.google.com/file/d/1jlsw8rVpRRo1Y1kkKhJ7LHDy3N6C_Uxp/view' },
       { label: 'Enablement Slides', icon: 'Presentation', url: 'https://docs.google.com/presentation/d/1XuLna0_2DHX7EzepJHk03PpQF1urFoF39xaq9N-G6rY/edit?slide=id.g3d48d3b5671_0_5160#slide=id.g3d48d3b5671_0_5160' },
@@ -58,7 +58,7 @@ export const enablementCategories = [
     id: 'ai-first-documentation',
     title: 'AI First Documentation',
     section: 'ai-sdlc',
-    slackChannel: { name: '#wg-rhai-document-builder', url: 'https://redhat.enterprise.slack.com/archives/C0APCEUR196' },
+    slackChannel: { name: '#team-hp-engineering-productivity', url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
     links: [
       { label: 'Enablement Recording', icon: 'Video', url: 'https://drive.google.com/file/d/1A0JARScdMm1mnoHBj7P9mOULtNumWmDM/view' },
       { label: 'Enablement Slides', icon: 'Presentation', url: 'https://docs.google.com/presentation/d/1Nv8Pp7fNRSzgED8B7p7KaBg1OaPnI011iA41EY-tCzo/edit?slide=id.g3e334837aa4_0_0#slide=id.g3e334837aa4_0_0' },
@@ -69,7 +69,7 @@ export const enablementCategories = [
     id: 'component-onboarding',
     title: 'Component Onboarding',
     section: 'ai-sdlc',
-    slackChannel: { name: '#forum-rhai-ai-first', url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
+    slackChannel: { name: '#team-hp-engineering-productivity', url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
     links: [
       { label: 'Enablement Recording', icon: 'Video', url: 'javascript:void(0)' },
       { label: 'Enablement Slides', icon: 'Presentation', url: 'javascript:void(0)' },
@@ -79,7 +79,7 @@ export const enablementCategories = [
     id: 'jira-autofix',
     title: 'Jira Autofix',
     section: 'ai-workflows',
-    slackChannel: { name: '#wg-rhai-ai-first-code-autofix', url: 'https://app.slack.com/client/E030G10V24F/C0ASJ32PJ0N' },
+    slackChannel: { name: '#team-hp-engineering-productivity', url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
     linkGroups: [
       {
         date: '2026JUN11',

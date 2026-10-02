@@ -16,14 +16,14 @@ function makeReleasesIndex(features = []) {
 
 function makeFeatureFile(overrides = {}) {
   return {
-    key: 'RHAISTRAT-1168',
+    key: 'HPSTRAT-1168',
     summary: 'GPU-as-a-Service Observability',
     status: 'Refined',
     priority: 'Major',
     labels: ['strat-creator-auto-created'],
     aiReview: {
       title: 'GPU-as-a-Service Observability',
-      sourceRfe: 'RHAIRFE-262',
+      sourceRfe: 'RFE-262',
       size: 'L',
       recommendation: 'approve',
       needsAttention: false,
@@ -42,7 +42,7 @@ function makeFeatureFile(overrides = {}) {
 describe('readFeatures', () => {
   it('returns features from releases index when aiReview data exists', async () => {
     const indexEntry = {
-      key: 'RHAISTRAT-1168',
+      key: 'HPSTRAT-1168',
       summary: 'GPU-as-a-Service Observability',
       status: 'Refined',
       priority: 'Major',
@@ -58,15 +58,15 @@ describe('readFeatures', () => {
     const featureFile = makeFeatureFile();
     const read = vi.fn(async function(key) {
       if (key === 'releases/execution/index.json') return makeReleasesIndex([indexEntry]);
-      if (key === 'releases/execution/features/RHAISTRAT-1168.json') return featureFile;
+      if (key === 'releases/execution/features/HPSTRAT-1168.json') return featureFile;
       return null;
     });
 
     const result = await readFeatures(read);
     expect(result.totalFeatures).toBe(1);
-    expect(result.features['RHAISTRAT-1168']).toBeDefined();
-    expect(result.features['RHAISTRAT-1168'].latest.recommendation).toBe('approve');
-    expect(result.features['RHAISTRAT-1168'].history).toHaveLength(1);
+    expect(result.features['HPSTRAT-1168']).toBeDefined();
+    expect(result.features['HPSTRAT-1168'].latest.recommendation).toBe('approve');
+    expect(result.features['HPSTRAT-1168'].history).toHaveLength(1);
   });
 
   it('falls back to legacy store when no releases index', async () => {
@@ -140,9 +140,9 @@ describe('getLatestProjection', () => {
       features: {
         'A': {
           latest: {
-            key: 'RHAISTRAT-1',
+            key: 'HPSTRAT-1',
             title: 'Test',
-            sourceRfe: 'RHAIRFE-1',
+            sourceRfe: 'RFE-1',
             priority: 'Major',
             status: 'New',
             size: 'M',

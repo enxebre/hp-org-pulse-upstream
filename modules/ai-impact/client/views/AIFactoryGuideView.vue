@@ -139,8 +139,8 @@ const rfeToolLinks = [
   { label: 'assess-rfe plugin', icon: Code, url: 'https://github.com/opendatahub-io/assess-rfe' },
   { label: 'rfe-creator plugin', icon: Code, url: 'https://github.com/jwforres/rfe-creator' },
   { label: 'Skills Registry', icon: BookOpen, url: 'https://github.com/opendatahub-io/skills-registry' },
-  { label: '#wg-rhai-rfe-builder', icon: MessageSquare, url: 'https://app.slack.com/client/E030G10V24F/C0AMPLH0Y9G' },
-  { label: '#forum-rhai-ai-first', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/forum-rhai-ai-first' },
+  { label: '#team-hp-engineering-productivity', icon: MessageSquare, url: 'https://app.slack.com/client/E030G10V24F/C0AMPLH0Y9G' },
+  { label: '#team-hp-engineering-productivity', icon: HelpCircle, url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
 ]
 
 const rfeSteps = [
@@ -153,7 +153,7 @@ const rfeSteps = [
 
 // Feature Review timeline steps
 const featureSteps = [
-  { name: 'Feature Creation', desc: 'Pipeline clones approved RFEs into RHAISTRAT Jira tickets and captures the business need', ai: true },
+  { name: 'Feature Creation', desc: 'Pipeline clones approved RFEs into HPSTRAT Jira tickets and captures the business need', ai: true },
   { name: 'Feature Refinement', desc: 'AI adds the "how": technical approach, components, dependencies, acceptance criteria, effort estimates', ai: true, hint: 'opendatahub-io/architecture-context' },
   { name: 'Feature Scoring', desc: 'AI scores across 4 dimensions using independent reviewer agents (one per dimension). Each dimension scored 0–2, total /8', ai: true },
   { name: 'Human Sign-off', desc: 'A staff engineer, architect, or SME for the relevant product space reviews and approves', ai: false },
@@ -180,12 +180,12 @@ const featureToolLinks = [
 ]
 
 const featureCommunityLinks = [
-  { label: '#forum-rhai-ai-first', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/forum-rhai-ai-first' },
+  { label: '#team-hp-engineering-productivity', icon: HelpCircle, url: 'https://redhat.enterprise.slack.com/archives/C07FQ00BJV8' },
 ]
 
 // Test Plan Review data
 const testPlanSteps = [
-  { name: 'Strategy Input', desc: 'Developer provides a RHAISTRAT key — the skill pulls the feature strategy from Jira', ai: false },
+  { name: 'Strategy Input', desc: 'Developer provides a HPSTRAT key — the skill pulls the feature strategy from Jira', ai: false },
   { name: 'Test Plan Generation', desc: 'AI analyzes the strategy and generates a structured test plan (TestPlan.md)', ai: true },
   { name: 'Quality Review', desc: 'AI scores the test plan across 5 dimensions (0-2 each, /10 total)', ai: true },
   { name: 'Auto-Revision', desc: 'Failing plans are automatically revised up to 2 cycles', ai: true },
@@ -216,8 +216,8 @@ const testPlanToolLinks = [
 ]
 
 const testPlanCommunityLinks = [
-  { label: '#forum-rhai-ai-first', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
-  { label: '#wg-rhai-quality-eng-builder', icon: MessageSquare, url: 'https://app.slack.com/client/E030G10V24F/C0ANMTUF5FW' },
+  { label: '#team-hp-engineering-productivity', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
+  { label: '#team-hp-engineering-productivity', icon: MessageSquare, url: 'https://app.slack.com/client/E030G10V24F/C0ANMTUF5FW' },
 ]
 
 const docLearnLinks = [
@@ -227,8 +227,8 @@ const docLearnLinks = [
 ]
 
 const docCommunityLinks = [
-  { label: '#wg-rhai-document-builder', icon: MessageSquare, url: 'https://redhat.enterprise.slack.com/archives/C0APCEUR196' },
-  { label: '#forum-rhai-ai-first', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
+  { label: '#team-hp-engineering-productivity', icon: MessageSquare, url: 'https://redhat.enterprise.slack.com/archives/C0APCEUR196' },
+  { label: '#team-hp-engineering-productivity', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
 ]
 
 // Build & Release data
@@ -285,7 +285,7 @@ const buildReleaseToolLinks = [
 ]
 
 const buildReleaseCommunityLinks = [
-  { label: '#forum-rhai-ai-first', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
+  { label: '#team-hp-engineering-productivity', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
 ]
 
 // Jira Autofix data
@@ -323,7 +323,7 @@ const autofixToolLinks = [
 ]
 
 const autofixCommunityLinks = [
-  { label: '#forum-rhai-ai-first', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
+  { label: '#team-hp-engineering-productivity', icon: HelpCircle, url: 'https://app.slack.com/client/E030G10V24F/C0APP9DDB2R' },
 ]
 
 function scopeBadgeClasses(scope) {
@@ -528,7 +528,7 @@ function labelColorClasses(color) {
               <Search :size="20" class="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div>
                 <div class="text-sm font-semibold text-gray-900 dark:text-white">Check labels in Jira</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Look for the <code class="px-1.5 py-0.5 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-400 text-xs rounded font-mono">rfe-creator-autofix-rubric-pass</code> label (passing) or <code class="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs rounded font-mono">rfe-creator-needs-attention</code> label (failing) on your RHAIRFE ticket</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Look for the <code class="px-1.5 py-0.5 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-400 text-xs rounded font-mono">rfe-creator-autofix-rubric-pass</code> label (passing) or <code class="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs rounded font-mono">rfe-creator-needs-attention</code> label (failing) on your RFE ticket</div>
               </div>
             </div>
             <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
@@ -755,7 +755,7 @@ function labelColorClasses(color) {
               <Search :size="20" class="text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
               <div>
                 <div class="text-sm font-semibold text-gray-900 dark:text-white">Check labels in Jira</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Look for the <code class="px-1.5 py-0.5 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-400 text-xs rounded font-mono">strat-creator-rubric-pass</code> label (approve) or <code class="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs rounded font-mono">strat-creator-needs-attention</code> label (revise/reject) on your RHAISTRAT ticket</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Look for the <code class="px-1.5 py-0.5 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-400 text-xs rounded font-mono">strat-creator-rubric-pass</code> label (approve) or <code class="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs rounded font-mono">strat-creator-needs-attention</code> label (revise/reject) on your HPSTRAT ticket</div>
               </div>
             </div>
             <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
@@ -1048,7 +1048,7 @@ function labelColorClasses(color) {
               <Search :size="20" class="text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
               <div>
                 <div class="text-sm font-semibold text-gray-900 dark:text-white">Check labels in Jira</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Look for <code class="px-1.5 py-0.5 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-400 text-xs rounded font-mono">test-plan-rubric-pass</code> (passing) or <code class="px-1.5 py-0.5 bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400 text-xs rounded font-mono">test-plan-rubric-fail</code> (failing) on your RHAISTRAT ticket</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Look for <code class="px-1.5 py-0.5 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-400 text-xs rounded font-mono">test-plan-rubric-pass</code> (passing) or <code class="px-1.5 py-0.5 bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400 text-xs rounded font-mono">test-plan-rubric-fail</code> (failing) on your HPSTRAT ticket</div>
               </div>
             </div>
             <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
@@ -1067,7 +1067,7 @@ function labelColorClasses(color) {
           <ul class="space-y-3">
             <li class="flex items-start gap-3">
               <Sparkles :size="20" class="text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
-              <span class="text-sm text-gray-700 dark:text-gray-300">Run <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-cyan-700 dark:text-cyan-400 text-xs rounded font-mono">/test-plan-create RHAISTRAT-XXX</code> in Claude Code to generate a test plan from a feature strategy</span>
+              <span class="text-sm text-gray-700 dark:text-gray-300">Run <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-cyan-700 dark:text-cyan-400 text-xs rounded font-mono">/test-plan-create HPSTRAT-XXX</code> in Claude Code to generate a test plan from a feature strategy</span>
             </li>
             <li class="flex items-start gap-3">
               <Eye :size="20" class="text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
@@ -1174,7 +1174,7 @@ function labelColorClasses(color) {
             </div>
             <div>
               <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Documentation</h2>
-              <p class="text-sm text-gray-500 dark:text-gray-400">AI-First-driven documentation for dev-complete features. The tool automatically generates documentation MRs for (preferably) RHAISTRAT issues that require product documentation.</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">AI-First-driven documentation for dev-complete features. The tool automatically generates documentation MRs for (preferably) HPSTRAT issues that require product documentation.</p>
             </div>
           </div>
           <button
@@ -1197,7 +1197,7 @@ function labelColorClasses(color) {
               </div>
               <div>
                 <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">Trigger</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add the <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-teal-600 dark:text-teal-400 text-xs rounded font-mono">ai1st-doc-start</code> label to the Jira issue needing documentation (preferably RHAISTRAT)</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add the <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-teal-600 dark:text-teal-400 text-xs rounded font-mono">ai1st-doc-start</code> label to the Jira issue needing documentation (preferably HPSTRAT)</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">This <i>at the moment</i> for AI-First is the signal that dev work is completed and documentation can begin</div>
               </div>
             </div>
@@ -1216,7 +1216,7 @@ function labelColorClasses(color) {
               </div>
               <div>
                 <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">MR Contributed</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">When the MR is raised, the issue, its parent RHAISTRAT, and CCS Epic is labeled <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-teal-600 dark:text-teal-400 text-xs rounded font-mono">ai1st-doc-contributed</code></div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">When the MR is raised, the issue, its parent HPSTRAT, and CCS Epic is labeled <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-teal-600 dark:text-teal-400 text-xs rounded font-mono">ai1st-doc-contributed</code></div>
               </div>
             </div>
             <div class="flex items-start gap-4 relative">
@@ -1260,7 +1260,7 @@ function labelColorClasses(color) {
           <ul class="space-y-3">
             <li class="flex items-start gap-3">
               <Pencil :size="20" class="text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
-              <span class="text-sm text-gray-700 dark:text-gray-300">Add the <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-teal-700 dark:text-teal-400 text-xs rounded font-mono">ai1st-doc-start</code> label to (preferably) RHAISTRAT issues that need documentation.
+              <span class="text-sm text-gray-700 dark:text-gray-300">Add the <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700/50 text-teal-700 dark:text-teal-400 text-xs rounded font-mono">ai1st-doc-start</code> label to (preferably) HPSTRAT issues that need documentation.
                 <br><span class="text-xs text-gray-500 dark:text-gray-400">This <i>at the moment</i> is the signal for AI-First that dev work is completed and documentation can begin</span>
               </span>
             </li>
@@ -1274,7 +1274,7 @@ function labelColorClasses(color) {
             </li>
             <li class="flex items-start gap-3">
               <MessageSquare :size="20" class="text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
-              <span class="text-sm text-gray-700 dark:text-gray-300">Report <i>general</i> comments on the quality of the MRs generated by the AI Agent (leveraging CCS' "RHDAT" tool) in the Slack channel <a href="https://redhat.enterprise.slack.com/archives/C0APCEUR196" target="_blank" rel="noopener noreferrer" class="text-teal-600 dark:text-teal-400 hover:underline font-medium">#wg-rhai-document-builder</a> to benefit future and other scopes of work</span>
+              <span class="text-sm text-gray-700 dark:text-gray-300">Report <i>general</i> comments on the quality of the MRs generated by the AI Agent (leveraging CCS' "RHDAT" tool) in the Slack channel <a href="https://redhat.enterprise.slack.com/archives/C0APCEUR196" target="_blank" rel="noopener noreferrer" class="text-teal-600 dark:text-teal-400 hover:underline font-medium">#team-hp-engineering-productivity</a> to benefit future and other scopes of work</span>
             </li>
             <li class="flex items-start gap-3">
               <AlertTriangle :size="20" class="text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />

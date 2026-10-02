@@ -17,7 +17,7 @@ import registerTestPlanRoutes from '../../server/test-plans/routes.js';
 function makeValidBody() {
   return {
     feature: 'GPU Observability',
-    sourceKey: 'RHAISTRAT-1168',
+    sourceKey: 'HPSTRAT-1168',
     score: 8,
     verdict: 'Ready',
     scores: { specificity: 2, grounding: 2, scope_fidelity: 2, actionability: 1, consistency: 1 },
@@ -112,7 +112,7 @@ describe('GET /test-plans', () => {
       testPlans: {
         A: {
           latest: {
-            key: 'A', feature: 'F', sourceKey: 'RHAISTRAT-1', score: 8, verdict: 'Ready',
+            key: 'A', feature: 'F', sourceKey: 'HPSTRAT-1', score: 8, verdict: 'Ready',
             scores: { specificity: 2, grounding: 2, scope_fidelity: 2, actionability: 1, consistency: 1 },
             autoRevised: false, criterionNotes: { specificity: 'notes' }, feedback: 'text',
             components: ['dashboard'], testCaseCount: 10, reviewedAt: '2026-05-10T12:00:00Z'
@@ -143,11 +143,11 @@ describe('GET /test-plans', () => {
 describe('GET /test-plans/:key', () => {
   it('returns full detail + history for existing key', async () => {
     const entry = { latest: makeValidBody(), history: [{ score: 5 }] };
-    const data = { lastSyncedAt: 'x', totalTestPlans: 1, testPlans: { 'RHAISTRAT-1168': entry } };
+    const data = { lastSyncedAt: 'x', totalTestPlans: 1, testPlans: { 'HPSTRAT-1168': entry } };
     const { router, routes } = createRouter();
     registerTestPlanRoutes(router, makeContext(data));
 
-    const { res } = await callHandler(routes, 'GET', '/test-plans/:key', {}, { key: 'RHAISTRAT-1168' });
+    const { res } = await callHandler(routes, 'GET', '/test-plans/:key', {}, { key: 'HPSTRAT-1168' });
     const payload = res.json.mock.calls[0][0];
     expect(payload.latest).toBeDefined();
     expect(payload.history).toHaveLength(1);
@@ -167,7 +167,7 @@ describe('PUT /test-plans/:key', () => {
     const { router, routes } = createRouter();
     registerTestPlanRoutes(router, makeContext(null));
 
-    const { res } = await callHandler(routes, 'PUT', '/test-plans/:key', makeValidBody(), { key: 'RHAISTRAT-1168' });
+    const { res } = await callHandler(routes, 'PUT', '/test-plans/:key', makeValidBody(), { key: 'HPSTRAT-1168' });
     expect(res.json).toHaveBeenCalledWith({ status: 'created' });
   });
 

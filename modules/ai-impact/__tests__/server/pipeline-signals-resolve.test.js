@@ -35,9 +35,9 @@ function makeRfeData(issueOverrides = {}) {
   return {
     issues: [
       {
-        key: 'RHAIRFE-100',
+        key: 'RFE-100',
         aiInvolvement: 'both',
-        linkedFeature: { key: 'RHAISTRAT-1', status: 'In Progress', fixVersions: ['1.2'] },
+        linkedFeature: { key: 'HPSTRAT-1', status: 'In Progress', fixVersions: ['1.2'] },
         ...issueOverrides
       }
     ]
@@ -47,9 +47,9 @@ function makeRfeData(issueOverrides = {}) {
 function makeFeaturesData(latestOverrides = {}) {
   return {
     features: {
-      'RHAISTRAT-1': {
+      'HPSTRAT-1': {
         latest: {
-          key: 'RHAISTRAT-1',
+          key: 'HPSTRAT-1',
           recommendation: 'approve',
           humanReviewStatus: 'approved',
           labels: ['strat-creator-auto-created'],
@@ -66,7 +66,7 @@ function makeDecomposerData(stratOverrides = {}) {
   return {
     strategies: [
       {
-        strat_id: 'RHAISTRAT-1',
+        strat_id: 'HPSTRAT-1',
         title: 'Test Strategy',
         epic_count: 5,
         critical_path_length: 3,
@@ -84,7 +84,7 @@ function makeTestPlansData(planOverrides = {}) {
       tp1: {
         latest: {
           key: 'tp1',
-          sourceKey: 'RHAISTRAT-1',
+          sourceKey: 'HPSTRAT-1',
           verdict: 'Ready',
           score: 9,
           humanReviewStatus: 'approved',
@@ -101,7 +101,7 @@ function makeDocData(issueOverrides = {}) {
   return {
     issues: [
       {
-        key: 'RHAISTRAT-1',
+        key: 'HPSTRAT-1',
         hasDocContributed: true,
         docContributedDate: '2026-06-01',
         ...issueOverrides
@@ -118,7 +118,7 @@ function makeCoData(latestOverrides = {}) {
           key: 'comp1',
           summary: 'Component One',
           status: 'Resolved',
-          linkedFeatures: ['RHAISTRAT-1'],
+          linkedFeatures: ['HPSTRAT-1'],
           completionStatus: 'completed',
           targetVersion: '1.2',
           onboardingSteps: { step1: true, step2: true, step3: false },
@@ -134,16 +134,16 @@ function makeCoData(latestOverrides = {}) {
 
 describe('resolveRfeSignal', () => {
   it('returns completed with linkedKey for matched RFE', () => {
-    const result = resolveRfeSignal(makeRfeData(), 'RHAISTRAT-1');
+    const result = resolveRfeSignal(makeRfeData(), 'HPSTRAT-1');
     expect(result.completed).toBe(true);
     expect(result.current).toBe(false);
     expect(result.aiUsed).toBe(true);
-    expect(result.linkedKey).toBe('RHAIRFE-100');
+    expect(result.linkedKey).toBe('RFE-100');
     expect(result.detail).toBe('AI created & revised');
   });
 
   it('returns no linked RFE for unknown feature key', () => {
-    const result = resolveRfeSignal(makeRfeData(), 'RHAISTRAT-999');
+    const result = resolveRfeSignal(makeRfeData(), 'HPSTRAT-999');
     expect(result.completed).toBe(false);
     expect(result.aiUsed).toBeNull();
     expect(result.detail).toBe('No linked RFE');
@@ -151,30 +151,30 @@ describe('resolveRfeSignal', () => {
   });
 
   it('handles null rfeData', () => {
-    const result = resolveRfeSignal(null, 'RHAISTRAT-1');
+    const result = resolveRfeSignal(null, 'HPSTRAT-1');
     expect(result.completed).toBe(false);
     expect(result.detail).toBe('No data');
   });
 
   it('handles missing issues array', () => {
-    const result = resolveRfeSignal({ issues: 'not-array' }, 'RHAISTRAT-1');
+    const result = resolveRfeSignal({ issues: 'not-array' }, 'HPSTRAT-1');
     expect(result.detail).toBe('No data');
   });
 
   it('detects AI created involvement', () => {
-    const result = resolveRfeSignal(makeRfeData({ aiInvolvement: 'created' }), 'RHAISTRAT-1');
+    const result = resolveRfeSignal(makeRfeData({ aiInvolvement: 'created' }), 'HPSTRAT-1');
     expect(result.aiUsed).toBe(true);
     expect(result.detail).toBe('AI created');
   });
 
   it('detects AI revised involvement', () => {
-    const result = resolveRfeSignal(makeRfeData({ aiInvolvement: 'revised' }), 'RHAISTRAT-1');
+    const result = resolveRfeSignal(makeRfeData({ aiInvolvement: 'revised' }), 'HPSTRAT-1');
     expect(result.aiUsed).toBe(true);
     expect(result.detail).toBe('AI revised');
   });
 
   it('detects no AI involvement', () => {
-    const result = resolveRfeSignal(makeRfeData({ aiInvolvement: 'none' }), 'RHAISTRAT-1');
+    const result = resolveRfeSignal(makeRfeData({ aiInvolvement: 'none' }), 'HPSTRAT-1');
     expect(result.aiUsed).toBe(false);
     expect(result.detail).toBe('No AI involvement');
   });
@@ -184,11 +184,11 @@ describe('resolveRfeSignal', () => {
 
 describe('resolveFeatureSignal', () => {
   it('returns completed when approved', () => {
-    const result = resolveFeatureSignal(makeFeaturesData(), 'RHAISTRAT-1');
+    const result = resolveFeatureSignal(makeFeaturesData(), 'HPSTRAT-1');
     expect(result.completed).toBe(true);
     expect(result.current).toBe(false);
     expect(result.aiUsed).toBe(true);
-    expect(result.linkedKey).toBe('RHAISTRAT-1');
+    expect(result.linkedKey).toBe('HPSTRAT-1');
     expect(result.detail).toBe('approve — 7/8');
     expect(result.scores).toEqual({ total: 7, feasibility: 2, testability: 2, scope: 2, architecture: 1 });
     expect(result.recommendation).toBe('approve');
@@ -197,7 +197,7 @@ describe('resolveFeatureSignal', () => {
   it('returns current when not approved', () => {
     const result = resolveFeatureSignal(
       makeFeaturesData({ humanReviewStatus: 'needs-review' }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.current).toBe(true);
@@ -206,13 +206,13 @@ describe('resolveFeatureSignal', () => {
   it('returns aiUsed false when no AI labels', () => {
     const result = resolveFeatureSignal(
       makeFeaturesData({ labels: [] }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.aiUsed).toBe(false);
   });
 
   it('returns no data for unknown feature', () => {
-    const result = resolveFeatureSignal(makeFeaturesData(), 'RHAISTRAT-999');
+    const result = resolveFeatureSignal(makeFeaturesData(), 'HPSTRAT-999');
     expect(result.completed).toBe(false);
     expect(result.current).toBe(false);
     expect(result.aiUsed).toBeNull();
@@ -222,7 +222,7 @@ describe('resolveFeatureSignal', () => {
   it('handles missing scores gracefully', () => {
     const result = resolveFeatureSignal(
       makeFeaturesData({ scores: null }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.detail).toBe('approve — 0/8');
   });
@@ -232,11 +232,11 @@ describe('resolveFeatureSignal', () => {
 
 describe('resolveDecomposerSignal', () => {
   it('returns completed when review passes', () => {
-    const result = resolveDecomposerSignal(makeDecomposerData(), 'RHAISTRAT-1');
+    const result = resolveDecomposerSignal(makeDecomposerData(), 'HPSTRAT-1');
     expect(result.completed).toBe(true);
     expect(result.current).toBe(false);
     expect(result.aiUsed).toBe(true);
-    expect(result.linkedKey).toBe('RHAISTRAT-1');
+    expect(result.linkedKey).toBe('HPSTRAT-1');
     expect(result.detail).toBe('5 epics · pass (85)');
     expect(result.epicCount).toBe(5);
     expect(result.score).toBe(85);
@@ -246,7 +246,7 @@ describe('resolveDecomposerSignal', () => {
   it('returns current when review fails', () => {
     const result = resolveDecomposerSignal(
       makeDecomposerData({ review: { score: 40, pass: false, recommendation: 'revise' } }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.current).toBe(true);
@@ -255,18 +255,18 @@ describe('resolveDecomposerSignal', () => {
   });
 
   it('handles null decomposer data', () => {
-    const result = resolveDecomposerSignal(null, 'RHAISTRAT-1');
+    const result = resolveDecomposerSignal(null, 'HPSTRAT-1');
     expect(result.completed).toBe(false);
     expect(result.detail).toBe('No data');
   });
 
   it('handles non-array strategies', () => {
-    const result = resolveDecomposerSignal({ strategies: 'nope' }, 'RHAISTRAT-1');
+    const result = resolveDecomposerSignal({ strategies: 'nope' }, 'HPSTRAT-1');
     expect(result.detail).toBe('No data');
   });
 
   it('handles missing strategy', () => {
-    const result = resolveDecomposerSignal(makeDecomposerData(), 'RHAISTRAT-999');
+    const result = resolveDecomposerSignal(makeDecomposerData(), 'HPSTRAT-999');
     expect(result.completed).toBe(false);
     expect(result.detail).toBe('Not decomposed');
   });
@@ -274,7 +274,7 @@ describe('resolveDecomposerSignal', () => {
   it('handles strategy with no review', () => {
     const result = resolveDecomposerSignal(
       makeDecomposerData({ review: undefined }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.pass).toBe(false);
@@ -285,18 +285,18 @@ describe('resolveDecomposerSignal', () => {
 
 describe('resolveTestPlanSignal', () => {
   it('returns completed when approved', () => {
-    const result = resolveTestPlanSignal(makeTestPlansData(), 'RHAISTRAT-1');
+    const result = resolveTestPlanSignal(makeTestPlansData(), 'HPSTRAT-1');
     expect(result.completed).toBe(true);
     expect(result.current).toBe(false);
     expect(result.aiUsed).toBe(true);
     expect(result.detail).toBe('Ready — 9/10');
-    expect(result.linkedKey).toBe('RHAISTRAT-1');
+    expect(result.linkedKey).toBe('HPSTRAT-1');
   });
 
   it('returns current when not approved but has verdict', () => {
     const result = resolveTestPlanSignal(
       makeTestPlansData({ humanReviewStatus: 'needs-review' }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.current).toBe(true);
@@ -305,19 +305,19 @@ describe('resolveTestPlanSignal', () => {
   it('returns aiUsed false when no AI labels', () => {
     const result = resolveTestPlanSignal(
       makeTestPlansData({ labels: ['manual'] }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.aiUsed).toBe(false);
   });
 
   it('handles missing test plan for feature', () => {
-    const result = resolveTestPlanSignal(makeTestPlansData(), 'RHAISTRAT-999');
+    const result = resolveTestPlanSignal(makeTestPlansData(), 'HPSTRAT-999');
     expect(result.completed).toBe(false);
     expect(result.detail).toBe('No test plan');
   });
 
   it('handles null test plan data', () => {
-    const result = resolveTestPlanSignal(null, 'RHAISTRAT-1');
+    const result = resolveTestPlanSignal(null, 'HPSTRAT-1');
     expect(result.detail).toBe('No data');
   });
 });
@@ -326,19 +326,19 @@ describe('resolveTestPlanSignal', () => {
 
 describe('resolveDocSignal', () => {
   it('returns completed when docs contributed', () => {
-    const result = resolveDocSignal(makeDocData(), 'RHAISTRAT-1');
+    const result = resolveDocSignal(makeDocData(), 'HPSTRAT-1');
     expect(result.completed).toBe(true);
     expect(result.aiUsed).toBe(true);
     expect(result.detail).toBe('Docs contributed');
     expect(result.hasDocContributed).toBe(true);
     expect(result.docContributedDate).toBe('2026-06-01');
-    expect(result.linkedKey).toBe('RHAISTRAT-1');
+    expect(result.linkedKey).toBe('HPSTRAT-1');
   });
 
   it('returns completed when docs skipped', () => {
     const result = resolveDocSignal(
       makeDocData({ hasDocContributed: false, hasDocSkipped: true }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(true);
     expect(result.aiUsed).toBe(false);
@@ -349,7 +349,7 @@ describe('resolveDocSignal', () => {
   it('returns current when doc tool invoked but not contributed', () => {
     const result = resolveDocSignal(
       makeDocData({ hasDocContributed: false, hasDocInvoked: true }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.current).toBe(true);
@@ -360,7 +360,7 @@ describe('resolveDocSignal', () => {
   it('returns not started when no doc flags', () => {
     const result = resolveDocSignal(
       makeDocData({ hasDocContributed: false }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.current).toBe(false);
@@ -369,17 +369,17 @@ describe('resolveDocSignal', () => {
   });
 
   it('handles missing doc issue', () => {
-    const result = resolveDocSignal(makeDocData(), 'RHAISTRAT-999');
+    const result = resolveDocSignal(makeDocData(), 'HPSTRAT-999');
     expect(result.detail).toBe('No doc issue');
   });
 
   it('handles null doc data', () => {
-    const result = resolveDocSignal(null, 'RHAISTRAT-1');
+    const result = resolveDocSignal(null, 'HPSTRAT-1');
     expect(result.detail).toBe('No data');
   });
 
   it('handles non-array issues', () => {
-    const result = resolveDocSignal({ issues: {} }, 'RHAISTRAT-1');
+    const result = resolveDocSignal({ issues: {} }, 'HPSTRAT-1');
     expect(result.detail).toBe('No data');
   });
 });
@@ -388,7 +388,7 @@ describe('resolveDocSignal', () => {
 
 describe('resolveBuildReleaseSignal', () => {
   it('returns completed for completed components', () => {
-    const result = resolveBuildReleaseSignal(makeCoData(), 'RHAISTRAT-1');
+    const result = resolveBuildReleaseSignal(makeCoData(), 'HPSTRAT-1');
     expect(result.completed).toBe(true);
     expect(result.detail).toContain('2/3 steps');
     expect(result.detail).toContain('1.2');
@@ -398,33 +398,33 @@ describe('resolveBuildReleaseSignal', () => {
   it('returns current for in-progress components', () => {
     const result = resolveBuildReleaseSignal(
       makeCoData({ completionStatus: 'in-progress', status: 'In Progress' }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.completed).toBe(false);
     expect(result.current).toBe(true);
   });
 
   it('handles missing component for feature', () => {
-    const result = resolveBuildReleaseSignal(makeCoData(), 'RHAISTRAT-999');
+    const result = resolveBuildReleaseSignal(makeCoData(), 'HPSTRAT-999');
     expect(result.completed).toBe(false);
     expect(result.detail).toBe('No onboarding data');
   });
 
   it('handles null coData', () => {
-    const result = resolveBuildReleaseSignal(null, 'RHAISTRAT-1');
+    const result = resolveBuildReleaseSignal(null, 'HPSTRAT-1');
     expect(result.completed).toBe(false);
     expect(result.detail).toBe('No data');
   });
 
   it('handles missing components property', () => {
-    const result = resolveBuildReleaseSignal({}, 'RHAISTRAT-1');
+    const result = resolveBuildReleaseSignal({}, 'HPSTRAT-1');
     expect(result.detail).toBe('No data');
   });
 
   it('omits version from detail when no targetVersion', () => {
     const result = resolveBuildReleaseSignal(
       makeCoData({ targetVersion: null }),
-      'RHAISTRAT-1'
+      'HPSTRAT-1'
     );
     expect(result.detail).toBe('2/3 steps');
     expect(result.detail).not.toContain('·');

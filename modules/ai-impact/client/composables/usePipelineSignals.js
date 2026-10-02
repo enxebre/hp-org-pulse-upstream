@@ -7,7 +7,7 @@ const cache = ref({})
  * Load pipeline signals for a feature key. Results are cached per key
  * for the lifetime of the session.
  *
- * @param {string} featureKey - RHAISTRAT-xxx or RHOAIENG-xxx
+ * @param {string} featureKey - HPSTRAT-xxx or RHOAIENG-xxx
  * @returns {Promise<object|null>} Resolved pipeline signals or null on error
  */
 async function loadPipelineSignals(featureKey) {
