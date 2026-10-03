@@ -8,9 +8,9 @@
     "github>konflux-ci/mintmaker-presets:cve-automerge-high"
   ],
   "dockerfile": {
-    "fileMatch": [
-      "deploy/hp-eng.backend.Dockerfile",
-      "deploy/hp-eng.frontend.Dockerfile"
+    "managerFilePatterns": [
+      "/deploy/hp-eng.backend.Dockerfile/",
+      "/deploy/hp-eng.frontend.Dockerfile/"
     ]
   },
   "packageRules": [
