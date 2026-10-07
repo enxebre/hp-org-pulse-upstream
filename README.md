@@ -126,6 +126,11 @@ make smoke-test                 # Run smoke tests against HP Eng images
 make test-module MODULE=<name>  # Run integration tests for a module
 ```
 
+Dockerfile-only dependency installs must use major-version pins derived from
+production dependencies in `package.json`. For example, `"mermaid": "^11.17.2"`
+requires `npm install --no-save mermaid@11`. Run
+`npm run validate:dockerfile-deps` to check package coverage and pins.
+
 ## Tech Stack
 
 - **Frontend**: Vue 3, Vite 8, Tailwind CSS 3, Chart.js 4

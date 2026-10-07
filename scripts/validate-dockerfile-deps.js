@@ -2,8 +2,9 @@
 
 /**
  * Validates that Dockerfile npm install --no-save lists stay in sync with
- * package.json. Every non-core dependency must appear in at least one
- * Dockerfile, and every Dockerfile package must be a real dependency.
+ * package.json. Every non-core dependency must appear with a major-version
+ * pin in at least one Dockerfile, and every Dockerfile package must be a real
+ * dependency.
  *
  * Usage: node scripts/validate-dockerfile-deps.js
  */
@@ -27,22 +28,59 @@ const corePkg = JSON.parse(fs.readFileSync(corePkgPath, 'utf8'));
 const coreDeps = new Set(Object.keys(corePkg.dependencies || {}));
 
 // --- Compute HP Eng-only deps (ours minus core's minus @org-pulse/core itself) ---
-const hpEngDeps = new Set(
-  [...ourDeps].filter(d => d !== '@org-pulse/core' && !coreDeps.has(d))
+const hpEngDeps = new Map(
+  Object.entries(pkg.dependencies || {})
+    .filter(([name]) => name !== '@org-pulse/core' && !coreDeps.has(name))
+    .map(([name, version]) => [name, {
+      declaredVersion: version,
+      major: getMajorVersion(version),
+    }])
 );
+
+/** Return a major version only for a simple exact, caret, or tilde version. */
+function getMajorVersion(version) {
+  if (typeof version !== 'string') return null;
+  const match = version.trim().match(/^[~^]?(\d+)(?:\.\d+){0,2}(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/);
+  return match ? match[1] : null;
+}
 
 // --- Parse Dockerfile npm install --no-save lines ---
 function parseDockerfileDeps(filepath) {
-  const content = fs.readFileSync(filepath, 'utf8');
-  const deps = new Set();
-  // Match: RUN npm install --no-save pkg1 pkg2 ...
-  // Handles line continuations with backslash
-  const joined = content.replace(/\\\n/g, ' ');
-  const match = joined.match(/npm install --no-save\s+(.+)/);
-  if (match) {
-    match[1].trim().split(/\s+/).forEach(pkg => {
-      if (pkg && !pkg.startsWith('-')) deps.add(pkg);
-    });
+  const content = fs.readFileSync(filepath, 'utf8')
+    .split(/\r?\n/)
+    .filter(line => !/^\s*#/.test(line))
+    .join('\n')
+    .replace(/\\\r?\n/g, ' ');
+  const deps = [];
+  const installCommands = /\bnpm\s+install\b([^\n;&|]*)/g;
+  const optionsWithValues = new Set([
+    '--cache', '--install-strategy', '--loglevel', '--omit', '--include',
+    '--prefix', '--registry', '--tag', '--workspace',
+  ]);
+
+  for (const match of content.matchAll(installCommands)) {
+    const tokens = match[1].trim().split(/\s+/).filter(Boolean);
+    if (!tokens.includes('--no-save')) continue;
+
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      if (token.startsWith('-')) {
+        if (optionsWithValues.has(token) && tokens[i + 1] && !tokens[i + 1].startsWith('-')) i++;
+        continue;
+      }
+
+      const separator = token.startsWith('@')
+        ? token.lastIndexOf('@') > token.indexOf('/') ? token.lastIndexOf('@') : -1
+        : token.lastIndexOf('@') > 0 ? token.lastIndexOf('@') : -1;
+      const name = separator === -1 ? token : token.slice(0, separator);
+      const version = separator === -1 ? null : token.slice(separator + 1);
+      deps.push({
+        name,
+        version,
+        spec: token,
+        filepath,
+      });
+    }
   }
   return deps;
 }
@@ -50,36 +88,68 @@ function parseDockerfileDeps(filepath) {
 const frontendDockerfile = path.join(ROOT, 'deploy/hp-eng.frontend.Dockerfile');
 const backendDockerfile = path.join(ROOT, 'deploy/hp-eng.backend.Dockerfile');
 
-const frontendDeps = parseDockerfileDeps(frontendDockerfile);
-const backendDeps = parseDockerfileDeps(backendDockerfile);
-const dockerDeps = new Set([...frontendDeps, ...backendDeps]);
+const dockerDeps = [
+  ...parseDockerfileDeps(frontendDockerfile),
+  ...parseDockerfileDeps(backendDockerfile),
+];
+const dockerDepsByName = new Map();
+for (const dep of dockerDeps) {
+  if (!dockerDepsByName.has(dep.name)) dockerDepsByName.set(dep.name, []);
+  dockerDepsByName.get(dep.name).push(dep);
+}
 
 // --- Compare ---
 let errors = 0;
 
 // Check: every HP Eng dep should be in at least one Dockerfile
-for (const dep of hpEngDeps) {
-  if (!dockerDeps.has(dep)) {
+for (const [dep, details] of hpEngDeps) {
+  const entries = dockerDepsByName.get(dep) || [];
+  if (!details.major) {
     console.error(
-      `MISSING: "${dep}" is in package.json but not in any Dockerfile.` +
-      `\n  Add it to deploy/hp-eng.frontend.Dockerfile or deploy/hp-eng.backend.Dockerfile`
+      `UNSUPPORTED VERSION: "${dep}" has package.json version "${details.declaredVersion}";` +
+      ` the validator cannot determine a single major-version pin.`
     );
     errors++;
+  }
+
+  if (entries.length === 0) {
+    const suggestion = details.major ? `${dep}@${details.major}` : dep;
+    console.error(
+      `MISSING: "${dep}" is in package.json but not in any Dockerfile.` +
+      `\n  Add "${suggestion}" to npm install --no-save in` +
+      ` deploy/hp-eng.frontend.Dockerfile or deploy/hp-eng.backend.Dockerfile.` +
+      `\n  Example: RUN npm install --no-save ${suggestion}`
+    );
+    errors++;
+    continue;
+  }
+
+  if (details.major) {
+    for (const entry of entries) {
+      if (entry.version !== details.major) {
+        console.error(
+          `VERSION: "${entry.spec}" in ${path.relative(ROOT, entry.filepath)}` +
+          ` does not match the expected major pin for package.json version` +
+          ` "${details.declaredVersion}".\n  Replace it with "${dep}@${details.major}".`
+        );
+        errors++;
+      }
+    }
   }
 }
 
 // Check: every Dockerfile dep should be a real HP Eng dependency
 for (const dep of dockerDeps) {
-  if (!hpEngDeps.has(dep)) {
-    if (coreDeps.has(dep)) {
+  if (!hpEngDeps.has(dep.name)) {
+    if (dep.name === '@org-pulse/core' || coreDeps.has(dep.name)) {
       console.error(
-        `REDUNDANT: "${dep}" is in a Dockerfile but already provided by @org-pulse/core.` +
-        `\n  Remove it from the Dockerfile`
+        `REDUNDANT: "${dep.spec}" in ${path.relative(ROOT, dep.filepath)}` +
+        ` is already provided by @org-pulse/core.\n  Remove it from the Dockerfile.`
       );
-    } else if (!ourDeps.has(dep)) {
+    } else if (!ourDeps.has(dep.name)) {
       console.error(
-        `UNKNOWN: "${dep}" is in a Dockerfile but not in package.json.` +
-        `\n  Add it to package.json or remove it from the Dockerfile`
+        `UNKNOWN: "${dep.spec}" in ${path.relative(ROOT, dep.filepath)}` +
+        ` is not in package.json.\n  Add "${dep.name}" to package.json or remove it from the Dockerfile.`
       );
     }
     errors++;

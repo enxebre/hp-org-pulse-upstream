@@ -13,7 +13,7 @@ COPY platform/ ./platform/
 COPY modules/ ./modules/
 
 # ai-impact's Feature Decomposer lazy-loads mermaid; not provided by core
-RUN npm install --no-save mermaid
+RUN npm install --no-save mermaid@11
 
 RUN npm run build
 
