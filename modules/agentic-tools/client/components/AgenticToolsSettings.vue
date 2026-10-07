@@ -107,46 +107,69 @@
 
           <!-- Icon dropdown -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon *</label>
-            <select
-              v-model="form.icon"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-            >
-              <option value="">Select an icon</option>
-              <option v-for="iconName in availableIcons" :key="iconName" :value="iconName">
-                {{ iconName }}
-              </option>
-            </select>
+            <label for="agentic-tool-icon" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Icon *
+            </label>
+            <div class="flex items-center gap-3">
+              <div
+                data-testid="icon-selection-preview"
+                role="img"
+                :aria-label="form.icon ? `${form.icon} icon preview` : 'Icon preview; select an icon'"
+                aria-live="polite"
+                class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+              >
+                <component
+                  v-if="form.icon"
+                  :is="getIconComponent(form.icon)"
+                  :size="20"
+                  aria-hidden="true"
+                />
+              </div>
+              <select
+                id="agentic-tool-icon"
+                v-model="form.icon"
+                class="min-w-0 flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              >
+                <option value="">Select an icon</option>
+                <option v-for="iconName in AVAILABLE_ICONS" :key="iconName" :value="iconName">
+                  {{ iconName }}
+                </option>
+              </select>
+            </div>
           </div>
 
-           <!-- URL -->
-           <div>
-             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-               URL
-               <span class="text-xs text-gray-500">(leave empty for TBD)</span>
-             </label>
-             <input
-               v-model="form.url"
-               type="url"
-               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-               placeholder="https://example.com (optional)"
-             />
-           </div>
+          <!-- URL -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              URL
+              <span class="text-xs text-gray-500">(leave empty for TBD)</span>
+            </label>
+            <input
+              v-model="form.url"
+              type="text"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              placeholder="#/ai-impact/rfe-review or https://example.com"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Use a hash route for an in-app page (opens here) or an external URL (opens in a new tab).
+              Leave empty for a TBD card.
+            </p>
+          </div>
 
-           <!-- Order -->
-           <div>
-             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Display Order</label>
-             <input
-               v-model.number="form.order"
-               type="number"
-               min="0"
-               step="1"
-               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-               placeholder="0"
-             />
-             <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tools are sorted by this value (ascending)</p>
-           </div>
-         </div>
+          <!-- Order -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Display Order</label>
+            <input
+              v-model.number="form.order"
+              type="number"
+              min="0"
+              step="1"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              placeholder="0"
+            />
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tools are sorted by this value (ascending)</p>
+          </div>
+        </div>
 
         <!-- Modal buttons -->
         <div class="flex gap-3 mt-6">
@@ -195,8 +218,8 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import * as Icons from 'lucide-vue-next'
 import { fetchTools, createTool, updateTool, deleteTool } from '../services/agentic-tools-api'
+import { AVAILABLE_ICONS, getIconComponent } from '../icon-registry'
 
 const tools = ref([])
 const loading = ref(true)
@@ -211,81 +234,6 @@ const form = reactive({
   url: '',
   order: 0
 })
-
-const availableIcons = [
-  'BarChart3', 'Box', 'Briefcase', 'Building2', 'Factory', 'PackageOpen',
-  'ChartColumnStacked', 'FolderOpen', 'FolderTree', 'Lightbulb', 'Map',
-  'Milestone', 'Target', 'UserCog', 'Users', 'UsersRound', 'User',
-  'TrendingUp', 'FileText', 'Home', 'Shield', 'Settings', 'ExternalLink',
-  'Network', 'Layers', 'Sparkles', 'Activity', 'Wand2', 'Kanban', 'Grid3x3',
-  'LineChart', 'Brain', 'PenSquare', 'FileUp', 'Trophy', 'MessageSquare',
-  'ClipboardList', 'BookOpen', 'Database', 'History', 'Hospital', 'CalendarDays',
-  'LayoutDashboard', 'Rocket', 'UserCircle', 'ChartCandlestick', 'PieChart', 'GitBranch',
-  'Wrench', 'Hammer', 'Drill', 'Toolbox', 'Bot', 'Zap', 'Code', 'Inbox'
-]
-
-const ICON_MAP = {
-  'BarChart3': Icons.BarChart3,
-  'Box': Icons.Box,
-  'Briefcase': Icons.Briefcase,
-  'Building2': Icons.Building2,
-  'Factory': Icons.Factory,
-  'PackageOpen': Icons.PackageOpen,
-  'ChartColumnStacked': Icons.ChartColumnStacked,
-  'FolderOpen': Icons.FolderOpen,
-  'FolderTree': Icons.FolderTree,
-  'Lightbulb': Icons.Lightbulb,
-  'Map': Icons.Map,
-  'Milestone': Icons.Milestone,
-  'Target': Icons.Target,
-  'UserCog': Icons.UserCog,
-  'Users': Icons.Users,
-  'UsersRound': Icons.UsersRound,
-  'User': Icons.User,
-  'TrendingUp': Icons.TrendingUp,
-  'FileText': Icons.FileText,
-  'Home': Icons.Home,
-  'Shield': Icons.Shield,
-  'Settings': Icons.Settings,
-  'ExternalLink': Icons.ExternalLink,
-  'Network': Icons.Network,
-  'Layers': Icons.Layers,
-  'Sparkles': Icons.Sparkles,
-  'Activity': Icons.Activity,
-  'Wand2': Icons.Wand2,
-  'Kanban': Icons.Kanban,
-  'Grid3x3': Icons.Grid3x3,
-  'LineChart': Icons.LineChart,
-  'Brain': Icons.Brain,
-  'PenSquare': Icons.PenSquare,
-  'FileUp': Icons.FileUp,
-  'Trophy': Icons.Trophy,
-  'MessageSquare': Icons.MessageSquare,
-  'ClipboardList': Icons.ClipboardList,
-  'BookOpen': Icons.BookOpen,
-  'Database': Icons.Database,
-  'History': Icons.History,
-  'Hospital': Icons.Hospital,
-  'CalendarDays': Icons.CalendarDays,
-  'LayoutDashboard': Icons.LayoutDashboard,
-  'Rocket': Icons.Rocket,
-  'UserCircle': Icons.UserCircle,
-  'ChartCandlestick': Icons.ChartCandlestick,
-  'PieChart': Icons.PieChart,
-  'GitBranch': Icons.GitBranch,
-  'Wrench': Icons.Wrench,
-  'Hammer': Icons.Hammer,
-  'Drill': Icons.Drill,
-  'Toolbox': Icons.Toolbox,
-  'Bot': Icons.Bot,
-  'Zap': Icons.Zap,
-  'Code': Icons.Code,
-  'Inbox': Icons.Inbox
-}
-
-function getIconComponent(iconName) {
-  return ICON_MAP[iconName] || Icons.ExternalLink
-}
 
 async function loadTools() {
   loading.value = true
@@ -333,23 +281,19 @@ function editTool(tool) {
 }
 
 async function saveForm() {
+  const payload = {
+    title: form.title,
+    description: form.description,
+    icon: form.icon,
+    url: form.url,
+    order: Number(form.order)
+  }
+
   try {
     if (editingTool.value) {
-      await updateTool(editingTool.value.id, {
-        title: form.title,
-        description: form.description,
-        icon: form.icon,
-        url: form.url,
-        order: Number(form.order)
-      })
+      await updateTool(editingTool.value.id, payload)
     } else {
-      await createTool({
-        title: form.title,
-        description: form.description,
-        icon: form.icon,
-        url: form.url,
-        order: Number(form.order)
-      })
+      await createTool(payload)
     }
     await loadTools()
     closeForm()
@@ -372,8 +316,6 @@ async function performDelete() {
     console.error('Failed to delete tool:', error)
   }
 }
-
-
 
 onMounted(loadTools)
 </script>

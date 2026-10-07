@@ -160,16 +160,73 @@ test.describe('Agentic Tools Module @agentic-tools', () => {
     expect(jsErrors(page)).toHaveLength(0);
   });
 
-  test('should render icons in tool cards', async ({ page }) => {
+  test('should navigate to an internal module link in the current tab', async ({ page }) => {
     await page.goto('/#/agentic-tools/tools');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
 
-    // Check that SVG icons are rendered (from lucide-vue-next)
-    const svgIcons = page.locator('a[target="_blank"] svg');
-    const iconCount = await svgIcons.count();
-    expect(iconCount).toBeGreaterThan(0);
+    const internalCard = page.locator('[data-testid="agentic-tools-content"] .grid > *', {
+      has: page.getByRole('heading', { name: 'RFE Review', exact: true })
+    });
+    await expect(internalCard).toHaveAttribute('href', '#/ai-impact/rfe-review');
+    await expect(internalCard).not.toHaveAttribute('target', '_blank');
+    await expect(internalCard).toContainText('Internal');
 
+    const pageCount = page.context().pages().length;
+    await internalCard.click();
+
+    await expect(page).toHaveURL(/#\/ai-impact\/rfe-review$/);
+    expect(page.context().pages()).toHaveLength(pageCount);
+    expect(jsErrors(page)).toHaveLength(0);
+  });
+
+  test('should render the icons configured for tool cards', async ({ page }) => {
+    await page.goto('/#/agentic-tools/tools');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    const configuredIcons = [
+      ['Example Tool 1', 'lucide-wrench'],
+      ['Example Tool 2', 'lucide-hammer'],
+      ['Coming Soon Tool', 'lucide-sparkles'],
+      ['RFE Review', 'lucide-clipboard-list']
+    ];
+    for (const [title, iconClass] of configuredIcons) {
+      const card = page.locator('[data-testid="agentic-tools-content"] .grid > *', {
+        has: page.locator('h4', { hasText: title })
+      });
+      await expect(card.locator('svg')).toHaveClass(new RegExp(`\\b${iconClass}\\b`));
+    }
+
+    expect(jsErrors(page)).toHaveLength(0);
+  });
+
+  test('should preview an icon while selecting it in Agentic Tools settings', async ({ page }) => {
+    await page.goto('/#/settings?tab=agentic-tools');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
+
+    await page.getByRole('button', { name: 'Add Tool' }).click();
+    const iconSelect = page.getByLabel('Icon *');
+    const preview = page.getByTestId('icon-selection-preview');
+
+    expect(await preview.evaluate((element, select) => Boolean(
+      element.compareDocumentPosition(select) & Node.DOCUMENT_POSITION_FOLLOWING
+    ), await iconSelect.elementHandle())).toBe(true);
+    await expect(preview).toHaveAttribute('aria-label', 'Icon preview; select an icon');
+    await expect(preview.locator('svg')).toHaveCount(0);
+
+    const selections = [
+      ['sparkles', 'lucide-sparkles'],
+      ['clipboard-check', 'lucide-clipboard-check'],
+      ['git-merge', 'lucide-git-merge']
+    ];
+    for (const [name, iconClass] of selections) {
+      await iconSelect.selectOption(name);
+      await expect(preview).toHaveAttribute('aria-label', `${name} icon preview`);
+      await expect(preview.locator('svg')).toHaveClass(new RegExp(`\\b${iconClass}\\b`));
+      await expect(preview).toHaveText('');
+    }
     expect(jsErrors(page)).toHaveLength(0);
   });
 

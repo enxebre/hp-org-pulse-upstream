@@ -784,7 +784,7 @@ JSON Lines format (one JSON object per line). Partitioned by month for efficient
 
 ## Tools — `data/agentic-tools/tools.json`
 
-Admin-managed list of external tool launchers. Array of tool objects.
+Admin-managed list of internal and external tool links. Array of tool objects.
 
 ```json
 [
@@ -792,7 +792,7 @@ Admin-managed list of external tool launchers. Array of tool objects.
     "id": "tool_1234567890_abcdef",
     "title": "Example Tool",
     "description": "What this tool does",
-    "icon": "Wrench",
+    "icon": "wrench",
     "url": "https://example.com",
     "order": 0
   },
@@ -800,9 +800,17 @@ Admin-managed list of external tool launchers. Array of tool objects.
     "id": "tool_coming_soon",
     "title": "Coming Soon",
     "description": "A tool under development",
-    "icon": "Sparkles",
+    "icon": "sparkles",
     "url": "",
     "order": 1
+  },
+  {
+    "id": "tool_internal_page",
+    "title": "RFE Review",
+    "description": "Open the in-app AI Impact RFE review page",
+    "icon": "clipboard-list",
+    "url": "#/ai-impact/rfe-review",
+    "order": 2
   }
 ]
 ```
@@ -812,11 +820,16 @@ Admin-managed list of external tool launchers. Array of tool objects.
 - `id` (string, auto-generated): Unique identifier in format `tool_<timestamp>_<randomstring>` or custom ID on creation.
 - `title` (string, required): Display name of the tool.
 - `description` (string, required): Short description of what the tool does.
-- `icon` (string, required): Name of a lucide-vue-next icon from the allowed set
-  (e.g. `Wrench`, `Hammer`, `Bot`, `Sparkles`, etc.). See ICON_MAP in
-  `modules/agentic-tools/client/components/AgenticToolsSettings.vue` for the full list.
-- `url` (string, optional): External URL to the tool. Leave as empty string `""` to mark the tool
-  as TBD (To Be Determined) — the card will render without a clickable link and display a "TBD" badge.
+- `icon` (string, required): Kebab-case name of a Lucide icon from the allowed set
+  (e.g. `wrench`, `hammer`, `bot`, `sparkles`). See `AVAILABLE_ICONS` in
+  `modules/agentic-tools/client/icon-registry.js` for the full list. This registry is used by both
+  the settings picker and the tool cards so configured icons render consistently.
+- `url` (string, optional): External URL or internal site route. Use a hash route like
+  `#/ai-impact/rfe-review` for an in-app destination; root-relative paths and absolute URLs on the
+  current origin are also treated as internal. Internal links open in the current tab and show an
+  "Internal" badge. Links to another origin open in a new tab and show "External". Leave an empty
+  string to mark a tool as TBD (To Be Determined); its card renders without a clickable link and
+  displays a "TBD" badge.
 - `order` (integer, optional): Display order in the grid. Tools are sorted by this field (ascending).
   Default 0 on creation; auto-assigned to next available order if omitted on POST.
 

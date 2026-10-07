@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 
 // Mock the apiRequest function
 vi.mock('@shared/client/services/api', () => {
@@ -10,7 +10,7 @@ vi.mock('@shared/client/services/api', () => {
           id: 'test-tool-1',
           title: 'Test Tool 1',
           description: 'A test tool',
-          icon: 'Wrench',
+          icon: 'wrench',
           url: 'https://example.com/tool1',
           order: 0
         },
@@ -18,7 +18,7 @@ vi.mock('@shared/client/services/api', () => {
           id: 'test-tool-2',
           title: 'Test Tool 2',
           description: 'Another test tool',
-          icon: 'Hammer',
+          icon: 'hammer',
           url: 'https://example.com/tool2',
           order: 1
         },
@@ -26,9 +26,17 @@ vi.mock('@shared/client/services/api', () => {
           id: 'test-tool-tbd',
           title: 'Test TBD Tool',
           description: 'A tool coming soon',
-          icon: 'Sparkles',
+          icon: 'sparkles',
           url: '',
           order: 2
+        },
+        {
+          id: 'test-tool-internal',
+          title: 'Internal Tool',
+          description: 'An in-app link',
+          icon: 'code',
+          url: '#/ai-impact/rfe-review',
+          order: 3
         }
       ]
     }
@@ -54,11 +62,12 @@ describe('ToolsView', () => {
     vi.clearAllMocks()
   })
 
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   async function waitForDataLoad(wrapper) {
-    // Wait for the onMounted hook to complete
-    await wrapper.vm.$nextTick()
-    // Wait for the async apiRequest to complete
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await flushPromises()
     await wrapper.vm.$nextTick()
   }
 
@@ -106,7 +115,35 @@ describe('ToolsView', () => {
     const wrapper = mount(ToolsView)
     await waitForDataLoad(wrapper)
     const cards = wrapper.findAll('[data-testid="agentic-tools-content"] .grid > *')
-    expect(cards).toHaveLength(3)
+    expect(cards).toHaveLength(4)
+  })
+
+  it.each([
+    ['Test Tool 1', 'lucide-wrench'],
+    ['Test Tool 2', 'lucide-hammer'],
+    ['Test TBD Tool', 'lucide-sparkles'],
+    ['Internal Tool', 'lucide-code']
+  ])('renders the configured icon for %s', async (title, iconClass) => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+
+    const card = wrapper.findAll('[data-testid="agentic-tools-content"] .grid > *')
+      .find(item => item.get('h4').text() === title)
+    expect(card.get('svg').classes()).toContain(iconClass)
+  })
+
+  it('renders internal tool links in the current tab', async () => {
+    const wrapper = mount(ToolsView)
+    await waitForDataLoad(wrapper)
+
+    const card = wrapper.findAll('[data-testid="agentic-tools-content"] .grid > *')
+      .find(item => item.find('h4').text() === 'Internal Tool')
+
+    expect(card.element.tagName).toBe('A')
+    expect(card.attributes('href')).toBe('#/ai-impact/rfe-review')
+    expect(card.attributes('target')).toBeUndefined()
+    expect(card.attributes('rel')).toBeUndefined()
+    expect(card.text()).toContain('Internal')
   })
 
   it('sets correct href and target attributes on tool cards with URLs', async () => {
@@ -131,14 +168,6 @@ describe('ToolsView', () => {
     expect(wrapper.text()).toContain('A test tool')
     expect(wrapper.text()).toContain('Test Tool 2')
     expect(wrapper.text()).toContain('Another test tool')
-  })
-
-  it('falls back to ExternalLink icon for unknown icon names', async () => {
-    // Mount and verify it doesn't throw; actual icon rendering is hard to test
-    // without testing implementation details, but we can at least verify no errors
-    const wrapper = mount(ToolsView)
-    await waitForDataLoad(wrapper)
-    expect(wrapper.vm).toBeDefined()
   })
 
   it('renders TBD tool as non-interactive div without href', async () => {
@@ -240,22 +269,16 @@ describe('ToolsView', () => {
     const wrapper = mount(ToolsView)
     await waitForDataLoad(wrapper)
     
-    // Mock window.location.hash
-    let navigatedHash = null
-    Object.defineProperty(window, 'location', {
-      value: { hash: '' },
-      writable: true
-    })
-    Object.defineProperty(window.location, 'hash', {
-      set: (val) => { navigatedHash = val },
-      get: () => navigatedHash,
-      configurable: true
+    vi.stubGlobal('location', {
+      href: window.location.href,
+      origin: window.location.origin,
+      hash: ''
     })
     
     const settingsButton = wrapper.find('button')
     await settingsButton.trigger('click')
     
-    expect(navigatedHash).toBe('#/settings?tab=agentic-tools')
+    expect(window.location.hash).toBe('#/settings?tab=agentic-tools')
   })
 
   it('shows either admin or non-admin message based on isAdmin value', async () => {

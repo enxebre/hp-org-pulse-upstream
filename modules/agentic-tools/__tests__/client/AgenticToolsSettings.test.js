@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import AgenticToolsSettings from '../../client/components/AgenticToolsSettings.vue'
+import { AVAILABLE_ICONS } from '../../client/icon-registry'
 
 // Mock the API composable
 vi.mock('../../client/services/agentic-tools-api', () => ({
@@ -9,7 +10,7 @@ vi.mock('../../client/services/agentic-tools-api', () => ({
       id: 'tool_1',
       title: 'Test Tool 1',
       description: 'First test tool',
-      icon: 'Wrench',
+      icon: 'wrench',
       url: 'https://example.com',
       order: 0
     },
@@ -17,7 +18,7 @@ vi.mock('../../client/services/agentic-tools-api', () => ({
       id: 'tool_2',
       title: 'Test Tool 2',
       description: 'Second test tool',
-      icon: 'Hammer',
+      icon: 'hammer',
       url: 'https://example.com/tool2',
       order: 1
     }
@@ -30,7 +31,7 @@ vi.mock('../../client/services/agentic-tools-api', () => ({
     id,
     title: 'Test Tool 1',
     description: 'First test tool',
-    icon: 'Wrench',
+    icon: 'wrench',
     url: 'https://example.com',
     order: 0,
     ...updates
@@ -44,9 +45,7 @@ describe('AgenticToolsSettings', () => {
   })
 
   async function waitForDataLoad(wrapper) {
-    // Wait for the onMounted hook and async API call
-    await wrapper.vm.$nextTick()
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await flushPromises()
     await wrapper.vm.$nextTick()
   }
 
@@ -105,7 +104,7 @@ describe('AgenticToolsSettings', () => {
     
     expect(wrapper.vm.form.title).toBe('Test Tool 1')
     expect(wrapper.vm.form.description).toBe('First test tool')
-    expect(wrapper.vm.form.icon).toBe('Wrench')
+    expect(wrapper.vm.form.icon).toBe('wrench')
     expect(wrapper.vm.form.url).toBe('https://example.com')
     expect(wrapper.vm.form.order).toBe(0)
   })
@@ -157,20 +156,50 @@ describe('AgenticToolsSettings', () => {
     expect(wrapper.vm.toolToDelete).toBe(null)
   })
 
-  it('has an icon dropdown with available icons', async () => {
+  it('offers the registry icons in the dropdown', async () => {
     const wrapper = mount(AgenticToolsSettings)
     await waitForDataLoad(wrapper)
-    
-    // Check that the available icons array contains expected core icons
-    expect(wrapper.vm.availableIcons).toContain('BarChart3')
-    expect(wrapper.vm.availableIcons).toContain('Sparkles')
-    expect(wrapper.vm.availableIcons).toContain('Wrench')
-    expect(wrapper.vm.availableIcons).toContain('Hammer')
-    expect(wrapper.vm.availableIcons.length).toBeGreaterThan(40)
+    wrapper.vm.openAddForm()
+    await wrapper.vm.$nextTick()
+
+    const options = wrapper.get('#agentic-tool-icon').findAll('option')
+    expect(options.map(option => option.element.value)).toEqual(['', ...AVAILABLE_ICONS])
+    expect(options.map(option => option.text())).toEqual(['Select an icon', ...AVAILABLE_ICONS])
+  })
+
+  it('updates the icon preview when a selection is made', async () => {
+    const wrapper = mount(AgenticToolsSettings)
+    await waitForDataLoad(wrapper)
+    wrapper.vm.openAddForm()
+    await wrapper.vm.$nextTick()
+
+    const preview = wrapper.get('[data-testid="icon-selection-preview"]')
+    expect(preview.text()).toBe('')
+    expect(preview.attributes('aria-label')).toBe('Icon preview; select an icon')
+    expect(preview.find('svg').exists()).toBe(false)
+
+    await wrapper.get('#agentic-tool-icon').setValue('sparkles')
+
+    expect(preview.text()).toBe('')
+    expect(preview.attributes('aria-label')).toBe('sparkles icon preview')
+    expect(preview.get('svg').classes()).toContain('lucide-sparkles')
+  })
+
+  it('shows the saved icon in the preview when editing a tool', async () => {
+    const wrapper = mount(AgenticToolsSettings)
+    await waitForDataLoad(wrapper)
+    wrapper.vm.editTool(wrapper.vm.tools[1])
+    await wrapper.vm.$nextTick()
+
+    const preview = wrapper.get('[data-testid="icon-selection-preview"]')
+    expect(preview.text()).toBe('')
+    expect(preview.attributes('aria-label')).toBe('hammer icon preview')
+    expect(preview.get('svg').classes()).toContain('lucide-hammer')
   })
 
   it('shows empty state when no tools exist', async () => {
     const wrapper = mount(AgenticToolsSettings)
+    await waitForDataLoad(wrapper)
     wrapper.vm.tools = []
     wrapper.vm.loading = false
     await wrapper.vm.$nextTick()
@@ -210,7 +239,7 @@ describe('AgenticToolsSettings', () => {
     wrapper.vm.openAddForm()
     wrapper.vm.form.title = 'New Tool'
     wrapper.vm.form.description = 'New tool desc'
-    wrapper.vm.form.icon = 'Wrench'
+    wrapper.vm.form.icon = 'wrench'
     wrapper.vm.form.url = 'https://new.example.com'
     wrapper.vm.form.order = 5
     
@@ -220,10 +249,30 @@ describe('AgenticToolsSettings', () => {
       expect.objectContaining({
         title: 'New Tool',
         description: 'New tool desc',
-        icon: 'Wrench',
+        icon: 'wrench',
         url: 'https://new.example.com',
         order: 5
       })
+    )
+  })
+
+  it('saves hash routes as internal tool URLs', async () => {
+    const { createTool } = await import('../../client/services/agentic-tools-api')
+    const wrapper = mount(AgenticToolsSettings)
+    await waitForDataLoad(wrapper)
+
+    wrapper.vm.openAddForm()
+    await wrapper.vm.$nextTick()
+    wrapper.vm.form.title = 'RFE Review'
+    wrapper.vm.form.description = 'Open the in-app review page'
+    wrapper.vm.form.icon = 'clipboard-list'
+    await wrapper.get('input[placeholder="#/ai-impact/rfe-review or https://example.com"]')
+      .setValue('#/ai-impact/rfe-review')
+
+    await wrapper.vm.saveForm()
+
+    expect(createTool).toHaveBeenCalledWith(
+      expect.objectContaining({ url: '#/ai-impact/rfe-review' })
     )
   })
 

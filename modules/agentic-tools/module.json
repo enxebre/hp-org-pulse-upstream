@@ -1,7 +1,7 @@
 {
   "name": "Agentic Tools",
   "slug": "agentic-tools",
-  "description": "Quick launchers for external agentic tools",
+  "description": "Quick launchers for internal pages and external agentic tools",
   "icon": "Wand2",
   "order": 100,
   "client": {
@@ -34,7 +34,7 @@
     "files": [
       {
         "path": "agentic-tools/tools.json",
-        "notes": "Admin-managed external tool launcher list"
+        "notes": "Admin-managed internal and external tool links"
       }
     ]
   }

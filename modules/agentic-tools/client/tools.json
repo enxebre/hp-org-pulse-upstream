@@ -3,21 +3,21 @@
     "id": "example-tool-1",
     "title": "Example Tool 1",
     "description": "Replace with a real external tool description.",
-    "icon": "Wrench",
+    "icon": "wrench",
     "url": "https://example.com"
   },
   {
     "id": "example-tool-2",
     "title": "Example Tool 2",
     "description": "Add more tools by editing this JSON file.",
-    "icon": "Hammer",
+    "icon": "hammer",
     "url": "https://example.com/tool2"
   },
   {
     "id": "coming-soon-tool",
     "title": "Coming Soon Tool",
     "description": "Leave url as empty string to mark a tool as TBD (To Be Determined).",
-    "icon": "Sparkles",
+    "icon": "sparkles",
     "url": ""
   }
 ]

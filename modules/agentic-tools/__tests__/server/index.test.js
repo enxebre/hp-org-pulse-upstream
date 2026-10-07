@@ -8,7 +8,7 @@ function createMockContext() {
         id: 'tool_1',
         title: 'Test Tool 1',
         description: 'First test tool',
-        icon: 'Wrench',
+        icon: 'wrench',
         url: 'https://example.com',
         order: 0
       },
@@ -16,7 +16,7 @@ function createMockContext() {
         id: 'tool_2',
         title: 'Test Tool 2',
         description: 'Second test tool',
-        icon: 'Hammer',
+        icon: 'hammer',
         url: 'https://example.com/tool2',
         order: 1
       }
