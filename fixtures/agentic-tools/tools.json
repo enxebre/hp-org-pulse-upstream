@@ -3,7 +3,7 @@
     "id": "tool-example-1",
     "title": "Example Tool 1",
     "description": "Replace with a real external tool description.",
-    "icon": "Wrench",
+    "icon": "wrench",
     "url": "https://example.com",
     "order": 0
   },
@@ -11,7 +11,7 @@
     "id": "tool_example_2",
     "title": "Example Tool 2",
     "description": "Add more tools by using the Settings tab.",
-    "icon": "Hammer",
+    "icon": "hammer",
     "url": "https://example.com/tool2",
     "order": 1
   },
@@ -19,8 +19,16 @@
     "id": "tool_coming_soon",
     "title": "Coming Soon Tool",
     "description": "Leave url as empty string to mark a tool as TBD (To Be Determined).",
-    "icon": "Sparkles",
+    "icon": "sparkles",
     "url": "",
     "order": 2
+  },
+  {
+    "id": "tool-internal-rfe-review",
+    "title": "RFE Review",
+    "description": "Open the in-app AI Impact RFE review page.",
+    "icon": "clipboard-list",
+    "url": "#/ai-impact/rfe-review",
+    "order": 3
   }
 ]

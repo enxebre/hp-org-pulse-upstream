@@ -8,7 +8,7 @@
       v-else-if="tools.length === 0"
       class="flex flex-col items-center justify-center py-16 text-center"
     >
-      <component :is="Icons.Wand2" :size="48" class="text-gray-300 dark:text-gray-600 mb-4" />
+      <Wand2 :size="48" class="text-gray-300 dark:text-gray-600 mb-4" />
       <h4 class="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">No tools yet</h4>
       <p v-if="isAdmin" class="text-sm text-gray-400 dark:text-gray-500 max-w-md">
         Go to
@@ -23,11 +23,11 @@
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <component
         :is="tool.url ? 'a' : 'div'"
-        v-for="tool in tools"
+        v-for="tool in toolCards"
         :key="tool.id"
         :href="tool.url || undefined"
-        :target="tool.url ? '_blank' : undefined"
-        :rel="tool.url ? 'noopener noreferrer' : undefined"
+        :target="tool.linkType === 'external' ? '_blank' : undefined"
+        :rel="tool.linkType === 'external' ? 'noopener noreferrer' : undefined"
         class="block p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm transition-all group"
         :class="tool.url ? 'hover:shadow-md hover:border-primary-400 dark:hover:border-primary-500 cursor-pointer' : ''"
       >
@@ -53,7 +53,7 @@
           </div>
           <div class="flex-shrink-0">
             <span class="inline-block px-2 py-0.5 text-[10px] font-medium uppercase text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 rounded-full">
-              {{ tool.url ? 'External' : 'TBD' }}
+              {{ linkLabels[tool.linkType] }}
             </span>
           </div>
         </div>
@@ -63,36 +63,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import * as Icons from 'lucide-vue-next'
-import { apiRequest } from '@shared/client/services/api'
+import { computed, ref, onMounted } from 'vue'
+import { Wand2 } from 'lucide-vue-next'
 import { useAuth } from '@shared/client/composables/useAuth'
+import { getIconComponent } from '../icon-registry'
+import { getToolLinkType } from '../link-utils'
+import { fetchTools } from '../services/agentic-tools-api'
 
 const tools = ref([])
 const loading = ref(true)
 const { isAdmin } = useAuth()
 
-// Map of icon names to lucide-vue-next components
-const ICON_MAP = {
-  'Wrench': Icons.Wrench,
-  'Hammer': Icons.Hammer,
-  'Drill': Icons.Drill,
-  'Toolbox': Icons.Toolbox,
-  'Bot': Icons.Bot,
-  'Zap': Icons.Zap,
-  'Settings': Icons.Settings,
-  'BarChart3': Icons.BarChart3,
-  'Database': Icons.Database,
-  'Code': Icons.Code,
-  'ExternalLink': Icons.ExternalLink,
-  'Users': Icons.Users,
-  'GitBranch': Icons.GitBranch,
-  'Inbox': Icons.Inbox
-}
-
-function getIconComponent(iconName) {
-  return ICON_MAP[iconName] || Icons.ExternalLink
-}
+const linkLabels = { internal: 'Internal', external: 'External', tbd: 'TBD' }
+const toolCards = computed(() => tools.value.map(tool => ({
+  ...tool,
+  linkType: getToolLinkType(tool.url)
+})))
 
 function goToSettings() {
   window.location.hash = '#/settings?tab=agentic-tools'
@@ -100,8 +86,7 @@ function goToSettings() {
 
 onMounted(async () => {
   try {
-    const data = await apiRequest('/modules/agentic-tools/tools')
-    tools.value = data
+    tools.value = await fetchTools()
   } catch (error) {
     console.error('Failed to load tools:', error)
     tools.value = []

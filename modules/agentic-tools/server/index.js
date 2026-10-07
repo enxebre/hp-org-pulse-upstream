@@ -1,5 +1,5 @@
 /**
- * Agentic Tools — server-side routes for managing external tool launchers.
+ * Agentic Tools — server-side routes for managing internal and external tool links.
  *
  * Routes:
  * - GET  /tools              — list all tools (public)
@@ -17,7 +17,7 @@ module.exports = function registerRoutes(router, context) {
 
   // Register scopes for this module
   context.registerScopes([
-    { key: 'agentic-tools:write', label: 'Agentic Tools (Write)', description: 'Manage external tool launchers', category: 'Agentic Tools' }
+    { key: 'agentic-tools:write', label: 'Agentic Tools (Write)', description: 'Manage internal and external tool links', category: 'Agentic Tools' }
   ])
 
   /**
@@ -37,7 +37,7 @@ module.exports = function registerRoutes(router, context) {
    * /api/modules/agentic-tools/tools:
    *   get:
    *     tags: ['Agentic Tools']
-   *     summary: List all external tool launchers
+   *     summary: List all internal and external tool links
    *     description: Returns an array of tool objects sorted by order field
    *     responses:
    *       200:
