@@ -7,8 +7,16 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main"
+    pipelinesascode.tekton.dev/on-cel-expression: |
+      event == "push" && target_branch == "main" && (
+        ".tekton/hp-org-pulse-backend-push.yaml".pathChanged() ||
+        "server/index.js".pathChanged() ||
+        "modules/*/server/**".pathChanged() ||
+        "platform/*/server/**".pathChanged() ||
+        "deploy/hp-eng.backend.Dockerfile".pathChanged() ||
+        "modules/*/module.json".pathChanged() ||
+        "package.json".pathChanged()
+      )
   labels:
     appstudio.openshift.io/application: hp-org-pulse
     appstudio.openshift.io/component: hp-org-pulse-backend

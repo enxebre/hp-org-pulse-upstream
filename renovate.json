@@ -1,11 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "minimumReleaseAge": "7 days",
+  "minimumReleaseAge": "2 days",
   "extends": [
     ":disableMajorUpdates",
     "helpers:pinGitHubActionDigests",
     "helpers:disableTypesNodeMajor",
-    "github>konflux-ci/mintmaker-presets:cve-automerge-high"
+    "github>konflux-ci/mintmaker-presets:cve-automerge-all"
   ],
   "dockerfile": {
     "managerFilePatterns": [
@@ -15,30 +15,27 @@
   },
   "packageRules": [
     {
-      "description": "Group non-major npm development dependencies",
+      "description": "Group npm dependencies minor, patch and digest updates",
       "matchManagers": [ "npm" ],
-      "matchDepTypes": [ "devDependencies" ],
-      "matchUpdateTypes": [ "minor", "patch" ],
-      "groupName": "npm development dependencies"
+      "matchUpdateTypes": [ "digest", "minor", "patch" ],
+      "groupName": "npm dependencies",
+      "groupSlug": "npm-dependencies"
     },
     {
-      "description": "Group non-major npm production dependencies",
-      "matchManagers": [ "npm" ],
-      "matchDepTypes": [ "dependencies", "optionalDependencies" ],
-      "matchUpdateTypes": [ "minor", "patch" ],
-      "groupName": "npm production dependencies"
-    },
-    {
-      "description": "Group container image updates",
-      "matchManagers": [ "dockerfile" ],
-      "matchUpdateTypes": [ "digest", "minor", "patch", "pinDigest" ],
-      "groupName": "container images"
+      "description": "Group org-pulse core package/images together",
+      "matchPackageNames": [
+        "@org-pulse/core",
+        "quay.io/org-pulse/**"
+      ],
+      "groupName": "Org-Pulse Core",
+      "groupSlug": "org-pulse-core"
     },
     {
       "description": "Group GitHub Actions updates",
       "matchManagers": [ "github-actions" ],
       "matchUpdateTypes": [ "digest", "minor", "patch", "pinDigest" ],
-      "groupName": "GitHub Actions"
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions"
     }
   ]
 }
