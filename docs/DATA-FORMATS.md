@@ -1226,3 +1226,17 @@ These rules prevent data format drift:
    tests if old formats need to be supported.
 1. **Verify against real data.** If you're unsure of a data file's format, check the actual files in `data/`
    (symlinked from the main worktree) rather than trusting fixtures alone.
+
+---
+
+# HP Cyborg snapshot schema
+
+The HP/Fleet exporter publishes Core's v1 complete-roster snapshot at
+`team-data/cyborg/enrichment.json`. The contract is owned and validated by
+`@org-pulse/core` 2.0.90; HP does not fork or extend its fields.
+
+The `people` field is an array of records with required `uid` and `teams`
+fields. An empty `teams` array represents a direct scope member without a
+descendant-team assignment. The exporter validates the whole candidate before
+writing and prints only aggregate status and counts. Snapshot files contain
+person-level data and must be written only to an approved destination.

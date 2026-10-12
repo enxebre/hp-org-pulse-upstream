@@ -1,0 +1,1 @@
+orgdatacore[gcs] @ git+https://github.com/openshift-eng/cyborg-data.git@e3cf8b3#subdirectory=python
