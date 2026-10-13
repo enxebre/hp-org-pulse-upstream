@@ -71,22 +71,11 @@ jobs:
           persist-credentials: false
           show-progress: false
 
-      - name: Read Python version
-        if: needs.detect-changes.outputs.exporter == 'true'
-        id: python-version
-        run: |
-          VERSION=$(awk '$1 == "python" { print $2 }' .tool-versions)
-          if [ -z "$VERSION" ]; then
-            echo "::error::.tool-versions does not define a Python version"
-            exit 1
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
       - name: Set up Python
         if: needs.detect-changes.outputs.exporter == 'true'
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: ${{ steps.python-version.outputs.version }}
+          python-version-file: .tool-versions
 
       - name: Install exporter dependencies
         if: needs.detect-changes.outputs.exporter == 'true'
