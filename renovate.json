@@ -14,7 +14,8 @@
   "dockerfile": {
     "managerFilePatterns": [
       "/deploy/hp-eng.backend.Dockerfile/",
-      "/deploy/hp-eng.frontend.Dockerfile/"
+      "/deploy/hp-eng.frontend.Dockerfile/",
+      "/deploy/hp-eng.exporter.Dockerfile/"
     ]
   },
   "packageRules": [

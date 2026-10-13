@@ -133,6 +133,15 @@ hard constraints. Key points:
 
 ### Testing
 
+#### Cyborg exporter tests
+
+The standalone Cyborg snapshot exporter uses Python's standard-library `unittest`:
+
+```bash
+make test-exporter          # Run exporter unit tests
+make build-exporter-image   # Build its container image (requires Docker/Podman)
+```
+
 #### Unit tests
 
 Unit tests use **Vitest** with **jsdom** and **@vue/test-utils**:

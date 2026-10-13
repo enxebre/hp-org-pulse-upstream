@@ -30,6 +30,9 @@ python -m pip install -r exporter/requirements.txt
 python -m unittest discover -s exporter/tests -p 'test_*.py' -v
 ```
 
+From the repository root, the same test suite is available as `make test-exporter`.
+Build the container with `make build-exporter-image` (Docker or Podman required).
+
 ## Generate a snapshot
 
 Use ADC or an approved workload identity. Keep credentials and generated
