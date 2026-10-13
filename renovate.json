@@ -8,8 +8,8 @@
     "github>konflux-ci/mintmaker-presets:cve-automerge-all"
   ],
   "constraints": {
-    "node": "22",
-    "npm": "10"
+    "node": "24",
+    "npm": "11"
   },
   "dockerfile": {
     "managerFilePatterns": [
