@@ -367,6 +367,7 @@ To contribute widgets to the customizable "State of the Union" dashboard, declar
 ## Testing
 
 - **Unit tests**: Use Vitest with @vue/test-utils for frontend, Vitest for backend
+- **Standalone exporter tests**: The HP Cyborg snapshot exporter uses Python `unittest`; run them with `make test-exporter` (see `exporter/README.md`)
 - Frontend tests: `modules/your-module/__tests__/client/`
 - Backend tests: `modules/your-module/__tests__/server/` or `modules/your-module/server/__tests__/`
 - Run all tests: `npm test`

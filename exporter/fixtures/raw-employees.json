@@ -1,0 +1,15 @@
+[
+  {
+    "uid": " Alice ",
+    "full_name": "Alice Example",
+    "email": "alice@example.invalid",
+    "job_title": "Engineer",
+    "manager_uid": "MGR-1",
+    "teams": ["Fleet Console Next", "Fleet Console Next"]
+  },
+  {
+    "uid": "bob-1",
+    "full_name": "Bob Example",
+    "teams": []
+  }
+]

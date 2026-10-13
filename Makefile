@@ -1,7 +1,9 @@
-.PHONY: build-frontend-image build-backend-image smoke-test _start-frontend clean-smoke-test clean-integration-test test-module help
+.PHONY: build-frontend-image build-backend-image build-exporter-image test-exporter smoke-test _start-frontend clean-smoke-test clean-integration-test test-module help
 
 FRONTEND_IMAGE ?= frontend-smoke-local
 BACKEND_IMAGE ?= backend-smoke-local
+EXPORTER_IMAGE ?= hp-cyborg-exporter:local
+PYTHON ?= python3
 FRONTEND_CONTAINER := frontend-smoke-local
 BACKEND_CONTAINER := backend-smoke-local
 PLAYWRIGHT_TAG := $(shell node -p "require('@playwright/test/package.json').version")
@@ -83,6 +85,13 @@ build-frontend-image: ## Build HP Eng frontend image
 build-backend-image: ## Build HP Eng backend image
 	@echo "Building HP Eng backend container image..."
 	@$(CONTAINER_RUNTIME) build -f deploy/hp-eng.backend.Dockerfile -t $(BACKEND_IMAGE) .
+
+build-exporter-image: ## Build HP Cyborg exporter image
+	@echo "Building HP Cyborg exporter container image..."
+	@$(CONTAINER_RUNTIME) build -f deploy/hp-eng.exporter.Dockerfile -t $(EXPORTER_IMAGE) .
+
+test-exporter: ## Run standalone Cyborg exporter unit tests
+	@$(PYTHON) -m unittest discover -s exporter/tests -p 'test_*.py' -v
 
 # ========================================
 # Smoke Tests

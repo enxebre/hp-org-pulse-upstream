@@ -124,6 +124,8 @@ npm run update:view-owners        # Regenerate platform/view-owners/owners.js fr
 # Container-based tests (requires Docker/Podman)
 make smoke-test                 # Run smoke tests against HP Eng images
 make test-module MODULE=<name>  # Run integration tests for a module
+make test-exporter              # Run Cyborg exporter unit tests (Python)
+make build-exporter-image       # Build the standalone Cyborg exporter image
 ```
 
 Dockerfile-only dependency installs must use major-version pins derived from
@@ -138,7 +140,7 @@ requires `npm install --no-save mermaid@11`. Run
 - **Auth**: OpenShift OAuth proxy (production), no auth (local dev)
 - **Storage**: Local filesystem (`./data/`), PVC in OpenShift
 - **Hosting**: OpenShift with ArgoCD
-- **Testing**: Vitest (unit), Playwright (smoke & integration)
+- **Testing**: Vitest (unit), Python unittest (Cyborg exporter), Playwright (smoke & integration)
 
 ## Deployment
 

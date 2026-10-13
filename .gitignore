@@ -102,6 +102,9 @@ build/Release
 
 # Dependency directories
 node_modules/
+.venv-cyborg/
+__pycache__/
+*.py[cod]
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
