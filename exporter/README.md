@@ -23,15 +23,27 @@ FCN-746.
 
 ## Install and verify
 
+Use Python 3.11 for local development and tests. The container uses a separate
+multi-stage Red Hat Hardened Python image.
+
 ```bash
 python3 -m venv .venv-cyborg
 source .venv-cyborg/bin/activate
 python -m pip install -r exporter/requirements.txt
-python -m unittest discover -s exporter/tests -p 'test_*.py' -v
+make test-exporter
 ```
 
-From the repository root, the same test suite is available as `make test-exporter`.
-Build the container with `make build-exporter-image` (Docker or Podman required).
+Build the container with `make build-exporter-image` (Docker or Podman required),
+then check its CLI with `make exporter-smoke-test`:
+
+```bash
+make build-exporter-image
+make exporter-smoke-test
+```
+
+The smoke test does not generate a snapshot.
+The default image name is `exporter-smoke-local`, configurable with
+`EXPORTER_IMAGE`.
 
 ## Generate a snapshot
 

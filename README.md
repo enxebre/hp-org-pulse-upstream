@@ -33,6 +33,8 @@ For real Jira and GitHub data:
 - Node.js 22+
 - Red Hat VPN (required for LDAP roster sync)
 - @redhat.com Google account
+- Python 3.11 (only for developing or testing the standalone exporter; see
+  [exporter setup](exporter/README.md))
 
 ### 1. Install dependencies
 
@@ -126,7 +128,15 @@ make smoke-test                 # Run smoke tests against HP Eng images
 make test-module MODULE=<name>  # Run integration tests for a module
 make test-exporter              # Run Cyborg exporter unit tests (Python)
 make build-exporter-image       # Build the standalone Cyborg exporter image
+make exporter-smoke-test        # Run the built exporter image with --help
 ```
+
+`exporter-smoke-test` requires the exporter image to have been built first. It
+uses `exporter-smoke-local` by default; set `EXPORTER_IMAGE` to use a different
+image name.
+
+`npm test` runs the dashboard Vitest suite; run the exporter tests separately
+with `make test-exporter`.
 
 Dockerfile-only dependency installs must use major-version pins derived from
 production dependencies in `package.json`. For example, `"mermaid": "^11.17.2"`
@@ -140,11 +150,14 @@ requires `npm install --no-save mermaid@11`. Run
 - **Auth**: OpenShift OAuth proxy (production), no auth (local dev)
 - **Storage**: Local filesystem (`./data/`), PVC in OpenShift
 - **Hosting**: OpenShift with ArgoCD
-- **Testing**: Vitest (unit), Python unittest (Cyborg exporter), Playwright (smoke & integration)
+- **Testing**: Vitest (dashboard unit), Python unittest (Cyborg exporter),
+  Playwright (smoke & integration), and exporter image CLI smoke test
 
 ## Deployment
 
-Deployed to OpenShift via ArgoCD. HP Eng images extend core images from `@org-pulse/core`.
+Deployed to OpenShift via ArgoCD. Dashboard HP Eng images extend core images
+from `@org-pulse/core`. The Cyborg exporter uses its own multi-stage
+Red Hat Hardened Python image; see [`exporter/README.md`](exporter/README.md).
 
 ## Contributing
 
