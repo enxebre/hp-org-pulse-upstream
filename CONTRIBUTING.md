@@ -133,18 +133,23 @@ hard constraints. Key points:
 
 ### Testing
 
-#### Cyborg exporter tests
+#### Cyborg Exporter tests
 
-The standalone Cyborg snapshot exporter uses Python's standard-library `unittest`:
+The standalone Cyborg snapshot exporter uses Python 3.11 and the standard-library
+`unittest` framework. Use Python 3.11 for local exporter development and testing:
 
 ```bash
 make test-exporter          # Run exporter unit tests
 make build-exporter-image   # Build its container image (requires Docker/Podman)
+make exporter-smoke-test    # Check the built image's --help CLI
 ```
 
-#### Unit tests
+Build the image before running its smoke test. The smoke test uses
+`exporter-smoke-local` by default; set `EXPORTER_IMAGE` to select another image.
 
-Unit tests use **Vitest** with **jsdom** and **@vue/test-utils**:
+#### Dashboard Unit tests
+
+Dashboard unit tests use **Vitest** with **jsdom** and **@vue/test-utils**.
 
 ```bash
 npm test            # Run all tests
@@ -154,7 +159,7 @@ npm run test:watch  # Watch mode
 npx vitest run modules/team-tracker/server/jira/__tests__/sprint-report.test.js
 ```
 
-#### Smoke tests
+#### Dashboard Smoke tests
 
 Smoke tests use **Playwright** to verify the production container images work correctly.
 These run in CI and can also be run locally on any OS (RHEL, macOS, Ubuntu),
@@ -176,7 +181,7 @@ which installs Linux-native packages into your local `node_modules/`. After runn
 you may need to run `npm ci` again to restore macOS-native packages before running
 local commands like `npm test` or `npm run dev`.
 
-#### Integration tests
+#### Dashboard Integration tests
 
 > [!IMPORTANT]
 > PRs that modify files in `modules/` (views, components, server routes, server logic) **require**

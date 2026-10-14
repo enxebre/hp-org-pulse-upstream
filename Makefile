@@ -2,7 +2,7 @@
 
 FRONTEND_IMAGE ?= frontend-smoke-local
 BACKEND_IMAGE ?= backend-smoke-local
-EXPORTER_IMAGE ?= hp-cyborg-exporter:local
+EXPORTER_IMAGE ?= exporter-smoke-local
 PYTHON ?= python3
 FRONTEND_CONTAINER := frontend-smoke-local
 BACKEND_CONTAINER := backend-smoke-local
@@ -120,6 +120,9 @@ smoke-test: ## Run smoke tests against HP Eng images
 # on a backslash-continued line causes Makefile escaping issues with @ and $$ symbols
 _start-frontend:
 	$(call start-container,$(FRONTEND_CONTAINER),$(FRONTEND_IMAGE),$(FRONTEND_PORT),/healthz,--add-host=backend:$(BACKEND_HOST))
+
+exporter-smoke-test: ## Run smoke tests against exporter image
+	$(CONTAINER_RUNTIME) run --rm $(EXPORTER_IMAGE) --help
 
 # ========================================
 # Integration Tests

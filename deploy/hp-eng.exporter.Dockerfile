@@ -1,12 +1,21 @@
-FROM registry.access.redhat.com/ubi9/python-311:latest
+FROM registry.access.redhat.com/hi/python:3.11.17-builder-1791890456 AS builder
 
-USER 0
+USER root
+
 RUN dnf install -y git-core && dnf clean all
 
-WORKDIR /opt/app-root/src
-COPY exporter/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-COPY exporter/ ./exporter/
+RUN python3 -m venv /opt/venv
+COPY exporter/requirements.txt requirements.txt
+RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-USER 1001
-ENTRYPOINT ["python", "-m", "exporter.run"]
+USER ${CONTAINER_DEFAULT_USER}
+
+FROM registry.access.redhat.com/hi/python:3.11.17-1791890456
+
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+COPY exporter/*.py /app/exporter/
+
+WORKDIR /app
+
+ENTRYPOINT ["python3", "-m", "exporter.run"]

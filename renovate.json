@@ -18,13 +18,37 @@
       "/deploy/hp-eng.exporter.Dockerfile/"
     ]
   },
+  "asdf": {
+    "description": "Disable tools-versions updates",
+    "enabled": false
+  },
   "packageRules": [
+    {
+      "description": "Keep Python version pinned to minor",
+      "matchPackageNames": [ "registry.access.redhat.com/hi/python" ],
+      "matchUpdateTypes": [ "major", "minor" ],
+      "enabled": false
+    },
+    {
+      "description": "Group Docker dependencies minor, patch and digest updates",
+      "matchManagers": [ "docker" ],
+      "matchUpdateTypes": [ "minor", "patch" ],
+      "groupName": "docker dependencies",
+      "groupSlug": "docker-dependencies"
+    },
     {
       "description": "Group npm dependencies minor, patch and digest updates",
       "matchManagers": [ "npm" ],
       "matchUpdateTypes": [ "digest", "minor", "patch" ],
       "groupName": "npm dependencies",
       "groupSlug": "npm-dependencies"
+    },
+    {
+      "description": "Group python dependencies minor, patch and digest updates",
+      "matchManagers": [ "python" ],
+      "matchUpdateTypes": [ "digest", "minor", "patch" ],
+      "groupName": "python dependencies",
+      "groupSlug": "python-dependencies"
     },
     {
       "description": "Group org-pulse core package/images together",

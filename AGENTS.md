@@ -19,6 +19,7 @@ npm dependency and symlinked into the workspace by `npm run setup`.
 - **Frontend**: Vue 3 SPA (`<script setup>`), Vite 8, Tailwind CSS 3, Chart.js 4
 - **Backend**: Express (port 3001), thin `server/index.js` wrapper calling core's `startServer()`
 - **Modules**: HP Eng modules in `modules/<slug>/` with `module.json` manifests, auto-discovered
+- **Exporter**: `exporter/` contains the Python Cyborg snapshot exporter; see `exporter/README.md`
 - **Auth**: OpenShift OAuth proxy in prod; no auth locally (uses `ADMIN_EMAILS`)
 - **Storage**: Local filesystem (`./data/`), mounted as PVC in OpenShift
 - **Shared code**: `shared/client/` and `shared/server/` (from core), importable via `@shared` alias
@@ -43,9 +44,11 @@ another module's directory.
 
 ### 2. Use storage abstractions for all data
 
-Always use `readFromStorage` / `writeToStorage` for data files. Never construct
-raw filesystem paths. These abstractions handle demo mode, path-traversal safety,
-and the PVC mount.
+Dashboard modules must use `readFromStorage` / `writeToStorage` for application
+data files. Never construct raw filesystem paths in modules. These abstractions
+handle demo mode, path-traversal safety, and the PVC mount. The standalone
+exporter is outside the module storage layer and writes its configured snapshot
+output as documented in `exporter/README.md`.
 
 ### 3. The app is a display layer, not a compute engine
 
@@ -73,10 +76,11 @@ deployments. `modules/` are for feature domains. Don't put deployment-specific
 UI customizations in a module, and don't put feature domains in `platform/`.
 See `docs/PLATFORM.md`.
 
-### 6. No TypeScript
+### 6. No TypeScript in the dashboard
 
-Plain JavaScript throughout. CommonJS (`require`) for server-side code, ES
-modules (`import`) for frontend code.
+Dashboard code uses plain JavaScript throughout. CommonJS (`require`) for
+server-side code, ES modules (`import`) for frontend code. The standalone
+Cyborg exporter is Python and is maintained separately under `exporter/`.
 
 ### 7. API routes require OpenAPI annotations
 
@@ -91,6 +95,8 @@ Documentation changes must land in the same PR as the code they describe:
 - **Module system changes** → update `docs/MODULES.md`
 - **Node.js version changes** → update `README.md` and `CONTRIBUTING.md` to match `package.json`
   engines field
+- **Exporter Python version changes** → keep `.tool-versions` and the builder/runtime Python
+  image versions in `deploy/hp-eng.exporter.Dockerfile` aligned; update exporter setup docs
 - **npm scripts or Makefile commands** (additions, removals, or changes) → update Commands
   section in `README.md`
 - **Testing stack changes** (test frameworks added/removed from `package.json` devDependencies,
@@ -121,6 +127,8 @@ Non-secret config (e.g. `JIRA_HOST`, `DEMO_MODE`) is exempt. See
 - **Integration tests**: Playwright module-specific tests (`make test-module MODULE=<name>`)
 - **Validation**: `npm run validate:modules` for module manifests, `npm run validate:platform`
   for platform extensions
+- **Exporter**: Python 3.11 `unittest`; run `make test-exporter`. Build its image with
+  `make build-exporter-image`, then run `make exporter-smoke-test` to check its `--help` CLI.
 - Run `npm test` before committing
 
 **Integration test enforcement:** PRs that modify files in `modules/` (views, components,
@@ -146,7 +154,13 @@ npm run validate:dockerfile-deps # Verify Dockerfile deps match package.json
 # Container-based tests (requires Docker/Podman)
 make smoke-test                 # Run smoke tests against HP Eng images
 make test-module MODULE=<name>  # Run integration tests for a module
+make test-exporter              # Run Cyborg exporter Python unit tests
+make build-exporter-image       # Build the standalone Cyborg exporter image
+make exporter-smoke-test        # Run the built exporter image with --help
 ```
+
+`exporter-smoke-test` requires the exporter image to have been built first; it
+uses `exporter-smoke-local` by default, configurable with `EXPORTER_IMAGE`.
 
 ## Agent Instruction Files
 
