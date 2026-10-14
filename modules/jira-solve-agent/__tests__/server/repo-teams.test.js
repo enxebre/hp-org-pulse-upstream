@@ -25,9 +25,9 @@ describe('REPO_TEAMS', () => {
     expect(new Set(AGENT_REPOS).size).toBe(AGENT_REPOS.length)
   })
 
-  it('fully qualifies every repo under the openshift org', () => {
+  it('fully qualifies every repo under its GitHub org', () => {
     for (const { repo } of REPO_TEAMS) {
-      expect(repo).toMatch(/^openshift\/[a-z0-9][a-z0-9._-]*$/)
+      expect(repo).toMatch(/^openshift(?:-online)?\/[a-z0-9][a-z0-9._-]*$/)
     }
   })
 
@@ -49,6 +49,20 @@ describe('REPO_TEAMS', () => {
     expect(TEAM_REPOS.ota).toEqual(['cluster-version-operator', 'cincinnati-graph-data'])
     expect(REPO_TEAM_BY_NAME['openshift/cluster-version-operator']).toBe('ota')
     expect(REPO_TEAM_BY_NAME['openshift/cincinnati-graph-data']).toBe('ota')
+  })
+
+  it('tracks the ROSA Services repos in the openshift-online org', () => {
+    const repos = [
+      'openshift-online/rosa-clusters-service',
+      'openshift-online/rosa-account-manager-service',
+      'openshift-online/rosa-service-log',
+      'openshift-online/access-transparency-service'
+    ]
+    expect(TEAM_REPOS['rosa-services']).toEqual(repos)
+    for (const repo of repos) {
+      expect(AGENT_REPOS).toContain(repo)
+      expect(REPO_TEAM_BY_NAME[repo]).toBe('rosa-services')
+    }
   })
 
   it('wires Edge & Ecosystem repos to edge-ecosystem', () => {

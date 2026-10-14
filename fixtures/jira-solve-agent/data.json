@@ -57,6 +57,20 @@
       ]
     },
     {
+      "key": "ROSAENG-42",
+      "summary": "Example ROSA Services issue",
+      "status": "New",
+      "issueType": "Bug",
+      "priority": "Normal",
+      "created": "2026-09-26T10:00:00.000Z",
+      "updated": "2026-09-29T10:00:00.000Z",
+      "labels": ["issue-for-agent"],
+      "components": [],
+      "assignee": null,
+      "agentState": "new",
+      "processed": false
+    },
+    {
       "key": "TRT-1002",
       "summary": "Example closed issue",
       "status": "Closed",

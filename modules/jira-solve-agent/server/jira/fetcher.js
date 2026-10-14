@@ -1,7 +1,7 @@
 const { fetchAllJqlResults } = require('../../../../shared/server/jira');
 
 const PROJECTS = [
-  'OCPBUGS', 'CNTRLPLANE', 'TRT', 'WINC', 'MCO', 'NE',
+  'OCPBUGS', 'CNTRLPLANE', 'TRT', 'WINC', 'MCO', 'NE', 'ROSAENG',
   // Edge & Ecosystem pillar — derived from gitlab.cee.redhat.com/hybrid-platforms/org
   'OCPEDGE', 'USHIFT',                              // Edge
   'OAPE', 'SSCSI', 'SPIRE', 'ESO',                  // Application Platform (OAP)

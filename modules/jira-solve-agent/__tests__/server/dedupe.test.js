@@ -179,5 +179,6 @@ describe('fetchAgentData', () => {
 
     expect(requestedJql).toContain('labels = "issue-for-agent"')
     expect(requestedJql).toContain('labels != "chai-backport"')
+    expect(requestedJql).toContain('"ROSAENG"')
   })
 })

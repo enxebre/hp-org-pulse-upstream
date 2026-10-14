@@ -138,6 +138,58 @@ describe('AgentContent', () => {
     expect(wrapper.text()).not.toContain('OCPBUGS-2')
   })
 
+  it('attributes ROSA Services bot PRs to the new team', async () => {
+    const rosaPr = {
+      key: 'OCPBUGS-100', summary: 'ROSA fix', status: 'New', agentState: 'in-progress',
+      processed: false, components: [], team: 'rosa-services',
+      prUrl: 'https://github.com/openshift-online/rosa-clusters-service/pull/123', prState: 'OPEN'
+    }
+    const wrapper = mount(AgentContent, {
+      props: {
+        agentData: {
+          ...sampleData,
+          teamRepos: {
+            ...sampleData.teamRepos,
+            'rosa-services': [
+              'openshift-online/rosa-clusters-service',
+              'openshift-online/rosa-account-manager-service',
+              'openshift-online/rosa-service-log',
+              'openshift-online/access-transparency-service'
+            ]
+          },
+          issues: [...sampleData.issues, rosaPr]
+        }
+      }
+    })
+    const rosaBtn = wrapper.findAll('button').find(b => b.text().includes('ROSA Services'))
+    const tooltip = rosaBtn.find('[role="tooltip"]').text()
+    expect(tooltip).toContain('4 repos')
+    for (const repo of ['rosa-clusters-service', 'rosa-account-manager-service', 'rosa-service-log', 'access-transparency-service']) {
+      expect(tooltip).toContain(`openshift-online/${repo}`)
+    }
+    await rosaBtn.trigger('click')
+
+    expect(rosaBtn.findAll('.text-xl').map(n => n.text())).toEqual(['1', '1', '0', '0%'])
+    expect(wrapper.find('a[href="https://github.com/openshift-online/rosa-clusters-service/pull/123"]').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('HyperShift bug')
+  })
+
+  it('filters Jira issues from the ROSAENG project into ROSA Services', async () => {
+    const rosaIssue = {
+      key: 'ROSAENG-42', summary: 'ROSA Jira issue', status: 'New', agentState: 'new',
+      processed: false, components: []
+    }
+    const wrapper = mount(AgentContent, {
+      props: { agentData: { ...sampleData, issues: [...sampleData.issues, rosaIssue] } }
+    })
+    const rosaBtn = wrapper.findAll('button').find(b => b.text().includes('ROSA Services'))
+    await rosaBtn.trigger('click')
+
+    expect(rosaBtn.findAll('.text-xl').map(n => n.text())).toEqual(['1', '0', '0', '—'])
+    expect(wrapper.find('a[href="https://redhat.atlassian.net/browse/ROSAENG-42"]').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('HyperShift bug')
+  })
+
   it('filters TRT issues by project prefix', async () => {
     const wrapper = mount(AgentContent, {
       props: { agentData: sampleData, loading: false, error: null }

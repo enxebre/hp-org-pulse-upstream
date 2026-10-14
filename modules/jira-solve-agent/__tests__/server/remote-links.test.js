@@ -57,6 +57,18 @@ describe('parseRemoteLinkPr', () => {
     })
   })
 
+  it('attributes ROSA Services PRs linked from Jira', () => {
+    const url = 'https://github.com/openshift-online/rosa-clusters-service/pull/42'
+    expect(parseRemoteLinkPr(remoteLink({ url }), new Set(['openshift-online/rosa-clusters-service']))).toEqual({
+      repo: 'openshift-online/rosa-clusters-service',
+      team: 'rosa-services',
+      number: 42,
+      url,
+      state: null,
+      author: null
+    })
+  })
+
   it('skips links outside agent repos', () => {
     const pr = parseRemoteLinkPr(remoteLink({
       url: 'https://github.com/other/repo/pull/1'

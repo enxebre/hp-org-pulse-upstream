@@ -255,6 +255,7 @@ defineEmits(['retry']);
 // authoritative `team` (bot PR rows, attributed from the PR's repo).
 const TEAMS = [
   { key: 'hypershift', label: 'HyperShift', components: ['HyperShift', 'Hosted Control Planes'] },
+  { key: 'rosa-services', label: 'ROSA Services', projectPrefix: 'ROSAENG' },
   { key: 'installer', label: 'Installer', components: ['Installer / openshift-installer'] },
   { key: 'trt', label: 'TRT', projectPrefix: 'TRT' },
   { key: 'wmco', label: 'Windows Containers', components: ['Windows Containers'], projectPrefixes: ['WINC'] },

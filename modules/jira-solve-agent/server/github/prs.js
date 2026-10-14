@@ -40,6 +40,12 @@ function sleep(ms) {
 // selector button per team, so per-repo teams would swamp the UI. Declared as
 // team -> repos and flattened below, which keeps each area's membership legible.
 const TEAM_REPOS = {
+  'rosa-services': [
+    'openshift-online/rosa-clusters-service',
+    'openshift-online/rosa-account-manager-service',
+    'openshift-online/rosa-service-log',
+    'openshift-online/access-transparency-service'
+  ],
   mco: ['machine-config-operator', 'os'],
   ingress: ['cluster-ingress-operator', 'router'],
   wmco: ['windows-machine-config-operator'],
@@ -124,7 +130,8 @@ const TEAM_REPOS = {
 };
 
 const REPO_TEAMS = Object.entries(TEAM_REPOS).flatMap(([team, repos]) =>
-  repos.map(name => ({ repo: `openshift/${name}`, team }))
+  // Unqualified names belong to openshift; other orgs use owner/repo.
+  repos.map(name => ({ repo: name.includes('/') ? name : `openshift/${name}`, team }))
 );
 
 // Leading Jira key in a PR title. Excludes CVE- (not a Jira project).

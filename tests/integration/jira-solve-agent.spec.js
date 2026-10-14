@@ -27,4 +27,24 @@ test.describe('Jira Solve Agent Module @jira-solve-agent', () => {
     // Verify no console errors
     expect(page.errors).toHaveLength(0)
   })
+
+  test('offers ROSA Services as a team filter', async ({ page }) => {
+    await page.goto('/#/jira-solve-agent/main')
+    await page.waitForLoadState('networkidle')
+
+    const rosa = page.getByRole('button', { name: /ROSA Services/ })
+    await expect(rosa).toBeVisible()
+    await rosa.hover()
+    const tooltip = rosa.getByRole('tooltip')
+    await expect(tooltip).toContainText('4 repos')
+    for (const repo of ['rosa-clusters-service', 'rosa-account-manager-service', 'rosa-service-log', 'access-transparency-service']) {
+      await expect(tooltip).toContainText(`openshift-online/${repo}`)
+    }
+    await rosa.click()
+
+    // A ROSAENG Jira issue appears even without a bot PR.
+    await expect(page.getByRole('link', { name: 'ROSAENG-42' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'TRT-1001' })).toHaveCount(0)
+    expect(page.errors).toHaveLength(0)
+  })
 })
