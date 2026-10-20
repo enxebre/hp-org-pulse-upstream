@@ -49,6 +49,11 @@ jobs:
               - 'tests/integration/helpers.js'
               - 'modules/backport-tracker/**'
               - 'tests/integration/backport-tracker.spec.js'
+            bug-refinement:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
+              - 'modules/bug-refinement/**'
+              - 'tests/integration/bug-refinement.spec.js'
             jira-solve-agent:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'

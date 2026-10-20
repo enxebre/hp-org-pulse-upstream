@@ -5,7 +5,7 @@
     </div>
 
     <div
-      v-else-if="tools.length === 0"
+      v-else-if="toolCards.length === 0"
       class="flex flex-col items-center justify-center py-16 text-center"
     >
       <Wand2 :size="48" class="text-gray-300 dark:text-gray-600 mb-4" />
@@ -70,15 +70,20 @@ import { getIconComponent } from '../icon-registry'
 import { getToolLinkType } from '../link-utils'
 import { fetchTools } from '../services/agentic-tools-api'
 
+const props = defineProps({ additionalTools: { type: Array, default: () => [] } })
 const tools = ref([])
 const loading = ref(true)
 const { isAdmin } = useAuth()
 
 const linkLabels = { internal: 'Internal', external: 'External', tbd: 'TBD' }
-const toolCards = computed(() => tools.value.map(tool => ({
-  ...tool,
-  linkType: getToolLinkType(tool.url)
-})))
+const toolCards = computed(() => {
+  const configuredUrls = new Set(tools.value.map(tool => tool.url))
+  const additionalTools = props.additionalTools.filter(tool => !configuredUrls.has(tool.url))
+  return [...tools.value, ...additionalTools].map(tool => ({
+    ...tool,
+    linkType: getToolLinkType(tool.url)
+  }))
+})
 
 function goToSettings() {
   window.location.hash = '#/settings?tab=agentic-tools'

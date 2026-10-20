@@ -4,6 +4,76 @@ This document describes the JSON structure of all files stored in the `data/` di
 and `fixtures/` directory (demo mode).
 **Demo fixtures must always match production format** — see [Fixture Rules](#fixture-rules) below.
 
+## Agentic Bug Refinement — `bug-refinement/data.json`
+
+The Bug Refinement module caches issues matching
+`project IN (OCPBUGS, CNTRLPLANE) AND labels = "refined-by-agent"`, ordered by
+Jira's `updated` field descending. All Jira statuses are included. The home page's
+**Agentic Bug Refinement** card opens `#/bug-refinement/main`.
+
+```json
+{
+  "fetchedAt": "2026-10-15T08:00:00.000Z",
+  "issues": [
+    {
+      "key": "OCPBUGS-10001",
+      "summary": "Investigate hosted cluster rollout failure",
+      "project": "OCPBUGS",
+      "status": "New",
+      "priority": "Major",
+      "assignee": "Alex Engineer",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent", "needs-info"],
+      "disposition": "NEEDS_INFO",
+      "dispositionAt": "2026-10-15T07:00:00.000Z",
+      "dispositionCommentId": "10001",
+      "updated": "2026-10-15T07:30:00.000Z"
+    }
+  ]
+}
+```
+
+`GET /api/modules/bug-refinement/data` returns this snapshot plus the
+configured `jiraHost`, a `jiraSearchUrl` for the exact query, and a boolean `demo`
+flag. A missing snapshot triggers an initial Jira fetch. The
+registered `bug-refinement:refresh` refresh job and admin-only
+`POST /api/modules/bug-refinement/refresh` replace the snapshot after
+a successful fetch. Concurrent refreshes share one fetch; failures preserve the
+previous snapshot. Demo mode reads `fixtures/bug-refinement/data.json`
+without Jira requests or writes. The view marks these issues as fictional examples
+and omits individual Jira issue links. The search link always opens the real Jira
+query using the viewer's Jira login. Export anonymizes issue keys, summaries, and
+assignees.
+
+Chai's refine workflow adds `refined-by-agent` for every saved disposition:
+`DEFER`, `SOLVE`, `NEEDS_INFO`, `NEED_HUMAN_ANALYSIS`, and `CLOSE`. The label does not mean
+the issue is solved or ready for implementation. The view shows `needs-info`
+and `need-human-analysis` as waiting labels. Dispositions come from the newest
+visible saved comment containing `[refine:v1] outcome=...`, never from labels or
+Jira status. Comments are fetched newest first using the paginated
+[Jira comments API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-get),
+including older pages if the assessment is no longer among recent comments.
+Both plain text and Atlassian Document Format comment bodies are supported.
+`disposition` is one of the five values above, or `null` (displayed as **Unknown**)
+when no recognized assessment is visible. An unrecognized newer outcome does not
+fall back to an older assessment. `dispositionAt` is the assessment comment's
+creation timestamp; `dispositionCommentId` links the badge to the source comment.
+These fields may be `null`; comment bodies and authors are not persisted.
+`CLOSE` records an explicit closure assessment; it does not imply that a fix was
+implemented or verified. When an issue is `Closed` and has neither a disposition
+nor assessment comment metadata, the view displays **CLOSE (Jira)**, with a tooltip
+identifying Jira status as the source. These issues contribute to Close counters
+and sort with `CLOSE`. This display fallback does not change the persisted
+disposition or claim a saved assessment or verified fix. Explicit saved
+dispositions take precedence; an unrecognized assessment with comment metadata
+remains **Unknown**. Other statuses without saved assessments remain **Unknown**.
+Old snapshots without disposition fields use this same Jira closure fallback
+until refreshed.
+Snapshots fetched before `CLOSE` was supported also need a refresh to recognize
+those saved assessments.
+`updated` is the last Jira update, not the refinement time.
+`assignee` and `updated` may be `null`; missing status or priority is `Unknown`.
+
 ## Person Metrics — `data/people/{name}.json`
 
 Filename is the person's display name lowercased with non-alphanumeric chars replaced by `_`.
