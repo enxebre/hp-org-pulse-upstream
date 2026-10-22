@@ -51,14 +51,14 @@
       </div>
 
       <div class="my-6 flex flex-wrap items-end gap-4">
-        <label class="text-sm text-gray-600 dark:text-gray-300">
-          Project
-          <select v-model="project" class="mt-1 block rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
+        <div class="text-sm text-gray-600 dark:text-gray-300">
+          <label for="refinement-project">Project</label>
+          <select id="refinement-project" v-model="project" class="mt-1 block rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
             <option value="">All projects</option>
             <option value="OCPBUGS">OCPBUGS</option>
             <option value="CNTRLPLANE">CNTRLPLANE</option>
           </select>
-        </label>
+        </div>
         <label class="min-w-0 text-sm text-gray-600 dark:text-gray-300">
           Search refined bugs
           <input v-model="search" type="search" placeholder="Key, summary, component, assignee…" class="mt-1 block w-72 max-w-full rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
