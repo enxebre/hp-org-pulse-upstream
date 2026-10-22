@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <p class="mt-6 text-xs text-gray-500 dark:text-gray-400">OCPBUG Boxes follow Jira components. Bugs with multiple components appear in each matching box. Totals include deferred and unknown assessments.</p>
+      <p class="mt-6 text-xs text-gray-500 dark:text-gray-400">Boxes follow Jira components across OCPBUGS and CNTRLPLANE. Bugs with multiple components appear in each matching box. Totals include deferred and unknown assessments.</p>
       <div class="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-2" role="group" aria-label="Filter by component">
         <button
           v-for="team in teamCards"

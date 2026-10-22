@@ -86,7 +86,7 @@ test.describe('Agentic Bug Refinement @bug-refinement', () => {
     const mco = teams.getByRole('button', { name: 'Machine Config Operator', exact: true })
     await expect(teams.getByRole('button')).toHaveCount(3)
     const totalsBounds = await view.getByTestId('refinement-project-totals').boundingBox()
-    const note = view.getByText('OCPBUG Boxes follow Jira components. Bugs with multiple components appear in each matching box. Totals include deferred and unknown assessments.', { exact: true })
+    const note = view.getByText('Boxes follow Jira components across OCPBUGS and CNTRLPLANE. Bugs with multiple components appear in each matching box. Totals include deferred and unknown assessments.', { exact: true })
     await expect(note).toBeVisible()
     const noteBounds = await note.boundingBox()
     const componentsBounds = await teams.boundingBox()
