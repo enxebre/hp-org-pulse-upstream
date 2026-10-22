@@ -1,0 +1,75 @@
+{
+  "fetchedAt": "2026-10-15T08:00:00.000Z",
+  "issues": [
+    {
+      "key": "OCPBUGS-10001",
+      "summary": "Investigate hosted cluster rollout failure",
+      "project": "OCPBUGS",
+      "status": "New",
+      "priority": "Major",
+      "assignee": "Alex Engineer",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent", "needs-info"],
+      "disposition": "NEEDS_INFO",
+      "dispositionAt": "2026-10-15T07:00:00.000Z",
+      "dispositionCommentId": "10001",
+      "updated": "2026-10-15T07:30:00.000Z"
+    },
+    {
+      "key": "CNTRLPLANE-10001",
+      "summary": "Review control plane recovery options",
+      "project": "CNTRLPLANE",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "Sam Developer",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent", "need-human-analysis"],
+      "disposition": "NEED_HUMAN_ANALYSIS",
+      "dispositionAt": "2026-10-14T14:00:00.000Z",
+      "dispositionCommentId": "10002",
+      "updated": "2026-10-14T15:00:00.000Z"
+    },
+    {
+      "key": "OCPBUGS-10002",
+      "summary": "Correct node configuration reconciliation",
+      "project": "OCPBUGS",
+      "status": "Closed",
+      "priority": "Minor",
+      "assignee": null,
+      "components": ["Machine Config Operator"],
+      "labels": ["refined-by-agent"],
+      "disposition": "SOLVE",
+      "dispositionAt": "2026-10-13T09:00:00.000Z",
+      "dispositionCommentId": "10003",
+      "updated": "2026-10-13T10:00:00.000Z"
+    },
+    {
+      "key": "CNTRLPLANE-10002",
+      "summary": "Document workaround for transient API timeout",
+      "project": "CNTRLPLANE",
+      "status": "New",
+      "priority": "Minor",
+      "assignee": null,
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent"],
+      "disposition": "DEFER",
+      "dispositionAt": "2026-10-12T08:00:00.000Z",
+      "dispositionCommentId": "10004",
+      "updated": "2026-10-12T09:00:00.000Z"
+    },
+    {
+      "key": "OCPBUGS-10003",
+      "summary": "Close an inactive backlog report after refinement",
+      "project": "OCPBUGS",
+      "status": "Closed",
+      "priority": "Minor",
+      "assignee": null,
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent"],
+      "disposition": "CLOSE",
+      "dispositionAt": "2026-10-11T08:00:00.000Z",
+      "dispositionCommentId": "10005",
+      "updated": "2026-10-11T09:00:00.000Z"
+    }
+  ]
+}

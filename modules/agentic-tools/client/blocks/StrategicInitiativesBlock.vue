@@ -13,10 +13,22 @@
     <h2 class="px-1 mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
       Strategic Initiatives
     </h2>
-    <ToolsContent />
+    <ToolsContent :additional-tools="refinementTools" />
   </section>
 </template>
 
 <script setup>
+import { computed, inject } from 'vue'
+import { useModuleLink } from '@shared/client/composables/useModuleLink'
 import ToolsContent from '../views/ToolsContent.vue'
+
+const moduleNav = inject('moduleNav', null)
+const { linkTo } = useModuleLink()
+const refinementTools = computed(() => moduleNav?.isModuleAvailable?.('bug-refinement') ? [{
+  id: 'agentic-bug-refinement',
+  title: 'Agentic Bug Refinement',
+  description: 'Track OCPBUGS and CNTRLPLANE issues refined by Chai.',
+  icon: 'clipboard-check',
+  url: linkTo('bug-refinement', 'main')
+}] : [])
 </script>

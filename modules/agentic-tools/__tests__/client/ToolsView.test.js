@@ -118,6 +118,35 @@ describe('ToolsView', () => {
     expect(cards).toHaveLength(4)
   })
 
+  it('adds a home card when the bug refinement module is available', async () => {
+    const wrapper = mount(StrategicInitiativesBlock, {
+      global: { provide: { moduleNav: { isModuleAvailable: slug => slug === 'bug-refinement' } } }
+    })
+    await waitForDataLoad(wrapper)
+    const card = wrapper.get('a[href="#/bug-refinement/main"]')
+    expect(card.text()).toContain('Agentic Bug Refinement')
+    expect(card.attributes('target')).toBeUndefined()
+    expect(card.get('svg').classes()).toContain('lucide-clipboard-check')
+  })
+
+  it('hides the refinement home card when the bug refinement module is unavailable', async () => {
+    const wrapper = mount(StrategicInitiativesBlock, {
+      global: { provide: { moduleNav: { isModuleAvailable: () => false } } }
+    })
+    await waitForDataLoad(wrapper)
+    expect(wrapper.find('a[href="#/bug-refinement/main"]').exists()).toBe(false)
+  })
+
+  it('does not duplicate an admin-configured refinement launcher', async () => {
+    apiRequest.mockResolvedValueOnce([{ id: 'custom-refinement', title: 'Custom refinement', icon: 'bot', url: '#/bug-refinement/main' }])
+    const wrapper = mount(StrategicInitiativesBlock, {
+      global: { provide: { moduleNav: { isModuleAvailable: () => true } } }
+    })
+    await waitForDataLoad(wrapper)
+    expect(wrapper.findAll('a[href="#/bug-refinement/main"]')).toHaveLength(1)
+    expect(wrapper.text()).toContain('Custom refinement')
+  })
+
   it.each([
     ['Test Tool 1', 'lucide-wrench'],
     ['Test Tool 2', 'lucide-hammer'],

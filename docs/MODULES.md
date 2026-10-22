@@ -15,6 +15,40 @@ This document covers how to create, develop, and contribute built-in modules for
 
 ## Module Structure
 
+The `bug-refinement` module owns the **Agentic Bug Refinement** sidebar section and view at
+`#/bug-refinement/main`. It tracks OCPBUGS and CNTRLPLANE issues with
+Chai's `refined-by-agent` label, separately from the solve queue. The Agentic
+Tools landing block contributes its home card through the shared `useModuleLink`
+helper, guarded by `moduleNav.isModuleAvailable('bug-refinement')`. It does not
+import refinement module code or read its storage. The module is enabled by
+default and uses its own Jira client, API scopes, refresh job, and cached snapshot.
+Below the Total refined, OCPBUGS, and CNTRLPLANE summary cards, the view builds
+selectable boxes from the distinct Jira component names in the
+loaded snapshot, sorted alphabetically, plus **All Teams** and a **No component**
+box when needed. Each box shows counters for total issues, `SOLVE`, `CLOSE`,
+`NEED_HUMAN_ANALYSIS`, and `NEEDS_INFO`. An issue with multiple components appears
+once in each matching box and once in All Teams. Component names are matched
+exactly, including across projects; HyperShift and Hosted Control Planes have
+separate boxes when both names are present. Deferred and unknown assessments
+contribute only to the total. Selecting a box updates the table and project totals.
+Closed issues without a disposition or saved assessment metadata display
+**CLOSE (Jira)** and contribute to Close counters, with a tooltip identifying the
+status-based fallback. Explicit assessments take precedence, including unknown
+outcomes linked to a source comment. This fallback does not alter snapshot data.
+Project and search filters further narrow the table without changing the box
+counters or project totals. If a selected component disappears after reloading
+the snapshot, the view returns to All Teams.
+The table displays all of each issue's components. Every column header is a
+keyboard-accessible sort button that toggles ascending and descending order and
+announces its direction through `aria-sort`. Keys sort naturally (2 before 10),
+text sorts without case sensitivity, priorities follow severity order, and update
+timestamps sort chronologically. Missing values stay last in both directions.
+Sorting preserves the component, project, and search filters and does not change
+the snapshot or counters. Before a header is clicked, Jira's snapshot order is
+preserved.
+Its integration suite uses `@bug-refinement` and is included in module change
+detection. See [the snapshot format](DATA-FORMATS.md#agentic-bug-refinement--bug-refinementdatajson).
+
 ```text
 modules/your-module/
   module.json              # Module manifest (required)

@@ -2,6 +2,7 @@
   "agentic-tools": true,
   "team-tracker": true,
   "backport-tracker": true,
+  "bug-refinement": true,
   "cve-triage": true,
   "jira-solve-agent": true
 }
