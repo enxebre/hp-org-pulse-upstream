@@ -273,6 +273,8 @@ const TEAMS = [
   { key: 'console', label: 'Console', components: ['Management Console'], projectPrefixes: ['CONSOLE'] },
   { key: 'olm', label: 'OLM & Operators', components: ['OLM'], projectPrefixes: ['OPRUN'] },
   { key: 'support', label: 'Support & Diagnostics', components: ['Insights Operator'], projectPrefixes: ['CCXDEV'] },
+  { key: 'monitoring', label: 'Monitoring', components: ['Monitoring', 'Telemeter', 'monitoring-uiplugin'], projectPrefixes: [] },
+  { key: 'builds', label: 'Builds', components: ['Build', 'openshift-controller-manager / build'], projectPrefixes: [] },
   {
     key: 'edge-ecosystem',
     label: 'Edge & Ecosystem',

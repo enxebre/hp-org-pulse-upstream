@@ -47,10 +47,15 @@ const TEAM_REPOS = {
     'openshift-online/access-transparency-service'
   ],
   mco: ['machine-config-operator', 'os'],
-  ingress: ['cluster-ingress-operator', 'router'],
+  ingress: ['cluster-ingress-operator', 'router', 'coredns'],
   wmco: ['windows-machine-config-operator'],
-  installer: ['installer'],
-  hypershift: ['hypershift'],
+  installer: ['installer', 'cluster-bootstrap'],
+  hypershift: [
+    'hypershift',
+    'aws-karpenter-provider-aws',
+    'aws-node-termination-handler',
+    'azure-service-operator'
+  ],
   trt: ['sippy', 'origin', 'ci-tools', 'ci-docs', 'ci-tools-standalone', 'enhancements'],
   ota: ['cluster-version-operator', 'cincinnati-graph-data'],
   'kube-api': [
@@ -60,7 +65,16 @@ const TEAM_REPOS = {
     'cluster-kube-apiserver-operator',
     'cluster-openshift-apiserver-operator',
     'cluster-authentication-operator',
-    'ocp-release-operator-sdk'
+    'ocp-release-operator-sdk',
+    'cluster-config-operator',
+    'oauth-apiserver',
+    'oauth-server',
+    'oauth-proxy',
+    'azure-kubernetes-kms',
+    'cluster-kube-storage-version-migrator-operator',
+    'kubernetes-kube-storage-version-migrator',
+    'cluster-kube-controller-manager-operator',
+    'cluster-kube-scheduler-operator'
   ],
   oadp: [
     'oadp-operator',
@@ -72,7 +86,16 @@ const TEAM_REPOS = {
     'openshift-velero-plugin',
     'oadp-must-gather'
   ],
-  networking: ['ovn-kubernetes', 'cluster-network-operator', 'multus-cni', 'ptp-operator'],
+  networking: [
+    'ovn-kubernetes',
+    'cluster-network-operator',
+    'multus-cni',
+    'ptp-operator',
+    'containernetworking-plugins',
+    'whereabouts-cni',
+    'network-metrics-daemon',
+    'frr'
+  ],
   etcd: ['etcd', 'cluster-etcd-operator'],
   storage: [
     'local-storage-operator',
@@ -80,30 +103,62 @@ const TEAM_REPOS = {
     'secrets-store-csi-driver',
     'csi-external-snapshotter',
     'csi-driver-smb',
-    'cluster-image-registry-operator'
+    'cluster-image-registry-operator',
+    'image-registry',
+    'csi-external-snapshot-metadata',
+    'aws-ebs-csi-driver',
+    'azure-file-csi-driver',
+    'gcp-pd-csi-driver',
+    'ibm-vpc-block-csi-driver',
+    'vmware-vsphere-csi-driver',
+    'kubevirt-csi-driver'
   ],
   'cloud-providers': [
     'cloud-provider-kubevirt',
     'cloud-provider-azure',
     'cloud-provider-ibm',
     'cluster-cloud-controller-manager-operator',
-    'cloud-credential-operator'
+    'cloud-credential-operator',
+    'cloud-provider-nutanix',
+    'cloud-provider-powervs',
+    'azure-workload-identity'
   ],
   'cluster-lifecycle': [
     'cluster-samples-operator',
     'cluster-baremetal-operator',
     'assisted-service',
-    'oc-mirror'
+    'oc-mirror',
+    'assisted-installer',
+    'assisted-installer-agent'
   ],
   'machine-api': [
     'cluster-control-plane-machine-set-operator',
     'cluster-api-actuator-pkg',
     'machine-api-provider-gcp',
-    'kubernetes-autoscaler'
+    'kubernetes-autoscaler',
+    'machine-api-provider-openstack',
+    'machine-api-provider-powervs',
+    'cluster-api',
+    'cluster-api-provider-aws',
+    'cluster-api-provider-azure',
+    'cluster-api-provider-gcp',
+    'cluster-api-provider-ibmcloud',
+    'cluster-api-provider-vsphere'
   ],
   console: ['console', 'console-operator'],
   olm: ['operator-framework-olm', 'ansible-operator-plugins', 'kueue-operator'],
-  support: ['insights-operator', 'must-gather'],
+  support: ['insights-operator', 'must-gather', 'insights-runtime-extractor'],
+  monitoring: [
+    'monitoring-plugin',
+    'prometheus-alertmanager',
+    'thanos',
+    'node_exporter',
+    'kube-state-metrics',
+    'openshift-state-metrics',
+    'telemeter',
+    'configmap-reload'
+  ],
+  builds: ['builder'],
   // Edge & Ecosystem pillar — derived from gitlab.cee.redhat.com/hybrid-platforms/org.
   // Repos already wired to another team (oc-mirror→cluster-lifecycle,
   // installer→installer, hypershift→hypershift, etc.) are intentionally excluded.
@@ -122,7 +177,7 @@ const TEAM_REPOS = {
     // Metal Platform
     'ironic-image', 'ironic-agent-image', 'ironic-rhcos-downloader',
     'cluster-api-provider-baremetal', 'cluster-api-provider-metal3',
-    'baremetal-operator', 'ironic-standalone-operator',
+    'baremetal-operator', 'ironic-standalone-operator', 'baremetal-runtimecfg',
     'machine-os-images', 'image-customization-controller',
     'openstack-sushy', 'openstack-ironic', 'openstack-ironic-lib',
     'openstack-ironic-python-agent', 'openstack-ironic-inspector'
