@@ -1064,7 +1064,8 @@ PR state hydration to provide a unified view of agent activity across both syste
 **Deduplication logic**: Bot PRs are deduplicated against Jira issues by matching the PR's `jiraKey` to an issue's `key`.
 Overlapping PRs are already represented by their Jira issue. Net-new-keyed PRs
 (Jira key exists but issue lacks `issue-for-agent` label) and keyless PRs (no Jira reference)
-each become their own row in the `issues` array.
+each become their own row in the `issues` array. A net-new ticket with bot PRs in several
+repos therefore appears once per PR, each row carrying that PR's `prUrl`, `prState`, and `team`.
 
 **PR state hydration**: Linked PRs from Jira remote issue links are hydrated with state from GitHub's GraphQL API
 (MERGED, OPEN, CLOSED) to show merge status without requiring the PR to be opened by a tracked bot account.

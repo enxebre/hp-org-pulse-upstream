@@ -81,6 +81,19 @@ describe('REPO_TEAMS', () => {
     expect(REPO_TEAM_BY_NAME['openshift/mirror-gui']).toBe('edge-ecosystem')
   })
 
+  it('wires the repos touched by cross-repo bot bumps to their owning teams', () => {
+    expect(REPO_TEAM_BY_NAME['openshift/oauth-server']).toBe('kube-api')
+    expect(REPO_TEAM_BY_NAME['openshift/cluster-kube-scheduler-operator']).toBe('kube-api')
+    expect(REPO_TEAM_BY_NAME['openshift/aws-ebs-csi-driver']).toBe('storage')
+    expect(REPO_TEAM_BY_NAME['openshift/cluster-api-provider-aws']).toBe('machine-api')
+    expect(REPO_TEAM_BY_NAME['openshift/coredns']).toBe('ingress')
+    expect(REPO_TEAM_BY_NAME['openshift/whereabouts-cni']).toBe('networking')
+    expect(REPO_TEAM_BY_NAME['openshift/aws-karpenter-provider-aws']).toBe('hypershift')
+    expect(REPO_TEAM_BY_NAME['openshift/baremetal-runtimecfg']).toBe('edge-ecosystem')
+    expect(REPO_TEAM_BY_NAME['openshift/thanos']).toBe('monitoring')
+    expect(REPO_TEAM_BY_NAME['openshift/builder']).toBe('builds')
+  })
+
   it('does not double-claim repos already assigned to other teams', () => {
     // These repos belong to the Edge & Ecosystem pillar in the org data but
     // are already wired to a different team in this module.

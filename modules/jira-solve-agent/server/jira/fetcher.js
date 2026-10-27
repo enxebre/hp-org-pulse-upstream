@@ -94,7 +94,8 @@ async function fetchAgentData(jiraRequest) {
  *   - overlap:      the PR's leading Jira key matches an issue we already track
  *                   (already counted via the Jira issue — do not double-count)
  *   - net-new keyed: the PR carries a Jira key we do NOT already track
- *                   (net-new work — counts toward the total as its own row)
+ *                   (net-new work — each PR counts toward the total as its own
+ *                   row, so a ticket fixed across several repos counts once per PR)
  *   - no key:       the PR has no Jira key at all (e.g. NO-JIRA chores — counts
  *                   toward the total, surfaced as a NO-JIRA row by the caller)
  *
@@ -116,9 +117,9 @@ function dedupeAgentWork(issues, prs) {
   const overlapPrs = [];
   const netNewKeyedPrs = [];
   const noKeyPrs = [];
-  // Net-new Jira keys already claimed by an earlier PR in this batch, so two PRs
-  // for the same net-new key only produce one net-new row (and one count).
-  const seenNetNewKeys = new Set();
+  // Net-new PR urls already counted in this batch, so a PR returned twice only
+  // produces one row (and one count).
+  const seenNetNewUrls = new Set();
 
   for (const pr of prs || []) {
     const key = pr && pr.jiraKey;
@@ -130,13 +131,11 @@ function dedupeAgentWork(issues, prs) {
       overlapPrs.push(pr);
       continue;
     }
-    if (seenNetNewKeys.has(key)) {
-      // Another PR already introduced this net-new key; treat as overlap so the
-      // count stays 1-per-key.
+    if (pr.url && seenNetNewUrls.has(pr.url)) {
       overlapPrs.push(pr);
       continue;
     }
-    seenNetNewKeys.add(key);
+    if (pr.url) seenNetNewUrls.add(pr.url);
     netNewKeyedPrs.push(pr);
   }
 
