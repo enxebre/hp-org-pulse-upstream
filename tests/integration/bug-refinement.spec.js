@@ -28,6 +28,7 @@ test.describe('Agentic Bug Refinement @bug-refinement', () => {
     await expect(solveSection.getByRole('button', { name: 'Agentic Bug Refinement', exact: true })).toHaveCount(0)
     const header = refinementSection.locator('button[aria-expanded]')
     if (await header.getAttribute('aria-expanded') === 'false') await header.click()
+    await expect(refinementSection.locator('button:not([aria-expanded])')).toHaveText(['Agentic Bug Refinement'])
     await refinementSection.locator('button:not([aria-expanded])').click()
     await expect(page).toHaveURL(/#\/bug-refinement\/main$/)
     await expect(page.getByTestId('bug-refinement').locator('tbody tr')).toHaveCount(5)

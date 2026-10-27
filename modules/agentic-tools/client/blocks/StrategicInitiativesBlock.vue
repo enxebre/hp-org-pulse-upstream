@@ -13,7 +13,7 @@
     <h2 class="px-1 mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
       Strategic Initiatives
     </h2>
-    <ToolsContent :additional-tools="refinementTools" />
+    <ToolsContent :additional-tools="moduleTools" />
   </section>
 </template>
 
@@ -24,11 +24,23 @@ import ToolsContent from '../views/ToolsContent.vue'
 
 const moduleNav = inject('moduleNav', null)
 const { linkTo } = useModuleLink()
-const refinementTools = computed(() => moduleNav?.isModuleAvailable?.('bug-refinement') ? [{
-  id: 'agentic-bug-refinement',
-  title: 'Agentic Bug Refinement',
-  description: 'Track OCPBUGS and CNTRLPLANE issues refined by Chai.',
-  icon: 'clipboard-check',
-  url: linkTo('bug-refinement', 'main')
-}] : [])
+const MODULE_TOOLS = [
+  {
+    slug: 'bug-refinement',
+    id: 'agentic-bug-refinement',
+    title: 'Agentic Bug Refinement',
+    description: 'Track OCPBUGS and CNTRLPLANE issues refined by Chai.',
+    icon: 'clipboard-check'
+  },
+  {
+    slug: 'bug-pipeline',
+    id: 'agentic-bug-pipeline',
+    title: 'Agentic Bug Pipeline',
+    description: 'Follow refined OCPBUGS issues through solve and backport merges.',
+    icon: 'trending-up'
+  }
+]
+const moduleTools = computed(() => MODULE_TOOLS
+  .filter(tool => moduleNav?.isModuleAvailable?.(tool.slug))
+  .map(({ slug, ...tool }) => ({ ...tool, url: linkTo(slug, 'main') })))
 </script>

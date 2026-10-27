@@ -27,7 +27,33 @@ Jira's `updated` field descending. All Jira statuses are included. The home page
       "disposition": "NEEDS_INFO",
       "dispositionAt": "2026-10-15T07:00:00.000Z",
       "dispositionCommentId": "10001",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
       "updated": "2026-10-15T07:30:00.000Z"
+    },
+    {
+      "key": "OCPBUGS-10002",
+      "summary": "Correct node configuration reconciliation",
+      "project": "OCPBUGS",
+      "status": "Closed",
+      "priority": "Minor",
+      "assignee": null,
+      "components": ["Machine Config Operator"],
+      "labels": ["refined-by-agent", "jlp-release-4.22:OCPBUGS-10011"],
+      "disposition": "SOLVE",
+      "dispositionAt": "2026-10-13T09:00:00.000Z",
+      "dispositionCommentId": "10003",
+      "prPosted": true,
+      "merged": true,
+      "backports": [
+        { "key": "OCPBUGS-10011", "branch": "release-4.22", "status": "Verified", "merged": true }
+      ],
+      "pullRequests": [
+        { "url": "https://github.com/example-org/example-repo/pull/101", "repo": "example-org/example-repo", "number": 101 }
+      ],
+      "updated": "2026-10-13T10:00:00.000Z"
     }
   ]
 }
@@ -73,6 +99,28 @@ Snapshots fetched before `CLOSE` was supported also need a refresh to recognize
 those saved assessments.
 `updated` is the last Jira update, not the refinement time.
 `assignee` and `updated` may be `null`; missing status or priority is `Unknown`.
+
+Each refresh also searches the same label scope with `status WAS POST` and
+`status WAS MODIFIED`, requesting only the status field. `prPosted` is `true`
+when the issue was ever in POST (a pull request was linked) or MODIFIED, and
+`merged` is `true` when it was ever in MODIFIED (the pull request merged), so
+later ON_QA, Verified, or Closed transitions keep the outcome. These flags follow
+the OCPBUGS lifecycle and do not identify who authored the pull request;
+CNTRLPLANE issues do not use these statuses and stay `false`. `backports` lists
+the clones named by `jlp-<branch>:<KEY>` labels on the original issue, in label
+order. Clones inherit `refined-by-agent`, so each entry copies the clone's
+`status` and `merged` from the same snapshot; both are `null` when the clone is
+not in the snapshot. The `bug-pipeline` module serves this snapshot unchanged from
+`GET /api/modules/bug-pipeline/data` for its **Agentic Bug Pipeline** view at
+`#/bug-pipeline/main`. Snapshots fetched before these fields existed omit them, and
+that view asks for a refresh instead of reporting zero merges. `pullRequests` lists the GitHub pull requests in
+the [Jira remote links](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-remote-links/#api-rest-api-3-issue-issueidorkey-remotelink-get)
+of issues with a `SOLVE` disposition, fetched with one request per issue during
+refresh; it is empty for other issues. Each entry keeps the canonical pull request
+`url`, its `repo` (`org/name`), and `number`; remote link titles are not stored.
+Merge state comes from the issue's `merged` flag, not from the links. Export also
+anonymizes backport keys, including the keys inside `jlp-` labels, and replaces
+`pullRequests` with an empty list because the links identify the real issue.
 
 ## Person Metrics — `data/people/{name}.json`
 

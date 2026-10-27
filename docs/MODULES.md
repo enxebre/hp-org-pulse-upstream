@@ -49,6 +49,40 @@ preserved.
 Its integration suite uses `@bug-refinement` and is included in module change
 detection. See [the snapshot format](DATA-FORMATS.md#agentic-bug-refinement--bug-refinementdatajson).
 
+The `bug-pipeline` module owns the **Agentic Bug Pipeline** sidebar section and view at
+`#/bug-pipeline/main`, separate from the refinement section, and the Agentic Tools
+landing block adds its home card the same way, guarded by
+`moduleNav.isModuleAvailable('bug-pipeline')`. It declares `"requires": ["bug-refinement"]`
+and has no Jira client, refresh job, or storage of its own: `GET /api/modules/bug-pipeline/data`
+reads the refinement module's exported `bug-refinement/data.json` snapshot through
+`readFromStorage`, so the pipeline refreshes with Agentic Bug Refinement. Until that
+module fetches its first snapshot, the view says so. Because modules cannot import
+each other, the client keeps its own copies of the refinement view's component box,
+disposition, and sorting helpers; keep both copies in sync.
+The view shows how refined OCPBUGS issues move
+through Chai's solve and backport stages. It leaves out CNTRLPLANE issues and
+issues labeled `chai-backport`; backport clones count through their original
+issue's `backports`. Summary cards show refined bugs; the shares closed, sent for
+human analysis, and waiting for information; the share sent to solve (`SOLVE`);
+the share of those that merged; and the share of their linked backports that
+merged. Each card states its count and denominator. The view reuses the
+refinement view's component boxes and **CLOSE (Jira)** fallback. Each box shows the
+refined bug count and the same percentages in the same order, without counts. A
+zero denominator shows —.
+Selecting a box filters the cards and the **Refined bugs** table. The table lists
+every refined bug in the selection, most recently updated first. Its Disposition
+column shows the refinement view's badge and, for bugs sent to solve, the solve
+outcome (**Merged**, **PR posted**, or **No PR yet**) with links to the GitHub pull
+requests from Jira remote links. The table also shows Jira status, each backport's
+branch and status, and the update date, with the full timestamp on hover. Its
+column headers sort the same way as the refinement view's, through the same
+`useSortableRows` composable. Disposition sorts by disposition and then by solve
+progress, so a descending sort lists merged fixes first, and Backports sorts by the
+number of linked backports. Sorting survives component changes. Snapshots without
+merge fields show a refresh notice and — for merge and backport metrics.
+Its integration suite uses `@bug-pipeline`; change detection also runs it when the
+refinement server or fixture changes, since they define its data.
+
 ```text
 modules/your-module/
   module.json              # Module manifest (required)

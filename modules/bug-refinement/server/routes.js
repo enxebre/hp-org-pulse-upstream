@@ -1,4 +1,4 @@
-const { fetchRefinedIssues, REFINEMENT_JQL } = require('./jira/refinement')
+const { fetchRefinedIssues, REFINEMENT_JQL, BACKPORT_LABEL } = require('./jira/refinement')
 
 const STORAGE_KEY = 'bug-refinement/data.json'
 
@@ -34,7 +34,7 @@ module.exports = function registerRefinementRoutes(router, context, jira) {
    *   get:
    *     tags: [Agentic Bug Refinement]
    *     summary: Get OCPBUGS and CNTRLPLANE issues labeled refined-by-agent
-   *     description: Returns cached issues with dispositions from the newest saved refine:v1 comment. Fetches from Jira on the first request when no snapshot exists. Includes a demo flag and the exact Jira search URL.
+   *     description: Returns cached issues with dispositions from the newest saved refine:v1 comment, pull request and merge flags from Jira status history, pull request links for SOLVE issues, and linked backports. Fetches from Jira on the first request when no snapshot exists. Includes a demo flag and the exact Jira search URL.
    *     responses:
    *       200:
    *         description: Refinement snapshot with fetchedAt, jiraHost, jiraSearchUrl, demo, and issues
@@ -85,7 +85,11 @@ module.exports = function registerRefinementRoutes(router, context, jira) {
         ...issue,
         key: mapping.anonymizeJiraKey(issue.key),
         summary: mapping.anonymizeIssueSummary(issue.key),
-        assignee: issue.assignee ? mapping.getOrCreateNameMapping(issue.assignee) : null
+        assignee: issue.assignee ? mapping.getOrCreateNameMapping(issue.assignee) : null,
+        labels: (issue.labels || []).map(label => label.replace(BACKPORT_LABEL, (match, branch, key) => `jlp-${branch}:${mapping.anonymizeJiraKey(key)}`)),
+        ...(issue.backports && { backports: issue.backports.map(backport => ({ ...backport, key: mapping.anonymizeJiraKey(backport.key) })) }),
+        // Pull request links identify the real issue, so exports keep only the prPosted flag.
+        ...(issue.pullRequests && { pullRequests: [] })
       }))
     })
   })

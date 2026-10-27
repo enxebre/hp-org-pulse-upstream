@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 const { createTestContext } = require('../../../../shared/server/module-context')
 const registerRefinementRoutes = require('../../server/routes')
 const registerModule = require('../../server')
-const { fetchRefinedIssues, fetchDisposition, REFINEMENT_JQL } = require('../../server/jira/refinement')
+const { fetchRefinedIssues, fetchDisposition, REFINEMENT_JQL, PR_POSTED_JQL, MERGED_JQL } = require('../../server/jira/refinement')
 const fixture = require('../../../../fixtures/bug-refinement/data.json')
 
 afterEach(() => vi.unstubAllEnvs())
@@ -115,10 +115,62 @@ describe('agentic bug refinement', () => {
     const jiraRequest = vi.fn()
       .mockResolvedValueOnce({ issues: [{ key: 'OCPBUGS-1', fields: { labels: ['refined-by-agent'] } }] })
       .mockResolvedValueOnce({ comments: [{ id: '1', created: '2026-10-15', body: '[refine:v1] outcome=SOLVE' }], total: 1 })
+      .mockResolvedValue({ issues: [] })
     const [issue] = await fetchRefinedIssues(jiraRequest)
     expect(issue).toMatchObject({ disposition: 'SOLVE', dispositionAt: '2026-10-15', dispositionCommentId: '1' })
     expect(issue).not.toHaveProperty('comments')
     expect(issue).not.toHaveProperty('body')
+  })
+
+  it('marks pull requests and merges from Jira status history and links backport clones', async () => {
+    const jiraRequest = vi.fn(async url => {
+      if (url.includes('/comment')) return { comments: [], total: 0 }
+      const query = new URL(url, 'https://jira.example.com').searchParams
+      if (query.get('jql') === PR_POSTED_JQL || query.get('jql') === MERGED_JQL) expect(query.get('fields')).toBe('status')
+      return {
+        [REFINEMENT_JQL]: { issues: [
+          { key: 'OCPBUGS-1', fields: { status: { name: 'Verified' }, labels: ['refined-by-agent', 'jlp-release-4.22:OCPBUGS-2', 'jlp-release-4.21:OCPBUGS-9'] } },
+          { key: 'OCPBUGS-2', fields: { status: { name: 'POST' }, labels: ['refined-by-agent', 'chai-backport'] } },
+          { key: 'OCPBUGS-3', fields: { status: { name: 'POST' }, labels: ['refined-by-agent', 'jlp-unrelated'] } },
+          { key: 'OCPBUGS-4', fields: { status: { name: 'New' }, labels: ['refined-by-agent'] } }
+        ] },
+        [PR_POSTED_JQL]: { issues: [{ key: 'OCPBUGS-2' }, { key: 'OCPBUGS-3' }] },
+        [MERGED_JQL]: { issues: [{ key: 'OCPBUGS-1' }] }
+      }[query.get('jql')]
+    })
+    const issues = await fetchRefinedIssues(jiraRequest)
+    expect(PR_POSTED_JQL).toBe('project IN (OCPBUGS, CNTRLPLANE) AND labels = "refined-by-agent" AND status WAS POST')
+    expect(MERGED_JQL).toBe('project IN (OCPBUGS, CNTRLPLANE) AND labels = "refined-by-agent" AND status WAS MODIFIED')
+    expect(issues.map(({ key, prPosted, merged, backports }) => ({ key, prPosted, merged, backports }))).toEqual([
+      { key: 'OCPBUGS-1', prPosted: true, merged: true, backports: [
+        { key: 'OCPBUGS-2', branch: 'release-4.22', status: 'POST', merged: false },
+        { key: 'OCPBUGS-9', branch: 'release-4.21', status: null, merged: null }
+      ] },
+      { key: 'OCPBUGS-2', prPosted: true, merged: false, backports: [] },
+      { key: 'OCPBUGS-3', prPosted: true, merged: false, backports: [] },
+      { key: 'OCPBUGS-4', prPosted: false, merged: false, backports: [] }
+    ])
+  })
+
+  it('stores GitHub pull request links from remote links only for issues sent to solve', async () => {
+    const jiraRequest = vi.fn(async url => {
+      if (url.includes('/comment')) return { comments: [{ id: '1', body: `[refine:v1] outcome=${url.includes('/OCPBUGS-1/') ? 'SOLVE' : 'CLOSE'}` }], total: 1 }
+      if (url.includes('/remotelink')) return [
+        { object: { url: 'https://github.com/openshift/hypershift/pull/9982', title: 'openshift/hypershift#9982: OCPBUGS-1: Fix endpoints' } },
+        { object: { url: 'https://github.com/openshift/hypershift/pull/9982/files' } },
+        { object: { url: 'https://github.com/openshift/hypershift/issues/12' } },
+        { object: { url: 'https://jira.example.com/browse/OCPBUGS-7' } },
+        { object: {} }
+      ]
+      const query = new URL(url, 'https://jira.example.com').searchParams
+      return query.get('jql') === REFINEMENT_JQL ? { issues: [{ key: 'OCPBUGS-1', fields: {} }, { key: 'OCPBUGS-2', fields: {} }] } : { issues: [] }
+    })
+    const issues = await fetchRefinedIssues(jiraRequest)
+    expect(issues.map(({ key, disposition, pullRequests }) => ({ key, disposition, pullRequests }))).toEqual([
+      { key: 'OCPBUGS-1', disposition: 'SOLVE', pullRequests: [{ url: 'https://github.com/openshift/hypershift/pull/9982', repo: 'openshift/hypershift', number: 9982 }] },
+      { key: 'OCPBUGS-2', disposition: 'CLOSE', pullRequests: [] }
+    ])
+    expect(jiraRequest.mock.calls.map(([url]) => url).filter(url => url.includes('/remotelink'))).toEqual(['/rest/api/3/issue/OCPBUGS-1/remotelink'])
   })
 
   it('serves cached data without contacting Jira', async () => {
@@ -187,5 +239,22 @@ describe('agentic bug refinement', () => {
       expect.objectContaining({ key: 'ISSUE-1', summary: 'Example issue', assignee: 'Example person' }),
       expect.objectContaining({ assignee: null })
     ]) }))
+  })
+
+  it('anonymizes backport keys and drops pull request links in exports', async () => {
+    const { context, storage } = setup({ fetchedAt: fixture.fetchedAt, issues: [{
+      key: 'OCPBUGS-1', summary: 'Real summary', labels: ['refined-by-agent', 'jlp-release-4.22:OCPBUGS-2'],
+      backports: [{ key: 'OCPBUGS-2', branch: 'release-4.22', status: 'POST', merged: false }],
+      pullRequests: [{ url: 'https://github.com/openshift/hypershift/pull/1', repo: 'openshift/hypershift', number: 1 }]
+    }] })
+    const addFile = vi.fn()
+    const mapping = { anonymizeJiraKey: key => key.replace('OCPBUGS', 'TEST1'), anonymizeIssueSummary: () => 'Example issue', getOrCreateNameMapping: () => 'Example person' }
+    await context.registerExport.mock.calls[0][0](addFile, storage, mapping)
+    const [issue] = addFile.mock.calls[0][1].issues
+    expect(issue.labels).toEqual(['refined-by-agent', 'jlp-release-4.22:TEST1-2'])
+    expect(issue.backports).toEqual([{ key: 'TEST1-2', branch: 'release-4.22', status: 'POST', merged: false }])
+    expect(issue.pullRequests).toEqual([])
+    expect(JSON.stringify(addFile.mock.calls[0][1])).not.toContain('OCPBUGS')
+    expect(JSON.stringify(addFile.mock.calls[0][1])).not.toContain('github.com')
   })
 })

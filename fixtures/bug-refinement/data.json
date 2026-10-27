@@ -13,6 +13,10 @@
       "disposition": "NEEDS_INFO",
       "dispositionAt": "2026-10-15T07:00:00.000Z",
       "dispositionCommentId": "10001",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
       "updated": "2026-10-15T07:30:00.000Z"
     },
     {
@@ -27,6 +31,10 @@
       "disposition": "NEED_HUMAN_ANALYSIS",
       "dispositionAt": "2026-10-14T14:00:00.000Z",
       "dispositionCommentId": "10002",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
       "updated": "2026-10-14T15:00:00.000Z"
     },
     {
@@ -37,10 +45,19 @@
       "priority": "Minor",
       "assignee": null,
       "components": ["Machine Config Operator"],
-      "labels": ["refined-by-agent"],
+      "labels": ["refined-by-agent", "jlp-release-4.22:OCPBUGS-10011", "jlp-release-4.21:OCPBUGS-10012"],
       "disposition": "SOLVE",
       "dispositionAt": "2026-10-13T09:00:00.000Z",
       "dispositionCommentId": "10003",
+      "prPosted": true,
+      "merged": true,
+      "backports": [
+        { "key": "OCPBUGS-10011", "branch": "release-4.22", "status": "Verified", "merged": true },
+        { "key": "OCPBUGS-10012", "branch": "release-4.21", "status": "POST", "merged": false }
+      ],
+      "pullRequests": [
+        { "url": "https://github.com/example-org/example-repo/pull/101", "repo": "example-org/example-repo", "number": 101 }
+      ],
       "updated": "2026-10-13T10:00:00.000Z"
     },
     {
@@ -55,6 +72,10 @@
       "disposition": "DEFER",
       "dispositionAt": "2026-10-12T08:00:00.000Z",
       "dispositionCommentId": "10004",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
       "updated": "2026-10-12T09:00:00.000Z"
     },
     {
@@ -69,6 +90,10 @@
       "disposition": "CLOSE",
       "dispositionAt": "2026-10-11T08:00:00.000Z",
       "dispositionCommentId": "10005",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
       "updated": "2026-10-11T09:00:00.000Z"
     }
   ]
