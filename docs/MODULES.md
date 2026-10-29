@@ -58,7 +58,8 @@ reads the refinement module's exported `bug-refinement/data.json` snapshot throu
 `readFromStorage`, so the pipeline refreshes with Agentic Bug Refinement. Until that
 module fetches its first snapshot, the view says so. Because modules cannot import
 each other, the client keeps its own copies of the refinement view's component box,
-disposition, and sorting helpers; keep both copies in sync.
+disposition, and sorting helpers, and of the server's backport label pattern; keep both
+copies in sync.
 The view shows how refined OCPBUGS issues move
 through Chai's solve and backport stages. It leaves out CNTRLPLANE issues and
 issues labeled `chai-backport`; backport clones count through their original
@@ -80,6 +81,43 @@ column headers sort the same way as the refinement view's, through the same
 progress, so a descending sort lists merged fixes first, and Backports sorts by the
 number of linked backports. Sorting survives component changes. Snapshots without
 merge fields show a refresh notice and — for merge and backport metrics.
+Between the component boxes and the table, a **Decision flow** Sankey diagram follows
+the selected bugs from refinement to their latest assessment and, for `SOLVE`, to
+pull request, merge, backports, backport pull requests, and backport merge. Band
+widths are bug counts, so every column partitions the same bugs, and each box shows
+its count and share of all refined bugs. Backport boxes also show how many backports
+their bugs have, and a bug whose backports are at different steps gets its own box,
+**Backport PRs: Some PRs posted** or **Backport merge: Partly merged**, so every
+backport column adds up to the one before it in backports as well as bugs. A backport
+counts as having a pull request when its clone was ever in POST or has a linked GitHub
+pull request; snapshots without the backport `prPosted` flag count a clone in POST.
+Above the diagram, **Median time per phase** chips show the median of each phase over
+the selected bugs, with the same labels as a bug's own lead times: report to first
+assessment for every bug, then solve assessment to PR, PR to merge, merge to last
+backport PR, last backport PR to merge, and report to merge for bugs sent to solve.
+Each chip names how many bugs had both timestamps, and a phase no bug has is left out. A **First assessment** column appears only when some bug's
+first saved assessment differs from its latest one. Boxes keep the disposition badge
+colors. Hovering or focusing a box or band shows its count and share; a band also shows the
+share of its source box that took it, and a backport box shows how many backports
+are merged, awaiting merge, or without a pull request. Where both decisions have
+timestamps, the tooltip shows the median time between them: report to first
+assessment, first to latest assessment, solve assessment to pull request, pull
+request to merge, merge to last backport pull request, and last backport pull
+request to its merge. Backport times come from the clones' own timelines in the same
+snapshot, so a bug is timed only when all of its clones are there.
+Selecting a box or band, by click or Enter/Space, narrows the table to its bugs until
+it is cleared or the component changes; the summary cards still count the whole
+component. **Show flows as a table** lists every band with its count, both shares, and median.
+`client/utils/decisions.js` builds and lays out the diagram without a charting library.
+Each table row has a toggle that expands the bug's decision flow: lead times between
+decisions, a Mermaid flowchart with one node per decision labeled with who made it and
+when, its edges labeled with the time since the previous decision, and the same steps as
+an ordered list. Mermaid loads lazily through the module's own copy of ai-impact's
+`MermaidDiagram`. Repeated identical assessments fold into one step, and a waiting label
+Chai adds with its matching assessment is not repeated. Each backport label opens a
+dotted lane with the clone's status transitions from the same snapshot, or the clone's
+current status when it is not in the snapshot. Without a `timeline`, the flow asks
+for a refresh.
 Its integration suite uses `@bug-pipeline`; change detection also runs it when the
 refinement server or fixture changes, since they define its data.
 

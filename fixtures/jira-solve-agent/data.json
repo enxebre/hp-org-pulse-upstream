@@ -86,6 +86,42 @@
       "assignee": "Another User",
       "agentState": "closed",
       "processed": true
+    },
+    {
+      "key": "OCPBUGS-60002",
+      "summary": "Example cross-repo fix opened by the bot",
+      "status": "ON_QA",
+      "issueType": "Unknown",
+      "priority": "None",
+      "created": "2026-09-22T09:00:00.000Z",
+      "updated": "2026-09-22T09:00:00.000Z",
+      "labels": [],
+      "components": [],
+      "assignee": null,
+      "agentState": "other",
+      "processed": false,
+      "source": "chai-bot-pr",
+      "prUrl": "https://github.com/openshift/cluster-version-operator/pull/9001",
+      "prState": "MERGED",
+      "team": "ota"
+    },
+    {
+      "key": "OCPBUGS-60002",
+      "summary": "Example cross-repo fix opened by the bot",
+      "status": "ON_QA",
+      "issueType": "Unknown",
+      "priority": "None",
+      "created": "2026-09-22T09:05:00.000Z",
+      "updated": "2026-09-22T09:05:00.000Z",
+      "labels": [],
+      "components": [],
+      "assignee": null,
+      "agentState": "other",
+      "processed": false,
+      "source": "chai-bot-pr",
+      "prUrl": "https://github.com/openshift/etcd/pull/9002",
+      "prState": "OPEN",
+      "team": "etcd"
     }
   ],
   "prs": [
@@ -108,6 +144,26 @@
       "state": "OPEN",
       "author": "openshift-bot",
       "jiraKey": "OCPBUGS-60001"
+    },
+    {
+      "url": "https://github.com/openshift/cluster-version-operator/pull/9001",
+      "number": 9001,
+      "repo": "openshift/cluster-version-operator",
+      "team": "ota",
+      "title": "OCPBUGS-60002: Example cross-repo fix opened by the bot",
+      "state": "MERGED",
+      "createdAt": "2026-09-22T09:00:00.000Z",
+      "jiraKey": "OCPBUGS-60002"
+    },
+    {
+      "url": "https://github.com/openshift/etcd/pull/9002",
+      "number": 9002,
+      "repo": "openshift/etcd",
+      "team": "etcd",
+      "title": "OCPBUGS-60002: Example cross-repo fix opened by the bot",
+      "state": "OPEN",
+      "createdAt": "2026-09-22T09:05:00.000Z",
+      "jiraKey": "OCPBUGS-60002"
     }
   ],
   "combined": []

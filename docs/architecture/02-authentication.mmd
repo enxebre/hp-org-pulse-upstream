@@ -1,0 +1,20 @@
+flowchart TB
+    Human["Browser user"] --> OAuth["OpenShift OAuth login"]
+    OAuth --> Proxy["Trusted proxy"]
+    Proxy -->|X-Forwarded-Email + X-Proxy-Secret| Guard["Backend proxy guard"]
+
+    Job["Automation / CI"] -->|Bearer tt_… token| Guard
+
+    Guard --> Identity["Resolve identity"]
+    Identity --> Roles["Check required roles<br/>admin · team-admin · module roles"]
+    Roles --> Scope["Check API token scope<br/>Token authentication only"]
+    Scope --> Route["Module route handler"]
+
+    classDef user fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef platform fill:#e5f4ef,stroke:#178269,color:#124f41
+    classDef feature fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+    classDef external fill:#fff3df,stroke:#d69a30,color:#754a0c
+    class Human user
+    class OAuth,Proxy,Guard,Identity,Roles,Scope platform
+    class Route feature
+    class Job external

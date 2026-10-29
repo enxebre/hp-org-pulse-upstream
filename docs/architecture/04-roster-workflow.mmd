@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph Cyborg["CYBORG MODE · Complete roster snapshot"]
+        GCS["Cyborg data in Google Cloud Storage"] --> Python["Standalone Python exporter<br/>orgdatacore client"]
+        Python --> Snapshot["Complete-roster<br/>JSON"]
+        Snapshot -.-> Publish["External publication step<br/>Outside this repository"]
+        Publish -.-> Saved[("Snapshot in app storage")]
+        Saved --> Check["Core validation<br/>Schema · scope · freshness"]
+    end
+
+    subgraph Traditional["TRADITIONAL MODE · LDAP and enrichment"]
+        LDAP["IPA LDAP<br/>People and org hierarchy"]
+        Sheets["Google Sheets<br/>Team assignments and enrichment"]
+    end
+
+    Check --> Sync["Core roster sync"]
+    LDAP --> Sync
+    Sheets --> Sync
+    Sync --> People[("People registry · team assignments")]
+    People --> Dashboard["People & Teams views"]
+
+    classDef user fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef platform fill:#e5f4ef,stroke:#178269,color:#124f41
+    classDef external fill:#fff3df,stroke:#d69a30,color:#754a0c
+    classDef data fill:#e8eef5,stroke:#64748b,color:#334155
+    class GCS,Publish,LDAP,Sheets external
+    class Python,Check,Sync platform
+    class Snapshot,Saved,People data
+    class Dashboard user

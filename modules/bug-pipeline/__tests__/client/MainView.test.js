@@ -5,6 +5,8 @@ import { apiRequest } from '@shared/client/services/api.js'
 import fixture from '../../../../fixtures/bug-refinement/data.json'
 
 vi.mock('@shared/client/services/api.js', () => ({ apiRequest: vi.fn() }))
+const mermaid = vi.hoisted(() => ({ initialize: vi.fn(), render: vi.fn(async () => ({ svg: '<svg data-testid="flow-svg"></svg>' })) }))
+vi.mock('mermaid', () => ({ default: mermaid }))
 
 const ROW_KEYS = ['refined', 'CLOSE', 'NEED_HUMAN_ANALYSIS', 'NEEDS_INFO', 'SOLVE', 'merged', 'backports-merged']
 
@@ -67,8 +69,8 @@ describe('Agentic Bug Pipeline', () => {
       ['OCPBUGS-10003', 'CLOSE', null]
     ])
     const row = wrapper.findAll('tbody > tr')[1]
-    expect(row.findAll('td')[6].text()).toBe(new Date('2026-10-13T10:00:00.000Z').toLocaleDateString())
-    expect(row.findAll('td')[6].attributes('title')).toBe(new Date('2026-10-13T10:00:00.000Z').toLocaleString())
+    expect(row.findAll('td')[6].text()).toBe(new Date('2026-10-15T05:00:00.000Z').toLocaleDateString())
+    expect(row.findAll('td')[6].attributes('title')).toBe(new Date('2026-10-15T05:00:00.000Z').toLocaleString())
     const pullRequest = row.get('a[href^="https://github.com/"]')
     expect(pullRequest.text()).toBe('example-repo#101')
     expect(pullRequest.attributes()).toMatchObject({ href: 'https://github.com/example-org/example-repo/pull/101', title: 'example-org/example-repo#101', target: '_blank', rel: 'noopener noreferrer' })
@@ -190,6 +192,95 @@ describe('Agentic Bug Pipeline', () => {
     expect(closed.text()).toContain('Refined bugs (1)')
     expect(closed.get('[data-testid="disposition"]').text()).toBe('CLOSE')
     expect(closed.find('[data-testid="solve-outcome"]').exists()).toBe(false)
+  })
+
+  it('shows the aggregate decision flow and lists the bugs in a selected box or band', async () => {
+    const wrapper = mount(PipelineView)
+    await flushPromises()
+    const sankey = wrapper.get('[data-testid="decision-sankey"]')
+    const value = id => sankey.get(`[data-testid="sankey-node-${id}"] [data-testid="sankey-node-value"]`).text()
+    expect(['refined', 'first:NEEDS_INFO', 'first:CLOSE', 'latest:SOLVE', 'latest:NEEDS_INFO', 'pr:posted', 'merge:merged', 'backports:some', 'backportPr:posted', 'backportMerge:partial'].map(value)).toEqual(['3', '2', '1', '1', '1', '1', '1', '1', '1', '1'])
+    const band = sankey.get('[data-testid="sankey-link-first:NEEDS_INFO->latest:SOLVE"]')
+    expect(band.attributes('aria-label')).toBe('First assessment: Needs info to Latest assessment: Solve, 1 bug, 50% of First assessment: Needs info, median first to latest assessment: 4d 1h (1 of 1 bug timed)')
+    const share = id => sankey.get(`[data-testid="sankey-node-${id}"] [data-testid="sankey-node-share"]`).text()
+    expect(['refined', 'first:NEEDS_INFO', 'latest:SOLVE'].map(share)).toEqual(['100%', '67%', '33%'])
+    const backportMerge = sankey.get('[data-testid="sankey-node-backportMerge:partial"]')
+    expect(backportMerge.attributes('aria-label')).toBe('Backport merge: Partly merged, 1 bug, 33% of refined bugs, 2 backports: 1 merged, 1 awaiting merge')
+    expect(backportMerge.get('[data-testid="sankey-node-backports"]').text()).toBe('2 backports')
+    expect(sankey.find('[data-testid="sankey-node-pr:posted"] [data-testid="sankey-node-backports"]').exists()).toBe(false)
+    const phase = sankey.get('[data-testid="phase-time-pull-request"]').text()
+    expect(phase).toContain('Solve assessment → PR')
+    expect(phase).toContain('1h 40m')
+    expect(phase).toContain('1 bug')
+    expect(sankey.find('[data-testid="phase-time-backport-merge"]').exists()).toBe(false)
+    await backportMerge.trigger('focus')
+    expect(sankey.get('[data-testid="sankey-tooltip"]').text()).toContain('2 backports: 1 merged, 1 awaiting merge')
+    await backportMerge.trigger('blur')
+    await band.trigger('focus')
+    expect(sankey.get('[data-testid="sankey-tooltip"]').text()).toContain('1 bug · 33% of refined bugs')
+    expect(sankey.get('[data-testid="sankey-tooltip"]').text()).toContain('50% of First assessment: Needs info')
+    expect(sankey.get('[data-testid="sankey-tooltip"]').text()).toContain('Median first to latest assessment: 4d 1h')
+    await band.trigger('click')
+    expect(band.attributes('aria-pressed')).toBe('true')
+    expect(wrapper.get('[data-testid="flow-selection"]').text()).toContain('First assessment: Needs info → Latest assessment: Solve')
+    expect(wrapper.text()).toContain('Refined bugs (1)')
+    expect(outcomes(wrapper)).toEqual([['OCPBUGS-10002', 'SOLVE', 'Merged']])
+    expect(wrapper.findAll('[data-testid^="stage-"]').map(stage => stage.get('.text-3xl').text())[0]).toBe('3')
+    await sankey.get('[data-testid="sankey-node-first:NEEDS_INFO"]').trigger('keydown', { key: 'Enter' })
+    expect(outcomes(wrapper).map(([key]) => key)).toEqual(['OCPBUGS-10001', 'OCPBUGS-10002'])
+    await wrapper.get('[data-testid="flow-selection"] button').trigger('click')
+    expect(wrapper.find('[data-testid="flow-selection"]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Refined bugs (3)')
+    await sankey.get('[data-testid="sankey-node-latest:CLOSE"]').trigger('click')
+    await wrapper.get('button[aria-label="Machine Config Operator"]').trigger('click')
+    expect(wrapper.find('[data-testid="flow-selection"]').exists()).toBe(false)
+    await sankey.get('details').trigger('toggle')
+    expect(sankey.find('[data-testid="sankey-table"]').exists()).toBe(false)
+    sankey.get('details').element.open = true
+    await sankey.get('details').trigger('toggle')
+    expect(sankey.get('[data-testid="sankey-table"]').findAll('tbody tr').map(row => row.findAll('td').map(cell => cell.text()))).toEqual([
+      ['Refined bugs', 'First assessment: Needs info', '1', '100%', '100%', 'report to first assessment: 22h (1 of 1 bug timed)'],
+      ['First assessment: Needs info', 'Latest assessment: Solve', '1', '100%', '100%', 'first to latest assessment: 4d 1h (1 of 1 bug timed)'],
+      ['Latest assessment: Solve', 'Pull request: PR posted', '1', '100%', '100%', 'solve assessment to pull request: 1h 40m (1 of 1 bug timed)'],
+      ['Pull request: PR posted', 'Merge: Merged', '1', '100%', '100%', 'pull request to merge: 15h 35m (1 of 1 bug timed)'],
+      ['Merge: Merged', 'Backports: Backported', '1', '100%', '100%', '—'],
+      ['Backports: Backported', 'Backport PRs: PR posted', '1', '100%', '100%', '—'],
+      ['Backport PRs: PR posted', 'Backport merge: Partly merged', '1', '100%', '100%', '—']
+    ])
+  })
+
+  it('expands a bug into its decision flow with who decided, when, and the time between decisions', async () => {
+    const wrapper = mount(PipelineView)
+    await flushPromises()
+    const toggle = wrapper.findAll('[data-testid="flow-toggle"]')[1]
+    expect(toggle.attributes()).toMatchObject({ 'aria-expanded': 'false', 'aria-label': 'Decision flow for OCPBUGS-10002', 'aria-controls': 'decision-flow-OCPBUGS-10002' })
+    await toggle.trigger('click')
+    await flushPromises()
+    expect(toggle.attributes('aria-expanded')).toBe('true')
+    const flow = wrapper.get('[data-testid="decision-flow-row"] #decision-flow-OCPBUGS-10002')
+    expect(flow.findAll('[data-testid^="lead-time-"]').map(entry => entry.text())).toEqual(['Report → first assessment 22h', 'Solve assessment → PR 1h 40m', 'PR → merge 15h 35m', 'Report → merge 5d 16h'])
+    const steps = flow.findAll('[data-testid="flow-step"]')
+    expect(steps.map(step => step.get('[data-testid="flow-step-title"]').text())).toEqual([
+      'Reported', 'Assessed: Needs info', 'Cleared needs-info', 'Assessed: Solve', 'Sent to solve agent', 'POST · pull request linked',
+      'Backport to release-4.22', 'Backport to release-4.21', 'MODIFIED · pull request merged', 'ON_QA · in a build', 'Verified · fix verified', 'Closed'
+    ])
+    expect(steps[3].get('[data-testid="flow-step-meta"]').text()).toBe(`Jordan Refiner · ${new Date('2026-10-13T09:00:00.000Z').toLocaleString()} · 17h 30m after the previous decision`)
+    expect(steps[6].findAll('[data-testid="flow-lane-step"]').map(step => step.text())).toEqual(['OCPBUGS-10011: Now Verified · fix verified'])
+    expect(mermaid.render).toHaveBeenCalledWith(expect.any(String), expect.stringContaining('s1 -->|"3d 7h"| s2'))
+    expect(flow.get('[role="img"]').attributes('aria-label')).toBe('Decision flow diagram for OCPBUGS-10002')
+    expect(flow.find('[data-testid="flow-svg"]').exists()).toBe(true)
+    await toggle.trigger('click')
+    expect(wrapper.find('[data-testid="decision-flow-row"]').exists()).toBe(false)
+  })
+
+  it('asks for a refresh before showing a bug flow from a snapshot without decision history', async () => {
+    apiRequest.mockResolvedValue({ ...fixture, jiraHost: 'https://jira.example.com', issues: fixture.issues.map(issue => ({ ...issue, timeline: undefined })) })
+    const wrapper = mount(PipelineView)
+    await flushPromises()
+    expect(wrapper.get('[data-testid="decision-sankey"]').find('[data-testid="sankey-node-first:NEEDS_INFO"]').exists()).toBe(false)
+    await wrapper.get('[data-testid="flow-toggle"]').trigger('click')
+    expect(wrapper.get('[data-testid="decision-flow"]').text()).toContain('Refresh Agentic Bug Refinement to load who made each decision and when')
+    expect(mermaid.render).not.toHaveBeenCalled()
   })
 
   it('shows a recoverable error and retries', async () => {

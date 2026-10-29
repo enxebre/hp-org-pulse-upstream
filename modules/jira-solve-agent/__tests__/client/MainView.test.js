@@ -601,6 +601,27 @@ describe('AgentContent', () => {
       expect(statValues(teamButton(wrapper, 'Windows Containers'))).toEqual(['4', '0', '2', '50%'])
     })
 
+    it('counts each bot PR row for the same ticket toward its own team', () => {
+      const botRow = (team, url, prState) => ({
+        key: 'OCPBUGS-114428', summary: 'Bump golang builder', status: 'ON_QA', agentState: 'other',
+        processed: false, components: [], assignee: null, source: 'chai-bot-pr', team, prUrl: url, prState
+      })
+      const data = {
+        ...sampleData,
+        issues: [
+          botRow('ota', 'https://github.com/openshift/cluster-version-operator/pull/1471', 'MERGED'),
+          botRow('etcd', 'https://github.com/openshift/etcd/pull/415', 'OPEN')
+        ]
+      }
+      const wrapper = mount(AgentContent, { props: { agentData: data, loading: false, error: null } })
+      expect(wrapper.findAll('tbody tr')).toHaveLength(2)
+      expect(wrapper.text()).toContain('cluster-version-operator#1471')
+      expect(wrapper.text()).toContain('etcd#415')
+      expect(statValues(teamButton(wrapper, 'All Teams'))).toEqual(['2', '0', '1', '50%'])
+      expect(statValues(teamButton(wrapper, 'OTA'))).toEqual(['1', '0', '1', '100%'])
+      expect(statValues(teamButton(wrapper, 'etcd'))).toEqual(['1', '0', '0', '0%'])
+    })
+
     it('shows an em dash rather than 0% when a team has no PRs', () => {
       const data = {
         ...sampleData,

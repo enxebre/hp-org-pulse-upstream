@@ -1,5 +1,7 @@
 // Mirrors bug-refinement's disposition rules so both views count bugs the same way; modules cannot import each other.
 export const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+// Backport clones are recorded on the original issue as jlp-<branch>:<clone key> labels, as in bug-refinement's server.
+export const BACKPORT_LABEL = /^jlp-([^:]+):([A-Z][A-Z0-9]+-\d+)$/
 
 export const DISPOSITION_COUNTERS = [
   { key: 'SOLVE', label: 'Solve', color: 'text-emerald-600 dark:text-emerald-400' },
