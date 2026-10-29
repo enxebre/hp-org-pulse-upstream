@@ -60,6 +60,29 @@ describe('dedupeAgentWork', () => {
     expect(r.combined.total).toBe(4)
   })
 
+  it('counts each PR for the same net-new Jira key as its own row', () => {
+    const prs = [
+      { jiraKey: 'OCPBUGS-114428', url: 'https://github.com/openshift/etcd/pull/415' },
+      { jiraKey: 'OCPBUGS-114428', url: 'https://github.com/openshift/console/pull/17176' },
+      { jiraKey: 'OCPBUGS-114428', url: 'https://github.com/openshift/cluster-version-operator/pull/1471' }
+    ]
+    const r = dedupeAgentWork(issues, prs)
+    expect(r.netNewKeyedPrs.map(pr => pr.url)).toEqual(prs.map(pr => pr.url))
+    expect(r.combined.netNewKeyed).toBe(3)
+    expect(r.combined.total).toBe(6)
+  })
+
+  it('counts a net-new PR returned twice only once', () => {
+    const prs = [
+      { jiraKey: 'OCPBUGS-999', url: 'u2' },
+      { jiraKey: 'OCPBUGS-999', url: 'u2' }
+    ]
+    const r = dedupeAgentWork(issues, prs)
+    expect(r.netNewKeyedPrs).toHaveLength(1)
+    expect(r.overlapPrs).toHaveLength(1)
+    expect(r.combined.total).toBe(4)
+  })
+
   it('counts a PR with no Jira key', () => {
     const prs = [{ jiraKey: null, url: 'u3' }]
     const r = dedupeAgentWork(issues, prs)

@@ -4,6 +4,168 @@ This document describes the JSON structure of all files stored in the `data/` di
 and `fixtures/` directory (demo mode).
 **Demo fixtures must always match production format** — see [Fixture Rules](#fixture-rules) below.
 
+## Agentic Bug Refinement — `bug-refinement/data.json`
+
+The Bug Refinement module caches issues matching
+`project IN (OCPBUGS, CNTRLPLANE) AND labels = "refined-by-agent"`, ordered by
+Jira's `updated` field descending. All Jira statuses are included. The home page's
+**Agentic Bug Refinement** card opens `#/bug-refinement/main`.
+
+```json
+{
+  "fetchedAt": "2026-10-15T08:00:00.000Z",
+  "issues": [
+    {
+      "key": "OCPBUGS-10001",
+      "summary": "Investigate hosted cluster rollout failure",
+      "project": "OCPBUGS",
+      "status": "New",
+      "priority": "Major",
+      "assignee": "Alex Engineer",
+      "reporter": "Pat Reporter",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent", "needs-info"],
+      "created": "2026-10-14T13:00:00.000Z",
+      "disposition": "NEEDS_INFO",
+      "dispositionAt": "2026-10-15T07:00:00.000Z",
+      "dispositionCommentId": "10001",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
+      "updated": "2026-10-15T07:30:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-15T07:00:00.000Z", "by": "Jordan Refiner", "outcome": "NEEDS_INFO", "commentId": "10001" },
+        { "type": "label", "at": "2026-10-15T07:00:05.000Z", "by": "Jordan Refiner", "label": "needs-info", "added": true }
+      ]
+    },
+    {
+      "key": "OCPBUGS-10002",
+      "summary": "Correct node configuration reconciliation",
+      "project": "OCPBUGS",
+      "status": "Closed",
+      "priority": "Minor",
+      "assignee": null,
+      "reporter": "Pat Reporter",
+      "components": ["Machine Config Operator"],
+      "labels": ["refined-by-agent", "jlp-release-4.22:OCPBUGS-10011"],
+      "created": "2026-10-08T10:00:00.000Z",
+      "disposition": "SOLVE",
+      "dispositionAt": "2026-10-13T09:00:00.000Z",
+      "dispositionCommentId": "10003",
+      "prPosted": true,
+      "merged": true,
+      "backports": [
+        { "key": "OCPBUGS-10011", "branch": "release-4.22", "status": "Verified", "prPosted": true, "merged": true }
+      ],
+      "pullRequests": [
+        { "url": "https://github.com/example-org/example-repo/pull/101", "repo": "example-org/example-repo", "number": 101 }
+      ],
+      "updated": "2026-10-15T05:00:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-09T08:00:00.000Z", "by": "Jordan Refiner", "outcome": "NEEDS_INFO", "commentId": "10006" },
+        { "type": "label", "at": "2026-10-12T15:30:00.000Z", "by": "Pat Reporter", "label": "needs-info", "added": false },
+        { "type": "assessment", "at": "2026-10-13T09:00:00.000Z", "by": "Jordan Refiner", "outcome": "SOLVE", "commentId": "10003" },
+        { "type": "label", "at": "2026-10-13T09:05:00.000Z", "by": "Example Solve Bot", "label": "issue-for-agent", "added": true },
+        { "type": "status", "at": "2026-10-13T10:40:00.000Z", "by": "Example Prow Bot", "from": "New", "to": "POST" },
+        { "type": "label", "at": "2026-10-13T16:00:00.000Z", "by": "Example Solve Bot", "label": "jlp-release-4.22:OCPBUGS-10011", "added": true },
+        { "type": "status", "at": "2026-10-14T02:15:00.000Z", "by": "Example Prow Bot", "from": "POST", "to": "MODIFIED" }
+      ]
+    }
+  ]
+}
+```
+
+`GET /api/modules/bug-refinement/data` returns this snapshot plus the
+configured `jiraHost`, a `jiraSearchUrl` for the exact query, and a boolean `demo`
+flag. A missing snapshot triggers an initial Jira fetch. The
+registered `bug-refinement:refresh` refresh job and admin-only
+`POST /api/modules/bug-refinement/refresh` replace the snapshot after
+a successful fetch. Concurrent refreshes share one fetch; failures preserve the
+previous snapshot. Demo mode reads `fixtures/bug-refinement/data.json`
+without Jira requests or writes. The view marks these issues as fictional examples
+and omits individual Jira issue links. The search link always opens the real Jira
+query using the viewer's Jira login. Export anonymizes issue keys, summaries, and
+assignees.
+
+Chai's refine workflow adds `refined-by-agent` for every saved disposition:
+`DEFER`, `SOLVE`, `NEEDS_INFO`, `NEED_HUMAN_ANALYSIS`, and `CLOSE`. The label does not mean
+the issue is solved or ready for implementation. The view shows `needs-info`
+and `need-human-analysis` as waiting labels. Dispositions come from the newest
+visible saved comment containing `[refine:v1] outcome=...`, never from labels or
+Jira status. Comments are fetched newest first using the paginated
+[Jira comments API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-get),
+including older pages if the assessment is no longer among recent comments.
+Both plain text and Atlassian Document Format comment bodies are supported.
+`disposition` is one of the five values above, or `null` (displayed as **Unknown**)
+when no recognized assessment is visible. An unrecognized newer outcome does not
+fall back to an older assessment. `dispositionAt` is the assessment comment's
+creation timestamp; `dispositionCommentId` links the badge to the source comment.
+These fields may be `null`; comment bodies are not persisted, and comment authors are kept only as
+`timeline` actors.
+`CLOSE` records an explicit closure assessment; it does not imply that a fix was
+implemented or verified. When an issue is `Closed` and has neither a disposition
+nor assessment comment metadata, the view displays **CLOSE (Jira)**, with a tooltip
+identifying Jira status as the source. These issues contribute to Close counters
+and sort with `CLOSE`. This display fallback does not change the persisted
+disposition or claim a saved assessment or verified fix. Explicit saved
+dispositions take precedence; an unrecognized assessment with comment metadata
+remains **Unknown**. Other statuses without saved assessments remain **Unknown**.
+Old snapshots without disposition fields use this same Jira closure fallback
+until refreshed.
+Snapshots fetched before `CLOSE` was supported also need a refresh to recognize
+those saved assessments.
+`updated` is the last Jira update, not the refinement time.
+`assignee` and `updated` may be `null`; missing status or priority is `Unknown`.
+
+Each refresh also searches the same label scope with `status WAS POST` and
+`status WAS MODIFIED`, requesting only the status field. `prPosted` is `true`
+when the issue was ever in POST (a pull request was linked) or MODIFIED, or when
+`pullRequests` is not empty: a linked pull request whose bug check fails
+(`jira/invalid-bug`) never moves the issue to POST. `merged` is `true` when it
+was ever in MODIFIED (the pull request merged), so later ON_QA, Verified, or Closed
+transitions keep the outcome. These flags follow the OCPBUGS lifecycle and do not
+identify who authored the pull request; CNTRLPLANE issues do not use these statuses,
+so `merged` stays `false` and `prPosted` is `true` only for a linked pull request. `backports` lists
+the clones named by `jlp-<branch>:<KEY>` labels on the original issue, in label
+order. Clones inherit `refined-by-agent`, so each entry copies the clone's
+`status`, `prPosted`, and `merged` from the same snapshot; all three are `null` when
+the clone is not in the snapshot. Snapshots fetched before `prPosted` was copied omit
+it, and the view then treats a clone in POST as having a pull request. The `bug-pipeline` module serves this snapshot unchanged from
+`GET /api/modules/bug-pipeline/data` for its **Agentic Bug Pipeline** view at
+`#/bug-pipeline/main`. Snapshots fetched before these fields existed omit them, and
+that view asks for a refresh instead of reporting zero merges. `pullRequests` lists the GitHub pull requests in
+the [Jira remote links](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-remote-links/#api-rest-api-3-issue-issueidorkey-remotelink-get)
+of issues with a `SOLVE` disposition and of backport clones named by `jlp-` labels,
+fetched with one request per issue during refresh; it is empty for other issues. Each entry keeps the canonical pull request
+`url`, its `repo` (`org/name`), and `number`; remote link titles are not stored.
+Merge state comes from the issue's `merged` flag, not from the links. Export also
+anonymizes backport keys, including the keys inside `jlp-` labels, and replaces
+`pullRequests` with an empty list because the links identify the real issue.
+
+`created` and `reporter` come from the issue's Jira fields; `reporter` is a display
+name or `null`. `timeline` lists the issue's workflow decisions oldest first. Each
+entry has a `type`, an ISO `at` timestamp, and `by`, the display name of the Jira
+account that made the change (or `null`):
+
+- `assessment`: every saved `[refine:v1] outcome=...` comment, with `outcome` (one of
+  the five dispositions, or `null` when unrecognized) and `commentId`. Comments are read
+  through every page so that re-assessments are kept; the newest still sets `disposition`.
+- `status`: every status transition, with the `from` and `to` status names.
+- `label`: additions (`added: true`) and removals (`added: false`) of `issue-for-agent`
+  (the Jira Solve Agent's intake label), `needs-info`, `need-human-analysis`, and
+  `jlp-<branch>:<KEY>` backport labels, with the `label`. Other labels are ignored.
+
+Status and label changes come from the
+[bulk changelog API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-changelog-bulkfetch-post),
+one request per 1000 issues filtered to the `status` and `labels` fields and following
+`nextPageToken`; its epoch-millisecond timestamps are stored as ISO strings. Bots appear
+under their Jira account names, and Chai's assessments under the account that saved
+them. Export anonymizes `reporter`, every timeline `by`, and the keys inside timeline
+backport labels. Snapshots fetched before these fields existed omit them; the pipeline
+view then omits the first-assessment column and timings, and each bug's flow asks for
+a refresh.
+
 ## Person Metrics — `data/people/{name}.json`
 
 Filename is the person's display name lowercased with non-alphanumeric chars replaced by `_`.
@@ -994,7 +1156,8 @@ PR state hydration to provide a unified view of agent activity across both syste
 **Deduplication logic**: Bot PRs are deduplicated against Jira issues by matching the PR's `jiraKey` to an issue's `key`.
 Overlapping PRs are already represented by their Jira issue. Net-new-keyed PRs
 (Jira key exists but issue lacks `issue-for-agent` label) and keyless PRs (no Jira reference)
-each become their own row in the `issues` array.
+each become their own row in the `issues` array. A net-new ticket with bot PRs in several
+repos therefore appears once per PR, each row carrying that PR's `prUrl`, `prState`, and `team`.
 
 **PR state hydration**: Linked PRs from Jira remote issue links are hydrated with state from GitHub's GraphQL API
 (MERGED, OPEN, CLOSED) to show merge status without requiring the PR to be opened by a tracked bot account.

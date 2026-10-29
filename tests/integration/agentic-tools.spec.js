@@ -57,6 +57,8 @@ test.describe('Agentic Tools Module @agentic-tools', () => {
 
     const landingToolTitles = await landingBlock.locator('[data-testid="agentic-tools-content"] h4').allTextContents();
     expect(landingToolTitles.length).toBeGreaterThan(0);
+    expect(landingToolTitles).toContain('Agentic Bug Refinement');
+    expect(landingToolTitles).toContain('Agentic Bug Pipeline');
 
     await page.goto('/#/agentic-tools/tools', { waitUntil: 'networkidle' });
     await page.waitForTimeout(DEFAULT_PAGE_WAIT_TIME);
@@ -65,7 +67,7 @@ test.describe('Agentic Tools Module @agentic-tools', () => {
     expect(await moduleView.getByRole('heading', { level: 1, name: 'Hybrid Platforms’ agentic evolution' }).count()).toBe(0);
     expect(await moduleView.getByRole('heading', { level: 2, name: 'Strategic Initiatives' }).count()).toBe(0);
     const moduleToolTitles = await moduleView.locator('[data-testid="agentic-tools-content"] h4').allTextContents();
-    expect(moduleToolTitles).toEqual(landingToolTitles);
+    expect(moduleToolTitles).toEqual(landingToolTitles.filter(title => !['Agentic Bug Refinement', 'Agentic Bug Pipeline'].includes(title)));
 
     expect(jsErrors(page)).toHaveLength(0);
   });

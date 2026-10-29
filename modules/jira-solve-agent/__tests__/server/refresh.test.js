@@ -230,6 +230,31 @@ describe('runRefresh chai-bot PR accounting', () => {
     expect(saved.combined.total).toBe(2);
   });
 
+  it('adds one row per bot PR when a net-new ticket has PRs in several repos', async () => {
+    fetcher.fetchAgentData.mockResolvedValue([]);
+    const botPrs = [
+      { repo: 'openshift/cluster-version-operator', team: 'ota', number: 1471, url: 'https://github.com/openshift/cluster-version-operator/pull/1471', title: 'OCPBUGS-114428: bump', state: 'MERGED', jiraKey: 'OCPBUGS-114428' },
+      { repo: 'openshift/etcd', team: 'etcd', number: 415, url: 'https://github.com/openshift/etcd/pull/415', title: 'OCPBUGS-114428: bump', state: 'OPEN', jiraKey: 'OCPBUGS-114428' }
+    ];
+    prsModule.fetchAgentPrs.mockResolvedValue(botPrs);
+    fetcher.dedupeAgentWork.mockReturnValue({
+      overlapPrs: [], netNewKeyedPrs: botPrs, noKeyPrs: [],
+      combined: { jiraIssues: 0, prsCounted: 2, prsOverlap: 0, netNewKeyed: 2, noKey: 0, total: 2 }
+    });
+    fetcher.fetchIssueStatusesByKeys.mockResolvedValue(new Map([
+      ['OCPBUGS-114428', { status: 'ON_QA', assignee: null, labels: [] }]
+    ]));
+
+    const { store, runRefresh } = setup();
+    await runRefresh();
+
+    const rows = store['jira-solve-agent/data.json'].issues;
+    expect(rows.map(row => [row.key, row.team, row.prUrl, row.prState])).toEqual([
+      ['OCPBUGS-114428', 'ota', 'https://github.com/openshift/cluster-version-operator/pull/1471', 'MERGED'],
+      ['OCPBUGS-114428', 'etcd', 'https://github.com/openshift/etcd/pull/415', 'OPEN']
+    ]);
+  });
+
   it('adds a keyless bot PR as a NO-JIRA row', async () => {
     fetcher.fetchAgentData.mockResolvedValue([{ key: 'CNTRLPLANE-507', status: 'Closed' }]);
     const botPrs = [

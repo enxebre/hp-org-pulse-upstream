@@ -1,0 +1,27 @@
+flowchart TB
+    Browser["Browser · Vue 3 dashboard"] --> Entry["OpenShift entry · OAuth proxy"]
+
+    subgraph App["Org Pulse deployment"]
+        Entry -->|Static assets| Web["nginx · Vite-built frontend"]
+        Entry -->|/api/*| API["Express API · port 3001"]
+        API --> Core["Core services<br/>Auth · roles · discovery · refresh"]
+        API --> Modules["HP Engineering module routers"]
+        Core --> Storage["Shared storage layer"]
+        Modules --> Storage
+        Storage --> Data[("JSON files<br/>data/ on persistent volume")]
+    end
+
+    Sources["Jira · GitHub · GitLab"] -->|Fetched during refresh| Modules
+    Roster["Roster sources"] --> Core
+    Pipelines["External AI / CI pipelines"] -->|Push computed results| Modules
+
+    classDef user fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef platform fill:#e5f4ef,stroke:#178269,color:#124f41
+    classDef feature fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+    classDef external fill:#fff3df,stroke:#d69a30,color:#754a0c
+    classDef data fill:#e8eef5,stroke:#64748b,color:#334155
+    class Browser user
+    class Entry,Web,API,Core,Storage platform
+    class Modules feature
+    class Sources,Roster,Pipelines external
+    class Data data

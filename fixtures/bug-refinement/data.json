@@ -1,0 +1,140 @@
+{
+  "fetchedAt": "2026-10-15T08:00:00.000Z",
+  "issues": [
+    {
+      "key": "OCPBUGS-10001",
+      "summary": "Investigate hosted cluster rollout failure",
+      "project": "OCPBUGS",
+      "status": "New",
+      "priority": "Major",
+      "assignee": "Alex Engineer",
+      "reporter": "Pat Reporter",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent", "needs-info"],
+      "created": "2026-10-14T13:00:00.000Z",
+      "disposition": "NEEDS_INFO",
+      "dispositionAt": "2026-10-15T07:00:00.000Z",
+      "dispositionCommentId": "10001",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
+      "updated": "2026-10-15T07:30:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-15T07:00:00.000Z", "by": "Jordan Refiner", "outcome": "NEEDS_INFO", "commentId": "10001" },
+        { "type": "label", "at": "2026-10-15T07:00:05.000Z", "by": "Jordan Refiner", "label": "needs-info", "added": true }
+      ]
+    },
+    {
+      "key": "CNTRLPLANE-10001",
+      "summary": "Review control plane recovery options",
+      "project": "CNTRLPLANE",
+      "status": "In Progress",
+      "priority": "Critical",
+      "assignee": "Sam Developer",
+      "reporter": "Sam Developer",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent", "need-human-analysis"],
+      "created": "2026-10-13T11:00:00.000Z",
+      "disposition": "NEED_HUMAN_ANALYSIS",
+      "dispositionAt": "2026-10-14T14:00:00.000Z",
+      "dispositionCommentId": "10002",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
+      "updated": "2026-10-14T15:00:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-14T14:00:00.000Z", "by": "Jordan Refiner", "outcome": "NEED_HUMAN_ANALYSIS", "commentId": "10002" },
+        { "type": "label", "at": "2026-10-14T14:00:05.000Z", "by": "Jordan Refiner", "label": "need-human-analysis", "added": true },
+        { "type": "status", "at": "2026-10-14T15:00:00.000Z", "by": "Sam Developer", "from": "New", "to": "In Progress" }
+      ]
+    },
+    {
+      "key": "OCPBUGS-10002",
+      "summary": "Correct node configuration reconciliation",
+      "project": "OCPBUGS",
+      "status": "Closed",
+      "priority": "Minor",
+      "assignee": null,
+      "reporter": "Pat Reporter",
+      "components": ["Machine Config Operator"],
+      "labels": ["refined-by-agent", "jlp-release-4.22:OCPBUGS-10011", "jlp-release-4.21:OCPBUGS-10012"],
+      "created": "2026-10-08T10:00:00.000Z",
+      "disposition": "SOLVE",
+      "dispositionAt": "2026-10-13T09:00:00.000Z",
+      "dispositionCommentId": "10003",
+      "prPosted": true,
+      "merged": true,
+      "backports": [
+        { "key": "OCPBUGS-10011", "branch": "release-4.22", "status": "Verified", "prPosted": true, "merged": true },
+        { "key": "OCPBUGS-10012", "branch": "release-4.21", "status": "POST", "prPosted": true, "merged": false }
+      ],
+      "pullRequests": [
+        { "url": "https://github.com/example-org/example-repo/pull/101", "repo": "example-org/example-repo", "number": 101 }
+      ],
+      "updated": "2026-10-15T05:00:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-09T08:00:00.000Z", "by": "Jordan Refiner", "outcome": "NEEDS_INFO", "commentId": "10006" },
+        { "type": "label", "at": "2026-10-09T08:00:05.000Z", "by": "Jordan Refiner", "label": "needs-info", "added": true },
+        { "type": "label", "at": "2026-10-12T15:30:00.000Z", "by": "Pat Reporter", "label": "needs-info", "added": false },
+        { "type": "assessment", "at": "2026-10-13T09:00:00.000Z", "by": "Jordan Refiner", "outcome": "SOLVE", "commentId": "10003" },
+        { "type": "label", "at": "2026-10-13T09:05:00.000Z", "by": "Example Solve Bot", "label": "issue-for-agent", "added": true },
+        { "type": "status", "at": "2026-10-13T10:40:00.000Z", "by": "Example Prow Bot", "from": "New", "to": "POST" },
+        { "type": "label", "at": "2026-10-13T16:00:00.000Z", "by": "Example Solve Bot", "label": "jlp-release-4.22:OCPBUGS-10011", "added": true },
+        { "type": "label", "at": "2026-10-13T16:01:00.000Z", "by": "Example Solve Bot", "label": "jlp-release-4.21:OCPBUGS-10012", "added": true },
+        { "type": "status", "at": "2026-10-14T02:15:00.000Z", "by": "Example Prow Bot", "from": "POST", "to": "MODIFIED" },
+        { "type": "status", "at": "2026-10-14T14:00:00.000Z", "by": "Example Build Bot", "from": "MODIFIED", "to": "ON_QA" },
+        { "type": "status", "at": "2026-10-14T22:30:00.000Z", "by": "Example Release Bot", "from": "ON_QA", "to": "Verified" },
+        { "type": "status", "at": "2026-10-15T05:00:00.000Z", "by": "Alex Engineer", "from": "Verified", "to": "Closed" }
+      ]
+    },
+    {
+      "key": "CNTRLPLANE-10002",
+      "summary": "Document workaround for transient API timeout",
+      "project": "CNTRLPLANE",
+      "status": "New",
+      "priority": "Minor",
+      "assignee": null,
+      "reporter": "Pat Reporter",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent"],
+      "created": "2026-10-10T08:00:00.000Z",
+      "disposition": "DEFER",
+      "dispositionAt": "2026-10-12T08:00:00.000Z",
+      "dispositionCommentId": "10004",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
+      "updated": "2026-10-12T09:00:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-12T08:00:00.000Z", "by": "Jordan Refiner", "outcome": "DEFER", "commentId": "10004" }
+      ]
+    },
+    {
+      "key": "OCPBUGS-10003",
+      "summary": "Close an inactive backlog report after refinement",
+      "project": "OCPBUGS",
+      "status": "Closed",
+      "priority": "Minor",
+      "assignee": null,
+      "reporter": "Sam Developer",
+      "components": ["HyperShift"],
+      "labels": ["refined-by-agent"],
+      "created": "2026-10-01T12:00:00.000Z",
+      "disposition": "CLOSE",
+      "dispositionAt": "2026-10-11T08:00:00.000Z",
+      "dispositionCommentId": "10005",
+      "prPosted": false,
+      "merged": false,
+      "backports": [],
+      "pullRequests": [],
+      "updated": "2026-10-11T09:00:00.000Z",
+      "timeline": [
+        { "type": "assessment", "at": "2026-10-11T08:00:00.000Z", "by": "Jordan Refiner", "outcome": "CLOSE", "commentId": "10005" },
+        { "type": "status", "at": "2026-10-11T09:00:00.000Z", "by": "Jordan Refiner", "from": "New", "to": "Closed" }
+      ]
+    }
+  ]
+}

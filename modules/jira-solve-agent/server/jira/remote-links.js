@@ -16,7 +16,7 @@ const PR_URL_RE = /github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/i;
 // slow the sweep down. The key cap is a safety bound, not a silent drop.
 const LINKED_PR_THROTTLE_MS = 0;
 const LINKED_PR_CONCURRENCY = 15;
-const LINKED_PR_MAX_KEYS = 500;
+const LINKED_PR_MAX_KEYS = 2000;
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
