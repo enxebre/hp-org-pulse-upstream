@@ -1,4 +1,4 @@
-const { fetchRefinedIssues, REFINEMENT_JQL } = require('./jira/refinement')
+const { fetchRefinedIssues, REFINEMENT_JQL, BACKPORT_LABEL } = require('./jira/refinement')
 
 const STORAGE_KEY = 'bug-refinement/data.json'
 
@@ -34,7 +34,7 @@ module.exports = function registerRefinementRoutes(router, context, jira) {
    *   get:
    *     tags: [Agentic Bug Refinement]
    *     summary: Get OCPBUGS and CNTRLPLANE issues labeled refined-by-agent
-   *     description: Returns cached issues with dispositions from the newest saved refine:v1 comment. Fetches from Jira on the first request when no snapshot exists. Includes a demo flag and the exact Jira search URL.
+   *     description: Returns cached issues with dispositions from the newest saved refine:v1 comment, pull request and merge flags from Jira status history, pull request links for SOLVE issues, linked backports, and a timeline of every saved assessment, status transition, and workflow label change with who made it. Fetches from Jira on the first request when no snapshot exists. Includes a demo flag and the exact Jira search URL.
    *     responses:
    *       200:
    *         description: Refinement snapshot with fetchedAt, jiraHost, jiraSearchUrl, demo, and issues
@@ -79,13 +79,21 @@ module.exports = function registerRefinementRoutes(router, context, jira) {
   context.registerExport?.(async function(addFile, storage, mapping) {
     const cached = await storage.readFromStorage(STORAGE_KEY)
     if (!cached) return
+    const person = name => name ? mapping.getOrCreateNameMapping(name) : null
+    const label = value => value.replace(BACKPORT_LABEL, (match, branch, key) => `jlp-${branch}:${mapping.anonymizeJiraKey(key)}`)
     addFile(STORAGE_KEY, {
       ...cached,
       issues: (cached.issues || []).map(issue => ({
         ...issue,
         key: mapping.anonymizeJiraKey(issue.key),
         summary: mapping.anonymizeIssueSummary(issue.key),
-        assignee: issue.assignee ? mapping.getOrCreateNameMapping(issue.assignee) : null
+        assignee: person(issue.assignee),
+        ...('reporter' in issue && { reporter: person(issue.reporter) }),
+        labels: (issue.labels || []).map(label),
+        ...(issue.backports && { backports: issue.backports.map(backport => ({ ...backport, key: mapping.anonymizeJiraKey(backport.key) })) }),
+        ...(issue.timeline && { timeline: issue.timeline.map(event => ({ ...event, by: person(event.by), ...(event.label && { label: label(event.label) }) })) }),
+        // Pull request links identify the real issue, so exports keep only the prPosted flag.
+        ...(issue.pullRequests && { pullRequests: [] })
       }))
     })
   })

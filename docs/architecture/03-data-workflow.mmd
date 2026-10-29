@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph Pull["PULL · Refresh source data"]
+        Tick["Scheduled tick / manual admin action"] --> Registry["Core refresh registry<br/>Order · cadence · timeouts · status"]
+        Registry --> Fetch["Module fetchers<br/>Jira · GitHub · GitLab"]
+        Fetch --> Normalize["Normalize and cache source data"]
+    end
+
+    subgraph Push["PUSH · Receive computed results"]
+        AI["External AI / CI pipeline<br/>Analysis and scoring"] --> Ingest["POST ingest endpoint"]
+        Ingest --> Validate["Check permissions<br/>Validate payload"]
+    end
+
+    Normalize --> Store[("Module-owned JSON snapshots")]
+    Validate --> Store
+    Store --> Read["GET API<br/>Filter and calculate dashboard metrics"]
+    Read --> State["Vue composables · reactive state"]
+    State --> View["Tables · charts · detail panels"]
+
+    classDef user fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef platform fill:#e5f4ef,stroke:#178269,color:#124f41
+    classDef feature fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+    classDef external fill:#fff3df,stroke:#d69a30,color:#754a0c
+    classDef data fill:#e8eef5,stroke:#64748b,color:#334155
+    class Tick,AI external
+    class Registry,Normalize,Validate platform
+    class Fetch,Ingest,Read feature
+    class Store data
+    class State,View user

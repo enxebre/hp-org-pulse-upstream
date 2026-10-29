@@ -21,7 +21,7 @@
     "files": [
       {
         "path": "bug-refinement/data.json",
-        "notes": "Cached OCPBUGS and CNTRLPLANE issues carrying refined-by-agent and their saved dispositions"
+        "notes": "Cached OCPBUGS and CNTRLPLANE issues carrying refined-by-agent, their saved dispositions, merge flags, and linked backports"
       }
     ]
   }

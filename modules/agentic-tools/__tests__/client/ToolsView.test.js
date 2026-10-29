@@ -129,12 +129,34 @@ describe('ToolsView', () => {
     expect(card.get('svg').classes()).toContain('lucide-clipboard-check')
   })
 
-  it('hides the refinement home card when the bug refinement module is unavailable', async () => {
+  it('hides the refinement and pipeline home cards when their modules are unavailable', async () => {
     const wrapper = mount(StrategicInitiativesBlock, {
       global: { provide: { moduleNav: { isModuleAvailable: () => false } } }
     })
     await waitForDataLoad(wrapper)
     expect(wrapper.find('a[href="#/bug-refinement/main"]').exists()).toBe(false)
+    expect(wrapper.find('a[href="#/bug-pipeline/main"]').exists()).toBe(false)
+  })
+
+  it('adds a home card when the bug pipeline module is available', async () => {
+    const wrapper = mount(StrategicInitiativesBlock, {
+      global: { provide: { moduleNav: { isModuleAvailable: slug => slug === 'bug-pipeline' } } }
+    })
+    await waitForDataLoad(wrapper)
+    const card = wrapper.get('a[href="#/bug-pipeline/main"]')
+    expect(card.text()).toContain('Agentic Bug Pipeline')
+    expect(card.attributes('target')).toBeUndefined()
+    expect(card.get('svg').classes()).toContain('lucide-trending-up')
+    expect(wrapper.find('a[href="#/bug-refinement/main"]').exists()).toBe(false)
+  })
+
+  it('lists the refinement card before the pipeline card when both modules are available', async () => {
+    const wrapper = mount(StrategicInitiativesBlock, {
+      global: { provide: { moduleNav: { isModuleAvailable: () => true } } }
+    })
+    await waitForDataLoad(wrapper)
+    const moduleLinks = wrapper.findAll('a').map(link => link.attributes('href')).filter(href => href?.startsWith('#/bug-'))
+    expect(moduleLinks).toEqual(['#/bug-refinement/main', '#/bug-pipeline/main'])
   })
 
   it('does not duplicate an admin-configured refinement launcher', async () => {
