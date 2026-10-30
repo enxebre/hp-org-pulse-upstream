@@ -27,7 +27,7 @@ describe('REPO_TEAMS', () => {
 
   it('fully qualifies every repo under its GitHub org', () => {
     for (const { repo } of REPO_TEAMS) {
-      expect(repo).toMatch(/^openshift(?:-online)?\/[a-z0-9][a-z0-9._-]*$/)
+      expect(repo).toMatch(/^(?:openshift(?:-online)?|package-operator|terraform-redhat)\/[a-z0-9][a-z0-9._-]*$/)
     }
   })
 
@@ -51,12 +51,42 @@ describe('REPO_TEAMS', () => {
     expect(REPO_TEAM_BY_NAME['openshift/cincinnati-graph-data']).toBe('ota')
   })
 
-  it('tracks the ROSA Services repos in the openshift-online org', () => {
+  it('tracks the ROSA repos in the openshift-online org', () => {
     const repos = [
       'openshift-online/rosa-clusters-service',
       'openshift-online/rosa-account-manager-service',
       'openshift-online/rosa-service-log',
-      'openshift-online/access-transparency-service'
+      'openshift-online/access-transparency-service',
+      'openshift-online/ocm-api-model',
+      'openshift-online/ocm-sdk-go',
+      'openshift-online/ocm-service-common',
+      'openshift-online/ocm-common',
+      'openshift-online/rosa-clusters-cleaner',
+      'openshift-online/rosa-backend-tests',
+      'openshift-online/rosa-hcm-deployment',
+      'openshift-online/ocm-api-metamodel',
+      'openshift-online/ocm-cli',
+      'openshift/addon-operator',
+      'openshift/aws-account-operator',
+      'openshift/aws-vpce-operator',
+      'openshift/certman-operator',
+      'openshift/configure-alertmanager-operator',
+      'openshift/deadmanssnitch-operator',
+      'openshift/dedicated-admin-operator',
+      'openshift/gcp-project-operator',
+      'openshift/managed-cluster-validating-webhooks',
+      'openshift/managed-node-metadata-operator',
+      'openshift/managed-upgrade-operator',
+      'openshift/managed-velero-operator',
+      'openshift/ocm-agent-operator',
+      'package-operator/package-operator',
+      'openshift/pagerduty-operator',
+      'openshift/rbac-permissions-operator',
+      'openshift/route-monitor-operator',
+      'openshift/rosa',
+      'openshift-online/osd-fleet-manager',
+      'terraform-redhat/terraform-rhcs-rosa-hcp',
+      'terraform-redhat/terraform-rhcs-rosa-classic'
     ]
     expect(TEAM_REPOS['rosa-services']).toEqual(repos)
     for (const repo of repos) {
@@ -106,9 +136,8 @@ describe('REPO_TEAMS', () => {
 
   it('excludes the SRE-platform and lightspeed repos', () => {
     const excluded = [
-      'osd-network-verifier', 'managed-cluster-config', 'managed-cluster-validating-webhooks',
-      'managed-notifications', 'rbac-permissions-operator', 'certman-operator',
-      'cloud-ingress-operator', 'ocm-agent', 'rosa',
+      'osd-network-verifier', 'managed-cluster-config',
+      'managed-notifications', 'ocm-agent',
       'lightspeed-agentic-operator', 'lightspeed-agentic-sandbox'
     ]
     for (const name of excluded) {
