@@ -44,17 +44,36 @@ test.describe('Jira Solve Agent Module @jira-solve-agent', () => {
     expect(page.errors).toHaveLength(0)
   })
 
-  test('offers ROSA Services as a team filter', async ({ page }) => {
+  test('offers ROSA as a team filter', async ({ page }) => {
     await page.goto('/#/jira-solve-agent/main')
     await page.waitForLoadState('networkidle')
 
-    const rosa = page.getByRole('button', { name: /ROSA Services/ })
+    const rosa = page.getByRole('button', { name: /^ROSA/ })
     await expect(rosa).toBeVisible()
     await rosa.hover()
     const tooltip = rosa.getByRole('tooltip')
-    await expect(tooltip).toContainText('4 repos')
-    for (const repo of ['rosa-clusters-service', 'rosa-account-manager-service', 'rosa-service-log', 'access-transparency-service']) {
-      await expect(tooltip).toContainText(`openshift-online/${repo}`)
+    await expect(tooltip).toContainText('34 repos')
+    for (const repo of [
+      'openshift-online/rosa-clusters-service', 'openshift-online/rosa-account-manager-service',
+      'openshift-online/rosa-service-log', 'openshift-online/access-transparency-service',
+      'openshift-online/ocm-api-model', 'openshift-online/ocm-sdk-go',
+      'openshift-online/ocm-service-common', 'openshift-online/ocm-common',
+      'openshift-online/rosa-clusters-cleaner', 'openshift-online/rosa-backend-tests',
+      'openshift-online/rosa-hcm-deployment', 'openshift-online/ocm-api-metamodel',
+      'openshift-online/ocm-cli', 'openshift/addon-operator', 'openshift/aws-account-operator',
+      'openshift/aws-vpce-operator', 'openshift/certman-operator',
+      'openshift/configure-alertmanager-operator', 'openshift/deadmanssnitch-operator',
+      'openshift/dedicated-admin-operator',
+      'openshift/gcp-project-operator', 'openshift/managed-cluster-validating-webhooks',
+      'openshift/managed-node-metadata-operator', 'openshift/managed-upgrade-operator',
+      'openshift/managed-velero-operator',
+      'openshift/ocm-agent-operator',
+      'package-operator/package-operator', 'openshift/pagerduty-operator',
+      'openshift/rbac-permissions-operator', 'openshift/route-monitor-operator',
+      'openshift/rosa', 'openshift-online/osd-fleet-manager',
+      'terraform-redhat/terraform-rhcs-rosa-hcp', 'terraform-redhat/terraform-rhcs-rosa-classic'
+    ]) {
+      await expect(tooltip).toContainText(repo)
     }
     await rosa.click()
 

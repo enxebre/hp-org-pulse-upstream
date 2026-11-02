@@ -138,7 +138,7 @@ describe('AgentContent', () => {
     expect(wrapper.text()).not.toContain('OCPBUGS-2')
   })
 
-  it('attributes ROSA Services bot PRs to the new team', async () => {
+  it('attributes ROSA bot PRs to the new team', async () => {
     const rosaPr = {
       key: 'OCPBUGS-100', summary: 'ROSA fix', status: 'New', agentState: 'in-progress',
       processed: false, components: [], team: 'rosa-services',
@@ -154,18 +154,67 @@ describe('AgentContent', () => {
               'openshift-online/rosa-clusters-service',
               'openshift-online/rosa-account-manager-service',
               'openshift-online/rosa-service-log',
-              'openshift-online/access-transparency-service'
+              'openshift-online/access-transparency-service',
+              'openshift-online/ocm-api-model',
+              'openshift-online/ocm-sdk-go',
+              'openshift-online/ocm-service-common',
+              'openshift-online/ocm-common',
+              'openshift-online/rosa-clusters-cleaner',
+              'openshift-online/rosa-backend-tests',
+              'openshift-online/rosa-hcm-deployment',
+              'openshift-online/ocm-api-metamodel',
+              'openshift-online/ocm-cli',
+              'openshift/addon-operator',
+              'openshift/aws-account-operator',
+              'openshift/aws-vpce-operator',
+              'openshift/certman-operator',
+              'openshift/configure-alertmanager-operator',
+              'openshift/deadmanssnitch-operator',
+              'openshift/dedicated-admin-operator',
+              'openshift/gcp-project-operator',
+              'openshift/managed-cluster-validating-webhooks',
+              'openshift/managed-node-metadata-operator',
+              'openshift/managed-upgrade-operator',
+              'openshift/managed-velero-operator',
+              'openshift/ocm-agent-operator',
+              'package-operator/package-operator',
+              'openshift/pagerduty-operator',
+              'openshift/rbac-permissions-operator',
+              'openshift/route-monitor-operator',
+              'openshift/rosa',
+              'openshift-online/osd-fleet-manager',
+              'terraform-redhat/terraform-rhcs-rosa-hcp',
+              'terraform-redhat/terraform-rhcs-rosa-classic'
             ]
           },
           issues: [...sampleData.issues, rosaPr]
         }
       }
     })
-    const rosaBtn = wrapper.findAll('button').find(b => b.text().includes('ROSA Services'))
+    const rosaBtn = wrapper.findAll('button').find(b => b.text().includes('ROSA'))
     const tooltip = rosaBtn.find('[role="tooltip"]').text()
-    expect(tooltip).toContain('4 repos')
-    for (const repo of ['rosa-clusters-service', 'rosa-account-manager-service', 'rosa-service-log', 'access-transparency-service']) {
-      expect(tooltip).toContain(`openshift-online/${repo}`)
+    expect(tooltip).toContain('34 repos')
+    for (const repo of [
+      'openshift-online/rosa-clusters-service', 'openshift-online/rosa-account-manager-service',
+      'openshift-online/rosa-service-log', 'openshift-online/access-transparency-service',
+      'openshift-online/ocm-api-model', 'openshift-online/ocm-sdk-go',
+      'openshift-online/ocm-service-common', 'openshift-online/ocm-common',
+      'openshift-online/rosa-clusters-cleaner', 'openshift-online/rosa-backend-tests',
+      'openshift-online/rosa-hcm-deployment', 'openshift-online/ocm-api-metamodel',
+      'openshift-online/ocm-cli', 'openshift/addon-operator', 'openshift/aws-account-operator',
+      'openshift/aws-vpce-operator', 'openshift/certman-operator',
+      'openshift/configure-alertmanager-operator', 'openshift/deadmanssnitch-operator',
+      'openshift/dedicated-admin-operator',
+      'openshift/gcp-project-operator', 'openshift/managed-cluster-validating-webhooks',
+      'openshift/managed-node-metadata-operator', 'openshift/managed-upgrade-operator',
+      'openshift/managed-velero-operator',
+      'openshift/ocm-agent-operator',
+      'package-operator/package-operator', 'openshift/pagerduty-operator',
+      'openshift/rbac-permissions-operator', 'openshift/route-monitor-operator',
+      'openshift/rosa', 'openshift-online/osd-fleet-manager',
+      'terraform-redhat/terraform-rhcs-rosa-hcp', 'terraform-redhat/terraform-rhcs-rosa-classic'
+    ]) {
+      expect(tooltip).toContain(repo)
     }
     await rosaBtn.trigger('click')
 
@@ -174,7 +223,7 @@ describe('AgentContent', () => {
     expect(wrapper.text()).not.toContain('HyperShift bug')
   })
 
-  it('filters Jira issues from the ROSAENG project into ROSA Services', async () => {
+  it('filters Jira issues from the ROSAENG project into ROSA', async () => {
     const rosaIssue = {
       key: 'ROSAENG-42', summary: 'ROSA Jira issue', status: 'New', agentState: 'new',
       processed: false, components: []
@@ -182,7 +231,7 @@ describe('AgentContent', () => {
     const wrapper = mount(AgentContent, {
       props: { agentData: { ...sampleData, issues: [...sampleData.issues, rosaIssue] } }
     })
-    const rosaBtn = wrapper.findAll('button').find(b => b.text().includes('ROSA Services'))
+    const rosaBtn = wrapper.findAll('button').find(b => b.text().includes('ROSA'))
     await rosaBtn.trigger('click')
 
     expect(rosaBtn.findAll('.text-xl').map(n => n.text())).toEqual(['1', '0', '0', '—'])
