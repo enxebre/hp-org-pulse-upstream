@@ -1033,6 +1033,35 @@ or CLOSED do not lose the successful merge outcome.
 
 ---
 
+## Agentic Risk Assessment — `data/risk-assessment/data.json`
+
+Per-repository counts of pull requests (any state) carrying each Chai risk assessment
+label: `chai-risk-assessment/low`, `chai-risk-assessment/moderate`, and
+`chai-risk-assessment/critical`. Chai applies exactly one label per PR, for its latest
+commit. Totals and shares are not stored; `GET /api/modules/risk-assessment/data`
+computes them from these counts.
+
+```json
+{
+  "fetchedAt": "2026-11-10T08:00:00.000Z",
+  "repos": [
+    {
+      "repo": "openshift/hypershift",
+      "counts": { "low": 25, "moderate": 42, "critical": 11 }
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fetchedAt` | ISO string | Time of the most recent successful GitHub refresh |
+| `repos` | object[] | One entry per tracked repository, including repositories with no labeled PRs |
+| `repos[].repo` | string | `owner/name` GitHub repository |
+| `repos[].counts` | object | PR count per risk level: `low`, `moderate`, `critical` |
+
+---
+
 ## CVE Triage — `data/cve-triage/data.json`
 
 Cached Jira issues grouped by solution. ARC stores OCPBUGS issues labeled `arc:triaged`;

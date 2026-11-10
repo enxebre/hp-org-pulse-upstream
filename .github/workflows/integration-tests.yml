@@ -61,6 +61,12 @@ jobs:
               - 'modules/bug-refinement/server/**'
               - 'fixtures/bug-refinement/**'
               - 'tests/integration/bug-pipeline.spec.js'
+            risk-assessment:
+              - 'tests/integration/constants.js'
+              - 'tests/integration/helpers.js'
+              - 'modules/risk-assessment/**'
+              - 'fixtures/risk-assessment/**'
+              - 'tests/integration/risk-assessment.spec.js'
             jira-solve-agent:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'

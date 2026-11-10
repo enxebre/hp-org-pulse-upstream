@@ -121,6 +121,27 @@ for a refresh.
 Its integration suite uses `@bug-pipeline`; change detection also runs it when the
 refinement server or fixture changes, since they define its data.
 
+The `risk-assessment` module owns the **Agentic Risk Assessment** sidebar section and
+view at `#/risk-assessment/main`. Chai labels the latest commit of a pull request with
+exactly one of `chai-risk-assessment/low`, `chai-risk-assessment/moderate`, or
+`chai-risk-assessment/critical`. The module counts the PRs (any state) carrying each
+label in a fixed list of OpenShift repositories, `REPOS` in
+`server/github/risk-labels.js`. A refresh is one GitHub GraphQL request with an aliased
+`search { issueCount }` per repository and level, made with the platform `GITHUB_TOKEN`
+secret. The module is enabled by default and has its own API scopes, refresh job, and
+cached snapshot. `GET /api/modules/risk-assessment/data` adds each repository's
+assessed-PR total (the sum of its three counts) and each level's share, rounded to a
+whole percent, plus the same figures across all repositories. A repository without
+assessed PRs shows — for its shares.
+Summary cards show the assessed-PR total and each level's combined share and count.
+The **By repository** table lists every tracked repository, most assessed PRs first,
+with its total, each level's share and count, and a thin segmented bar of the shares.
+Counts link to the matching GitHub pull request search, and an **All repositories**
+footer repeats the combined figures. Levels use the status colors (good, warning,
+critical) and always appear beside their names.
+Its integration suite uses `@risk-assessment` and is included in module change
+detection. See [the snapshot format](DATA-FORMATS.md#agentic-risk-assessment--datarisk-assessmentdatajson).
+
 ```text
 modules/your-module/
   module.json              # Module manifest (required)

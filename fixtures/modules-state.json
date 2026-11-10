@@ -5,5 +5,6 @@
   "bug-pipeline": true,
   "bug-refinement": true,
   "cve-triage": true,
-  "jira-solve-agent": true
+  "jira-solve-agent": true,
+  "risk-assessment": true
 }
