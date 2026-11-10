@@ -1,0 +1,10 @@
+{
+  "fetchedAt": "2026-11-10T08:00:00.000Z",
+  "repos": [
+    { "repo": "openshift/hypershift", "counts": { "low": 25, "moderate": 42, "critical": 11 } },
+    { "repo": "openshift/installer", "counts": { "low": 12, "moderate": 18, "critical": 4 } },
+    { "repo": "openshift/machine-config-operator", "counts": { "low": 9, "moderate": 6, "critical": 3 } },
+    { "repo": "openshift/cluster-network-operator", "counts": { "low": 3, "moderate": 2, "critical": 0 } },
+    { "repo": "openshift/topolvm", "counts": { "low": 0, "moderate": 0, "critical": 0 } }
+  ]
+}

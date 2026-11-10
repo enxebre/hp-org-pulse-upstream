@@ -1,0 +1,28 @@
+{
+  "name": "Agentic Risk Assessment",
+  "slug": "risk-assessment",
+  "description": "Track Chai risk assessment labels on OpenShift pull requests, grouped by repository",
+  "icon": "ChartColumnStacked",
+  "order": 13,
+  "defaultEnabled": true,
+  "client": {
+    "entry": "./client/index.js",
+    "navItems": [
+      { "id": "main", "label": "Agentic Risk Assessment", "icon": "ChartColumnStacked", "default": true }
+    ]
+  },
+  "server": {
+    "entry": "./server/index.js"
+  },
+  "secrets": {
+    "platform": ["github"]
+  },
+  "export": {
+    "files": [
+      {
+        "path": "risk-assessment/data.json",
+        "notes": "Per-repository counts of pull requests carrying each chai-risk-assessment label"
+      }
+    ]
+  }
+}
