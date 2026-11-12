@@ -325,7 +325,7 @@ describe('Agentic Bug Pipeline', () => {
       `${profiles}/openshift_backport_pipeline.md`,
       `${skills}/backport/SKILL.md`,
       `${skills}/cherry-pick/SKILL.md`,
-      'https://github.com/openshift-eng/ai-helpers/pull/847'
+      `${skills}/pr-risk-assessment/SKILL.md`
     ])
     expect(guide.get('[data-testid="guide-stage-backport"]').findAll('[data-testid="guide-source"]')).toHaveLength(3)
     const guideline = guide.get('[data-testid="guide-stage-risk"] [data-testid="guide-source-text"]')

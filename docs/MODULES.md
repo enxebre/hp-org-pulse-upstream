@@ -70,7 +70,7 @@ solve and backport open. Each box links its sources: the `jira-refine` skill in
 openshift-eng/ai-helpers; Chai's `jira_solve_pipeline.md` profile in
 openshift-eng/ship-help-bot (pinned to a commit); the `openshift_backport_pipeline.md`
 profile with the `backport` and `cherry-pick` skills it drives; and the
-`pr-risk-assessment` skill's pull request until it merges. The risk assessment box also
+`pr-risk-assessment` skill. The risk assessment box also
 names the risk assessment guideline, as plain text without a link. Hovering a box with a mouse,
 or focusing one of its links, glows that box, keeps the boxes one edge away lit, animates
 the edges between them toward the next stage, and fades the rest; with reduced motion

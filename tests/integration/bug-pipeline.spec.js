@@ -225,6 +225,7 @@ test.describe('Agentic Bug Pipeline @bug-pipeline', () => {
     await expect(backport.getByRole('link', { name: '/openshift-developer:backport', exact: true })).toHaveAttribute('href', 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills/backport/SKILL.md')
     await expect(backport.getByRole('link', { name: '/openshift-developer:cherry-pick', exact: true })).toHaveAttribute('href', 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills/cherry-pick/SKILL.md')
     await expect(guide.getByRole('link', { name: '/openshift-developer:jira-refine', exact: true })).toHaveAttribute('href', 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills/jira-refine/SKILL.md')
+    await expect(risk.getByRole('link', { name: '/openshift-developer:pr-risk-assessment', exact: true })).toHaveAttribute('href', 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills/pr-risk-assessment/SKILL.md')
     await expect(guide.getByRole('link', { name: 'jira_solve_pipeline.md', exact: true })).toHaveAttribute('href', /ship-help-bot\/blob\/910ff153b5fad68550cf8868c5f7752fadd3ded2\/.*\/jira_solve_pipeline\.md$/)
     await expect(guide.getByRole('link', { name: 'openshift_backport_pipeline.md', exact: true })).toHaveAttribute('href', /ship-help-bot\/blob\/910ff153b5fad68550cf8868c5f7752fadd3ded2\/.*\/openshift_backport_pipeline\.md$/)
     // Hovering a stage lights its neighborhood and fades the rest.

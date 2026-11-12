@@ -162,8 +162,7 @@ const GUIDE = [
     key: 'risk',
     label: 'Risk assessment',
     sources: [
-      // Still in review upstream; point at its pull request until it merges.
-      { label: '/openshift-developer:pr-risk-assessment', url: 'https://github.com/openshift-eng/ai-helpers/pull/847' },
+      skill('pr-risk-assessment'),
       // Named only, without a link.
       { label: 'Risk assessment guideline' }
     ],
