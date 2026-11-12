@@ -63,7 +63,24 @@ copies in sync.
 The view shows how refined OCPBUGS issues move
 through Chai's solve and backport stages. It leaves out CNTRLPLANE issues and
 issues labeled `chai-backport`; backport clones count through their original
-issue's `backports`. Summary cards show refined bugs; the shares closed, sent for
+issue's `backports`. Before the percentages, a **How the pipeline works** guide
+(`client/components/PipelineGuide.vue`) links the canonical self-driven bug backlog docs
+and diagrams refine → solve → backport, with risk assessment labeling the pull requests
+solve and backport open. Each box links its sources: the `jira-refine` skill in
+openshift-eng/ai-helpers; Chai's `jira_solve_pipeline.md` profile in
+openshift-eng/ship-help-bot (pinned to a commit); the `openshift_backport_pipeline.md`
+profile with the `backport` and `cherry-pick` skills it drives; and the
+`pr-risk-assessment` skill's pull request until it merges. The risk assessment box also
+names the risk assessment guideline, as plain text without a link. Hovering a box with a mouse,
+or focusing one of its links, glows that box, keeps the boxes one edge away lit, animates
+the edges between them toward the next stage, and fades the rest; with reduced motion
+the edges only change color. An
+onboarding note says to make the Chai persona extend `openshift_asdlc` and ask
+`@chai-bot` to onboard the component into the automated refine+solve pipeline, with a
+button that copies that prompt. A **Give the agents your repository's context** section
+then explains progressive disclosure: a short `AGENTS.md` that links `refine.md` and
+`risk-assessment.md`, with an **Automated Bug Pipeline guides** snippet to paste. The guide is static, so it also shows while the snapshot loads or
+fails. Summary cards show refined bugs; the shares closed, sent for
 human analysis, and waiting for information; the share sent to solve (`SOLVE`);
 the share of those that merged; and the share of their linked backports that
 merged. Each card states its count and denominator. The view reuses the

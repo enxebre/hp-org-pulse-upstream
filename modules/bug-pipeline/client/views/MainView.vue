@@ -2,12 +2,13 @@
   <div class="p-6" data-testid="bug-pipeline">
     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Agentic Bug Pipeline</h2>
     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-      Follow refined OCPBUGS issues from Chai's refinement through solve and backport merges; backport clones count toward their original bug.
-      Pull requests and merges come from Jira status history: POST means a pull request was linked, and MODIFIED means it merged.
+      Automate intake refinement to funnel the incoming work through.
     </p>
     <p v-if="data?.demo" data-testid="pipeline-demo" role="status" class="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
       Demo data — these are fictional examples, not results from Jira.
     </p>
+
+    <PipelineGuide />
 
     <p v-if="loading" class="py-12 text-center text-gray-500 dark:text-gray-400" role="status">Loading pipeline outcomes...</p>
     <div v-else-if="error" class="py-12 text-center" role="alert">
@@ -159,6 +160,7 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import DecisionFlow from '../components/DecisionFlow.vue'
 import DecisionSankey from '../components/DecisionSankey.vue'
+import PipelineGuide from '../components/PipelineGuide.vue'
 import { usePipeline } from '../composables/usePipeline.js'
 import { useComponentFilter } from '../composables/useComponentFilter.js'
 import { useSortableRows } from '../composables/useSortableRows.js'
