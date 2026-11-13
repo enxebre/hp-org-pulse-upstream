@@ -118,54 +118,38 @@ describe('ToolsView', () => {
     expect(cards).toHaveLength(4)
   })
 
-  it('adds a home card when the bug refinement module is available', async () => {
+  it('adds the refinement and pipeline home cards, in that order, when HP Automation is available', async () => {
     const wrapper = mount(StrategicInitiativesBlock, {
-      global: { provide: { moduleNav: { isModuleAvailable: slug => slug === 'bug-refinement' } } }
+      global: { provide: { moduleNav: { isModuleAvailable: slug => slug === 'hp-automation' } } }
     })
     await waitForDataLoad(wrapper)
-    const card = wrapper.get('a[href="#/bug-refinement/main"]')
-    expect(card.text()).toContain('Agentic Bug Refinement')
-    expect(card.attributes('target')).toBeUndefined()
-    expect(card.get('svg').classes()).toContain('lucide-clipboard-check')
+    const refine = wrapper.get('a[href="#/hp-automation/refine"]')
+    expect(refine.text()).toContain('Agentic Bug Refinement')
+    expect(refine.attributes('target')).toBeUndefined()
+    expect(refine.get('svg').classes()).toContain('lucide-clipboard-check')
+    const pipeline = wrapper.get('a[href="#/hp-automation/pipeline"]')
+    expect(pipeline.text()).toContain('Agentic Bug Pipeline')
+    expect(pipeline.get('svg').classes()).toContain('lucide-trending-up')
+    const moduleLinks = wrapper.findAll('a').map(link => link.attributes('href')).filter(href => href?.startsWith('#/hp-automation/'))
+    expect(moduleLinks).toEqual(['#/hp-automation/refine', '#/hp-automation/pipeline'])
   })
 
-  it('hides the refinement and pipeline home cards when their modules are unavailable', async () => {
+  it('hides the refinement and pipeline home cards when HP Automation is unavailable', async () => {
     const wrapper = mount(StrategicInitiativesBlock, {
-      global: { provide: { moduleNav: { isModuleAvailable: () => false } } }
+      global: { provide: { moduleNav: { isModuleAvailable: slug => slug !== 'hp-automation' } } }
     })
     await waitForDataLoad(wrapper)
-    expect(wrapper.find('a[href="#/bug-refinement/main"]').exists()).toBe(false)
-    expect(wrapper.find('a[href="#/bug-pipeline/main"]').exists()).toBe(false)
-  })
-
-  it('adds a home card when the bug pipeline module is available', async () => {
-    const wrapper = mount(StrategicInitiativesBlock, {
-      global: { provide: { moduleNav: { isModuleAvailable: slug => slug === 'bug-pipeline' } } }
-    })
-    await waitForDataLoad(wrapper)
-    const card = wrapper.get('a[href="#/bug-pipeline/main"]')
-    expect(card.text()).toContain('Agentic Bug Pipeline')
-    expect(card.attributes('target')).toBeUndefined()
-    expect(card.get('svg').classes()).toContain('lucide-trending-up')
-    expect(wrapper.find('a[href="#/bug-refinement/main"]').exists()).toBe(false)
-  })
-
-  it('lists the refinement card before the pipeline card when both modules are available', async () => {
-    const wrapper = mount(StrategicInitiativesBlock, {
-      global: { provide: { moduleNav: { isModuleAvailable: () => true } } }
-    })
-    await waitForDataLoad(wrapper)
-    const moduleLinks = wrapper.findAll('a').map(link => link.attributes('href')).filter(href => href?.startsWith('#/bug-'))
-    expect(moduleLinks).toEqual(['#/bug-refinement/main', '#/bug-pipeline/main'])
+    expect(wrapper.find('a[href="#/hp-automation/refine"]').exists()).toBe(false)
+    expect(wrapper.find('a[href="#/hp-automation/pipeline"]').exists()).toBe(false)
   })
 
   it('does not duplicate an admin-configured refinement launcher', async () => {
-    apiRequest.mockResolvedValueOnce([{ id: 'custom-refinement', title: 'Custom refinement', icon: 'bot', url: '#/bug-refinement/main' }])
+    apiRequest.mockResolvedValueOnce([{ id: 'custom-refinement', title: 'Custom refinement', icon: 'bot', url: '#/hp-automation/refine' }])
     const wrapper = mount(StrategicInitiativesBlock, {
       global: { provide: { moduleNav: { isModuleAvailable: () => true } } }
     })
     await waitForDataLoad(wrapper)
-    expect(wrapper.findAll('a[href="#/bug-refinement/main"]')).toHaveLength(1)
+    expect(wrapper.findAll('a[href="#/hp-automation/refine"]')).toHaveLength(1)
     expect(wrapper.text()).toContain('Custom refinement')
   })
 

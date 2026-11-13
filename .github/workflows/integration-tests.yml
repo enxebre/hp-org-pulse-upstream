@@ -39,39 +39,17 @@ jobs:
               - 'tests/integration/helpers.js'
               - 'modules/agentic-tools/**'
               - 'tests/integration/agentic-tools.spec.js'
-            cve-triage:
+            hp-automation:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'
-              - 'modules/cve-triage/**'
-              - 'tests/integration/cve-triage.spec.js'
-            backport-tracker:
-              - 'tests/integration/constants.js'
-              - 'tests/integration/helpers.js'
-              - 'modules/backport-tracker/**'
-              - 'tests/integration/backport-tracker.spec.js'
-            bug-refinement:
-              - 'tests/integration/constants.js'
-              - 'tests/integration/helpers.js'
-              - 'modules/bug-refinement/**'
-              - 'tests/integration/bug-refinement.spec.js'
-            bug-pipeline:
-              - 'tests/integration/constants.js'
-              - 'tests/integration/helpers.js'
-              - 'modules/bug-pipeline/**'
-              - 'modules/bug-refinement/server/**'
+              - 'modules/hp-automation/**'
               - 'fixtures/bug-refinement/**'
-              - 'tests/integration/bug-pipeline.spec.js'
-            risk-assessment:
-              - 'tests/integration/constants.js'
-              - 'tests/integration/helpers.js'
-              - 'modules/risk-assessment/**'
+              - 'fixtures/jira-solve-agent/**'
+              - 'fixtures/backport-tracker/**'
               - 'fixtures/risk-assessment/**'
-              - 'tests/integration/risk-assessment.spec.js'
-            jira-solve-agent:
-              - 'tests/integration/constants.js'
-              - 'tests/integration/helpers.js'
-              - 'modules/jira-solve-agent/**'
-              - 'tests/integration/jira-solve-agent.spec.js'
+              - 'fixtures/cve-triage/**'
+              - 'fixtures/modules-state.json'
+              - 'tests/integration/hp-automation-*.spec.js'
             ai-impact:
               - 'tests/integration/constants.js'
               - 'tests/integration/helpers.js'

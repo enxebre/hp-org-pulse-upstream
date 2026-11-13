@@ -6,10 +6,10 @@ and `fixtures/` directory (demo mode).
 
 ## Agentic Bug Refinement — `bug-refinement/data.json`
 
-The Bug Refinement module caches issues matching
+The HP Automation module's Refine page caches issues matching
 `project IN (OCPBUGS, CNTRLPLANE) AND labels = "refined-by-agent"`, ordered by
 Jira's `updated` field descending. All Jira statuses are included. The home page's
-**Agentic Bug Refinement** card opens `#/bug-refinement/main`.
+**Agentic Bug Refinement** card opens `#/hp-automation/refine`.
 
 ```json
 {
@@ -76,11 +76,11 @@ Jira's `updated` field descending. All Jira statuses are included. The home page
 }
 ```
 
-`GET /api/modules/bug-refinement/data` returns this snapshot plus the
+`GET /api/modules/hp-automation/refine/data` returns this snapshot plus the
 configured `jiraHost`, a `jiraSearchUrl` for the exact query, and a boolean `demo`
 flag. A missing snapshot triggers an initial Jira fetch. The
-registered `bug-refinement:refresh` refresh job and admin-only
-`POST /api/modules/bug-refinement/refresh` replace the snapshot after
+registered `hp-automation:refine-refresh` refresh job and admin-only
+`POST /api/modules/hp-automation/refine/refresh` replace the snapshot after
 a successful fetch. Concurrent refreshes share one fetch; failures preserve the
 previous snapshot. Demo mode reads `fixtures/bug-refinement/data.json`
 without Jira requests or writes. The view marks these issues as fictional examples
@@ -131,9 +131,9 @@ the clones named by `jlp-<branch>:<KEY>` labels on the original issue, in label
 order. Clones inherit `refined-by-agent`, so each entry copies the clone's
 `status`, `prPosted`, and `merged` from the same snapshot; all three are `null` when
 the clone is not in the snapshot. Snapshots fetched before `prPosted` was copied omit
-it, and the view then treats a clone in POST as having a pull request. The `bug-pipeline` module serves this snapshot unchanged from
-`GET /api/modules/bug-pipeline/data` for its **Agentic Bug Pipeline** view at
-`#/bug-pipeline/main`. Snapshots fetched before these fields existed omit them, and
+it, and the view then treats a clone in POST as having a pull request. The HP Automation module serves this snapshot unchanged from
+`GET /api/modules/hp-automation/pipeline/data` for its **Bug Pipeline** view at
+`#/hp-automation/pipeline`. Snapshots fetched before these fields existed omit them, and
 that view asks for a refresh instead of reporting zero merges. `pullRequests` lists the GitHub pull requests in
 the [Jira remote links](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-remote-links/#api-rest-api-3-issue-issueidorkey-remotelink-get)
 of issues with a `SOLVE` disposition and of backport clones named by `jlp-` labels,
@@ -1038,7 +1038,7 @@ or CLOSED do not lose the successful merge outcome.
 Per-repository counts of pull requests (any state) carrying each Chai risk assessment
 label: `chai-risk-assessment/low`, `chai-risk-assessment/moderate`, and
 `chai-risk-assessment/critical`. Chai applies exactly one label per PR, for its latest
-commit. Totals and shares are not stored; `GET /api/modules/risk-assessment/data`
+commit. Totals and shares are not stored; `GET /api/modules/hp-automation/risk/data`
 computes them from these counts.
 
 ```json

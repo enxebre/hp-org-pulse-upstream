@@ -1,0 +1,81 @@
+import { describe, expect, it, vi } from 'vitest'
+
+const { ARC_JQL, CHAI_JQL, OAPE_CHAI_JQL, COMBINED_JQL, computeMetrics, fetchArcIssues, fetchChaiIssues, fetchOapeChaiIssues, fetchCveSolutions, processArcIssue } = require('../../../server/cve/jira/fetcher')
+
+describe('ARC CVE fetcher', () => {
+  it('queries OCPBUGS issues carrying the ARC triaged label', async () => {
+    const jiraRequest = vi.fn().mockResolvedValue({
+      issues: [{ key: 'OCPBUGS-1', fields: { summary: 'CVE', status: { name: 'New' }, labels: ['arc:triaged'], updated: '2026-09-11' } }],
+      total: 1
+    })
+
+    const issues = await fetchArcIssues(jiraRequest)
+
+    expect(ARC_JQL).toBe('project = OCPBUGS AND labels = "arc:triaged" ORDER BY updated DESC')
+    expect(issues).toEqual([{ key: 'OCPBUGS-1', summary: 'CVE', status: 'New', updated: '2026-09-11', resolved: false }])
+  })
+
+  it('treats arc:complete as the resolved subset of triaged issues', () => {
+    const issues = [
+      processArcIssue({ key: 'OCPBUGS-1', fields: { labels: ['arc:triaged'] } }),
+      processArcIssue({ key: 'OCPBUGS-2', fields: { labels: ['arc:triaged', 'arc:complete'] } })
+    ]
+
+    expect(computeMetrics(issues)).toEqual({ triaged: 2, resolved: 1, resolutionRate: 50 })
+  })
+
+  it('queries CHAI-analyzed Jira issues and resolves issues in Jira Done status category', async () => {
+    const jiraRequest = vi.fn().mockResolvedValue({
+      issues: [
+        { key: 'OCPBUGS-3', fields: { summary: 'Open CVE', status: { name: 'New', statusCategory: { key: 'new' } }, labels: ['chai-bot-analyzed'] } },
+        { key: 'OCPBUGS-4', fields: { summary: 'Closed CVE', status: { name: 'Closed', statusCategory: { key: 'done' } }, labels: ['chai-bot-analyzed'] } }
+      ]
+    })
+
+    const issues = await fetchChaiIssues(jiraRequest)
+
+    expect(CHAI_JQL).toBe('labels = "chai-bot-analyzed" ORDER BY updated DESC')
+    expect(issues.map(issue => issue.resolved)).toEqual([false, true])
+    expect(computeMetrics(issues)).toEqual({ triaged: 2, resolved: 1, resolutionRate: 50 })
+  })
+
+  it('queries OAPE CHAI-analyzed Jira issues and resolves issues in Jira Done status category', async () => {
+    const jiraRequest = vi.fn().mockResolvedValue({
+      issues: [
+        { key: 'OCPBUGS-5', fields: { summary: 'Open CVE', status: { name: 'New', statusCategory: { key: 'new' } }, labels: ['ai-cve-analyzed'] } },
+        { key: 'OCPBUGS-6', fields: { summary: 'Closed CVE', status: { name: 'Closed', statusCategory: { key: 'done' } }, labels: ['ai-cve-analyzed'] } }
+      ]
+    })
+
+    const issues = await fetchOapeChaiIssues(jiraRequest)
+
+    expect(OAPE_CHAI_JQL).toBe('labels = "ai-cve-analyzed" ORDER BY updated DESC')
+    expect(issues.map(issue => issue.resolved)).toEqual([false, true])
+    expect(computeMetrics(issues)).toEqual({ triaged: 2, resolved: 1, resolutionRate: 50 })
+  })
+
+  it('fetches all solutions with one Jira search and preserves overlapping issues', async () => {
+    const jiraRequest = vi.fn().mockResolvedValue({
+      issues: [
+        { key: 'OCPBUGS-1', fields: { summary: 'ARC', status: { name: 'New', statusCategory: { key: 'new' } }, labels: ['arc:triaged'] } },
+        { key: 'OCPBUGS-2', fields: { summary: 'Both', status: { name: 'Closed', statusCategory: { key: 'done' } }, labels: ['arc:triaged', 'arc:complete', 'chai-bot-analyzed'] } },
+        { key: 'JIRA-3', fields: { summary: 'CHAI', status: { name: 'New', statusCategory: { key: 'new' } }, labels: ['chai-bot-analyzed'] } },
+        { key: 'JIRA-4', fields: { summary: 'OAPE CHAI', status: { name: 'Closed', statusCategory: { key: 'done' } }, labels: ['ai-cve-analyzed'] } }
+      ]
+    })
+
+    const solutions = await fetchCveSolutions(jiraRequest)
+
+    expect(COMBINED_JQL).toContain('(project = OCPBUGS AND labels = "arc:triaged") OR labels = "chai-bot-analyzed" OR labels = "ai-cve-analyzed"')
+    expect(jiraRequest).toHaveBeenCalledTimes(1)
+    expect(solutions.arc.map(issue => issue.key)).toEqual(['OCPBUGS-1', 'OCPBUGS-2'])
+    expect(solutions.chai.map(issue => issue.key)).toEqual(['OCPBUGS-2', 'JIRA-3'])
+    expect(solutions.oapeChai.map(issue => issue.key)).toEqual(['JIRA-4'])
+    expect(solutions.chai[0].resolved).toBe(true)
+    expect(solutions.oapeChai[0].resolved).toBe(true)
+  })
+
+  it('reports no resolution rate when no issues are triaged', () => {
+    expect(computeMetrics([])).toEqual({ triaged: 0, resolved: 0, resolutionRate: null })
+  })
+})

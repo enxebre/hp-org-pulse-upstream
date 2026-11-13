@@ -26,21 +26,22 @@ const moduleNav = inject('moduleNav', null)
 const { linkTo } = useModuleLink()
 const MODULE_TOOLS = [
   {
-    slug: 'bug-refinement',
+    view: 'refine',
     id: 'agentic-bug-refinement',
     title: 'Agentic Bug Refinement',
     description: 'Track OCPBUGS and CNTRLPLANE issues refined by Chai.',
     icon: 'clipboard-check'
   },
   {
-    slug: 'bug-pipeline',
+    view: 'pipeline',
     id: 'agentic-bug-pipeline',
     title: 'Agentic Bug Pipeline',
     description: 'Follow refined OCPBUGS issues through solve and backport merges.',
     icon: 'trending-up'
   }
 ]
-const moduleTools = computed(() => MODULE_TOOLS
-  .filter(tool => moduleNav?.isModuleAvailable?.(tool.slug))
-  .map(({ slug, ...tool }) => ({ ...tool, url: linkTo(slug, 'main') })))
+// Both cards open pages of the HP Automation module.
+const moduleTools = computed(() => moduleNav?.isModuleAvailable?.('hp-automation')
+  ? MODULE_TOOLS.map(({ view, ...tool }) => ({ ...tool, url: linkTo('hp-automation', view) }))
+  : [])
 </script>

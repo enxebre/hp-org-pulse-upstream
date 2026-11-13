@@ -1,10 +1,5 @@
 {
   "agentic-tools": true,
   "team-tracker": true,
-  "backport-tracker": true,
-  "bug-pipeline": true,
-  "bug-refinement": true,
-  "cve-triage": true,
-  "jira-solve-agent": true,
-  "risk-assessment": true
+  "hp-automation": true
 }
