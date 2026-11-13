@@ -18,18 +18,12 @@ test.describe('Agentic Bug Refinement @bug-refinement', () => {
     expect(page.errors.filter(error => error.type === 'pageerror')).toHaveLength(0)
   })
 
-  test('has its own sidebar section outside Jira Solve Agent', async ({ page }) => {
+  test('appears as Refine in the HP Automation sidebar section', async ({ page }) => {
     await page.goto('/')
-    const sections = page.locator('aside nav > div')
-    const refinementSection = sections.filter({ has: page.locator('button[aria-expanded][aria-label="Agentic Bug Refinement"]') })
-    const solveSection = sections.filter({ has: page.locator('button[aria-expanded][aria-label="OpenShift Jira Solve Agent"]') })
-    await expect(refinementSection).toHaveCount(1)
-    await expect(solveSection).toHaveCount(1)
-    await expect(solveSection.getByRole('button', { name: 'Agentic Bug Refinement', exact: true })).toHaveCount(0)
-    const header = refinementSection.locator('button[aria-expanded]')
+    const automation = page.locator('aside nav > div').filter({ has: page.locator('button[aria-expanded][aria-label="HP Automation"]') })
+    const header = automation.locator('button[aria-expanded]')
     if (await header.getAttribute('aria-expanded') === 'false') await header.click()
-    await expect(refinementSection.locator('button:not([aria-expanded])')).toHaveText(['Agentic Bug Refinement'])
-    await refinementSection.locator('button:not([aria-expanded])').click()
+    await automation.getByRole('button', { name: 'Refine', exact: true }).click()
     await expect(page).toHaveURL(/#\/bug-refinement\/main$/)
     await expect(page.getByTestId('bug-refinement').locator('tbody tr')).toHaveCount(5)
     expect(page.errors.filter(error => error.type === 'pageerror')).toHaveLength(0)

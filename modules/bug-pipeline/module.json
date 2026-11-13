@@ -8,8 +8,10 @@
   "requires": ["bug-refinement"],
   "client": {
     "entry": "./client/index.js",
+    "navGroup": { "id": "hp-automation", "label": "HP Automation", "icon": "Rocket" },
     "navItems": [
-      { "id": "main", "label": "Agentic Bug Pipeline", "icon": "TrendingUp", "default": true }
+      { "id": "guide", "label": "Bug Pipeline Guide", "icon": "BookOpen" },
+      { "id": "main", "label": "Bug Pipeline", "icon": "TrendingUp", "default": true }
     ]
   },
   "server": {

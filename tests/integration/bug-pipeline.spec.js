@@ -18,20 +18,32 @@ test.describe('Agentic Bug Pipeline @bug-pipeline', () => {
     expect(page.errors.filter(error => error.type === 'pageerror')).toHaveLength(0)
   })
 
-  test('has its own sidebar section outside Agentic Bug Refinement', async ({ page }) => {
+  test('lists the HP Automation entries in one sidebar section, guide first', async ({ page }) => {
     await page.goto('/')
     const sections = page.locator('aside nav > div')
-    const pipelineSection = sections.filter({ has: page.locator('button[aria-expanded][aria-label="Agentic Bug Pipeline"]') })
-    const refinementSection = sections.filter({ has: page.locator('button[aria-expanded][aria-label="Agentic Bug Refinement"]') })
-    await expect(pipelineSection).toHaveCount(1)
-    await expect(refinementSection).toHaveCount(1)
-    await expect(refinementSection.getByRole('button', { name: 'Agentic Bug Pipeline', exact: true })).toHaveCount(0)
-    const header = pipelineSection.locator('button[aria-expanded]')
+    const automation = sections.filter({ has: page.locator('button[aria-expanded][aria-label="HP Automation"]') })
+    await expect(automation).toHaveCount(1)
+    for (const name of ['Agentic Bug Pipeline', 'Agentic Bug Refinement', 'OpenShift Jira Solve Agent', 'Agentic Backports', 'Agentic Risk Assessment', 'CVE Triage']) {
+      await expect(page.locator(`aside button[aria-expanded][aria-label="${name}"]`)).toHaveCount(0)
+    }
+    const header = automation.locator('button[aria-expanded]')
     if (await header.getAttribute('aria-expanded') === 'false') await header.click()
-    await expect(pipelineSection.locator('button:not([aria-expanded])')).toHaveText(['Agentic Bug Pipeline'])
-    await pipelineSection.locator('button:not([aria-expanded])').click()
+    const items = automation.locator('button:not([aria-expanded])')
+    await expect(items).toHaveText(['Bug Pipeline Guide', 'Bug Pipeline', 'Solve', 'Refine', 'Backport', 'PR Risk Assessment', 'CVE Triage', 'Go Mod Automerge'])
+    // Go Mod Automerge is a placeholder that links nowhere yet.
+    await expect(items.last()).toBeDisabled()
+    await items.filter({ hasText: 'Bug Pipeline Guide' }).click()
+    await expect(page).toHaveURL(/#\/bug-pipeline\/guide$/)
+    await expect(page.getByTestId('bug-pipeline-guide').getByTestId('pipeline-guide')).toBeVisible()
+    await expect(items.filter({ hasText: 'Bug Pipeline Guide' })).toHaveAttribute('aria-current', 'page')
+    await items.getByText('Bug Pipeline', { exact: true }).click()
     await expect(page).toHaveURL(/#\/bug-pipeline\/main$/)
     await expect(page.getByTestId('bug-pipeline').locator('tbody > tr')).toHaveCount(3)
+    // Moving to another member module keeps the section open.
+    await items.filter({ hasText: /^Refine$/ }).click()
+    await expect(page).toHaveURL(/#\/bug-refinement\/main$/)
+    await expect(header).toHaveAttribute('aria-expanded', 'true')
+    await expect(items.filter({ hasText: /^Refine$/ })).toHaveAttribute('aria-current', 'page')
     expect(page.errors.filter(error => error.type === 'pageerror')).toHaveLength(0)
   })
 
@@ -209,9 +221,10 @@ test.describe('Agentic Bug Pipeline @bug-pipeline', () => {
     expect(page.errors.filter(error => error.type === 'pageerror')).toHaveLength(0)
   })
 
-  test('documents the stages, links their skills, and explains onboarding before the percentages', async ({ page }) => {
-    await page.goto('/#/bug-pipeline/main')
-    const view = page.getByTestId('bug-pipeline')
+  test('documents the stages, links their skills, and explains onboarding on its own page', async ({ page }) => {
+    await page.goto('/#/bug-pipeline/guide')
+    const view = page.getByTestId('bug-pipeline-guide')
+    await expect(view.getByRole('heading', { name: 'Bug Pipeline Guide', exact: true })).toBeVisible()
     const guide = view.getByTestId('pipeline-guide')
     await expect(guide.getByRole('heading', { name: 'How the pipeline works', exact: true })).toBeVisible()
     await expect(guide.getByRole('link', { name: 'Canonical docs', exact: true })).toHaveAttribute('href', 'https://thoughts-e2c4a9.pages.redhat.com/self-driven-bug-backlog/self-driven-bug-backlog.html')
@@ -238,15 +251,20 @@ test.describe('Agentic Bug Pipeline @bug-pipeline', () => {
     await expect(guide.getByTestId('guide-stage-refine')).toHaveAttribute('data-state', 'idle')
     await expect(guide.getByRole('link', { name: 'openshift_asdlc', exact: true })).toHaveAttribute('href', /\/personas\/openshift_asdlc\.yaml$/)
     await expect(guide.getByTestId('onboarding-prompt')).toHaveText('@chai-bot please onboard "Component X" into the automated refine+solve pipeline.')
-    const context = guide.getByTestId('pipeline-repo-context')
-    await expect(context.getByRole('heading', { name: "Give the agents your repository's context", exact: true })).toBeVisible()
-    await expect(context.locator('[data-testid^="context-file-"] code')).toHaveText(['AGENTS.md', '↳ refine.md', '↳ risk-assessment.md'])
-    await expect(context.getByTestId('context-snippet')).toContainText('## Automated Bug Pipeline guides')
-    await expect(context.getByTestId('context-snippet')).toContainText('[Assessing pull request risk](risk-assessment.md)')
-    // The docs come first, then the percentages.
-    const guideBox = await guide.boundingBox()
-    const stagesBox = await view.getByTestId('pipeline-stages').boundingBox()
-    expect(guideBox.y + guideBox.height).toBeLessThanOrEqual(stagesBox.y)
+    await expect(guide.getByTestId('copy-onboarding-prompt')).toHaveText('Copy prompt')
+    const customize = guide.getByTestId('pipeline-customize')
+    await expect(customize.getByRole('heading', { name: 'Customize if you need to', exact: true })).toBeVisible()
+    await expect(customize.locator('[data-testid^="context-file-"] code')).toHaveText(['AGENTS.md', '↳ refine.md', '↳ risk-assessment.md'])
+    // The customize prompt is only offered through its copy button.
+    await expect(customize).not.toContainText('progressive disclosure')
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
+    await customize.getByTestId('copy-customize-prompt').click()
+    await expect(customize.getByTestId('copy-customize-prompt')).toHaveText('Copied')
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('- [Assessing pull request risk](risk-assessment.md)')
+    // The dashboard leaves the guide to this page.
+    await page.goto('/#/bug-pipeline/main')
+    await expect(page.getByTestId('bug-pipeline').getByTestId('pipeline-stages')).toBeVisible()
+    await expect(page.getByTestId('pipeline-guide')).toHaveCount(0)
     expect(page.errors.filter(error => error.type === 'pageerror')).toHaveLength(0)
   })
 

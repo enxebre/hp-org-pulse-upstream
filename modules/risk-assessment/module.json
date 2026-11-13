@@ -3,12 +3,13 @@
   "slug": "risk-assessment",
   "description": "Track Chai risk assessment labels on OpenShift pull requests, grouped by repository",
   "icon": "ChartColumnStacked",
-  "order": 13,
+  "order": 12,
   "defaultEnabled": true,
   "client": {
     "entry": "./client/index.js",
+    "navGroup": { "id": "hp-automation", "label": "HP Automation", "icon": "Rocket" },
     "navItems": [
-      { "id": "main", "label": "Agentic Risk Assessment", "icon": "ChartColumnStacked", "default": true }
+      { "id": "main", "label": "PR Risk Assessment", "icon": "ChartColumnStacked", "default": true }
     ]
   },
   "server": {

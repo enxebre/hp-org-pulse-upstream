@@ -70,55 +70,70 @@
       </li>
     </ol>
 
-    <div data-testid="pipeline-onboarding" class="mt-5 border-t border-gray-200 pt-4 dark:border-gray-700">
-      <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Onboard your component</h4>
-      <ol class="mt-2 list-decimal space-y-2 pl-5 text-sm text-gray-600 dark:text-gray-300">
-        <li>
-          Make sure your Chai persona extends
-          <a data-testid="onboarding-persona" :href="PERSONA_URL" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-primary-600 hover:underline dark:text-primary-400">openshift_asdlc</a>
-          (<code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-xs text-gray-800 dark:bg-gray-700 dark:text-gray-200">extends: openshift_asdlc</code>).
-        </li>
-        <li>
-          Ask Chai, using your Jira component's name:
-          <span class="mt-1.5 flex flex-wrap items-center gap-2">
-            <code data-testid="onboarding-prompt" class="rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-800 [overflow-wrap:anywhere] dark:bg-gray-700 dark:text-gray-200">{{ ONBOARDING_PROMPT }}</code>
-            <button type="button" data-testid="copy-onboarding-prompt" class="rounded border border-gray-300 px-2 py-0.5 text-xs font-medium text-gray-600 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" @click="copyPrompt">
-              {{ copied ? 'Copied' : 'Copy' }}
-            </button>
+    <!-- Two things a team does next. Each prompt is one click away and never shown in full. -->
+    <div class="mt-5 grid grid-cols-1 gap-3 border-t border-gray-200 pt-5 dark:border-gray-700 lg:grid-cols-2">
+      <article data-testid="pipeline-onboarding" class="action-card relative flex flex-col overflow-hidden rounded-xl border border-primary-200/80 bg-gradient-to-br from-primary-50 via-white to-white p-4 shadow-sm dark:border-primary-800/60 dark:from-primary-900/30 dark:via-gray-800 dark:to-gray-800 sm:p-5">
+        <span aria-hidden="true" class="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary-400/20 blur-2xl dark:bg-primary-500/20" />
+        <div class="relative flex items-center gap-3">
+          <span aria-hidden="true" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-md shadow-primary-500/30">
+            <Rocket :size="18" />
           </span>
-        </li>
-      </ol>
-    </div>
+          <div class="min-w-0">
+            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Onboard your component</h4>
+            <p class="text-xs text-gray-600 dark:text-gray-300">New bugs get refined, and solved when possible.</p>
+          </div>
+        </div>
+        <p data-testid="onboarding-prompt" class="relative mt-4 w-fit max-w-full rounded-2xl rounded-tl-sm bg-gray-900 px-3.5 py-2 font-mono text-xs leading-relaxed text-gray-100 shadow-sm [overflow-wrap:anywhere] dark:bg-gray-950/70"><span class="font-semibold text-violet-300">{{ CHAI_MENTION }}</span>{{ ONBOARDING_REQUEST[0] }}<mark title="Your Jira component" class="rounded bg-amber-300 px-1 text-gray-900">{{ ONBOARDING_PLACEHOLDER }}</mark>{{ ONBOARDING_REQUEST[1] }}</p>
+        <div class="relative mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Persona needs
+            <code class="rounded bg-white/80 px-1.5 py-0.5 font-mono text-gray-800 ring-1 ring-gray-200 dark:bg-gray-900/60 dark:text-gray-200 dark:ring-gray-700">extends: <a data-testid="onboarding-persona" :href="PERSONA_URL" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline dark:text-primary-400">openshift_asdlc</a></code>
+          </p>
+          <CopyPromptButton name="onboarding-prompt" :text="ONBOARDING_PROMPT" />
+        </div>
+      </article>
 
-    <div data-testid="pipeline-repo-context" class="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
-      <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Give the agents your repository's context</h4>
-      <div class="mt-2 space-y-3 text-sm text-gray-600 dark:text-gray-300">
-        <p>
-          Use progressive disclosure: keep <code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-xs text-gray-800 dark:bg-gray-700 dark:text-gray-200">AGENTS.md</code>
-          short and link one guide per stage. Agents read <code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-xs text-gray-800 dark:bg-gray-700 dark:text-gray-200">AGENTS.md</code>
-          first and open a linked guide only when their work needs it.
-        </p>
-        <ul class="space-y-2" aria-label="Repository guides">
-          <li v-for="file in CONTEXT_FILES" :key="file.name" :data-testid="`context-file-${file.key}`" class="flex flex-col gap-0.5 sm:flex-row sm:gap-3">
-            <code class="shrink-0 font-mono text-xs font-semibold text-gray-900 dark:text-gray-100 sm:w-44" :class="file.linked && 'pl-5'"><span v-if="file.linked" aria-hidden="true" class="text-gray-400 dark:text-gray-500">↳ </span>{{ file.name }}</code>
-            <span class="text-xs">{{ file.description }}</span>
+      <article data-testid="pipeline-customize" class="action-card relative flex flex-col overflow-hidden rounded-xl border border-violet-200/80 bg-gradient-to-br from-violet-50 via-white to-white p-4 shadow-sm dark:border-violet-800/60 dark:from-violet-900/25 dark:via-gray-800 dark:to-gray-800 sm:p-5">
+        <span aria-hidden="true" class="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-violet-400/20 blur-2xl dark:bg-violet-500/20" />
+        <div class="relative flex items-center gap-3">
+          <span aria-hidden="true" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 text-white shadow-md shadow-violet-500/30">
+            <SlidersHorizontal :size="18" />
+          </span>
+          <div class="min-w-0">
+            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Customize if you need to</h4>
+            <p class="text-xs text-gray-600 dark:text-gray-300">Teach refine and risk assessment your repository's specifics.</p>
+          </div>
+        </div>
+        <ul class="relative mt-4 space-y-1 text-xs" aria-label="Repository guides">
+          <li v-for="file in CONTEXT_FILES" :key="file.name" :data-testid="`context-file-${file.key}`" class="flex flex-wrap items-baseline gap-x-2" :class="file.linked && 'pl-4'">
+            <code class="font-mono font-semibold text-gray-900 dark:text-gray-100"><span v-if="file.linked" aria-hidden="true" class="text-violet-400 dark:text-violet-500">↳ </span>{{ file.name }}</code>
+            <span class="text-gray-500 dark:text-gray-400">{{ file.hint }}</span>
           </li>
         </ul>
-        <pre data-testid="context-snippet" class="overflow-x-auto rounded bg-gray-100 p-3 font-mono text-xs text-gray-800 dark:bg-gray-900/60 dark:text-gray-200">{{ AGENTS_SNIPPET }}</pre>
-      </div>
+        <div class="relative mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
+          <p class="text-xs text-gray-500 dark:text-gray-400">For your coding agent, in your repository</p>
+          <CopyPromptButton name="customize-prompt" :text="CUSTOMIZE_PROMPT" />
+        </div>
+      </article>
     </div>
   </section>
 </template>
 
 <script setup>
 import { computed, onBeforeUnmount, ref } from 'vue'
+import { Rocket, SlidersHorizontal } from 'lucide-vue-next'
+import CopyPromptButton from './CopyPromptButton.vue'
 
 const DOCS_URL = 'https://thoughts-e2c4a9.pages.redhat.com/self-driven-bug-backlog/self-driven-bug-backlog.html'
 const PERSONA_URL = 'https://github.com/openshift-eng/ship-help-bot/blob/main/config/groups/openshift-core/personas/openshift_asdlc.yaml'
 const SKILLS_URL = 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills'
 // Chai's pipeline profiles, pinned to a reviewed commit.
 const PROFILES_URL = 'https://github.com/openshift-eng/ship-help-bot/blob/910ff153b5fad68550cf8868c5f7752fadd3ded2/ship_help_bot/shared/instructions/workspace/profiles'
-const ONBOARDING_PROMPT = '@chai-bot please onboard "Component X" into the automated refine+solve pipeline.'
+// The onboarding prompt, split so the page can highlight the part to replace.
+const CHAI_MENTION = '@chai-bot'
+const ONBOARDING_PLACEHOLDER = 'Component X'
+const ONBOARDING_REQUEST = [' please onboard "', '" into the automated refine+solve pipeline.']
+const ONBOARDING_PROMPT = `${CHAI_MENTION}${ONBOARDING_REQUEST[0]}${ONBOARDING_PLACEHOLDER}${ONBOARDING_REQUEST[1]}`
 
 function skill(name) {
   return { label: `/openshift-developer:${name}`, url: `${SKILLS_URL}/${name}/SKILL.md` }
@@ -213,34 +228,35 @@ function onPointerEnter(event, key) {
 }
 
 const CONTEXT_FILES = [
-  { key: 'agents', name: 'AGENTS.md', description: 'Entry point: what the repository ships, with links to the guides below.' },
-  { key: 'refine', name: 'refine.md', linked: true, description: 'What refine should know to triage bugs in your component, such as known non-bugs and which releases take backports.' },
-  { key: 'risk', name: 'risk-assessment.md', linked: true, description: 'How changes reach installations and which areas are sensitive, so risk assessment tiers pull requests correctly.' }
+  { key: 'agents', name: 'AGENTS.md', hint: 'links the guides' },
+  { key: 'refine', name: 'refine.md', linked: true, hint: 'known non-bugs, backport releases' },
+  { key: 'risk', name: 'risk-assessment.md', linked: true, hint: 'sensitive areas, how changes ship' }
 ]
-const AGENTS_SNIPPET = `## Automated Bug Pipeline guides
+// For a coding agent working in the component's repository.
+const CUSTOMIZE_PROMPT = `Add guides for the automated bug pipeline to this repository. Use progressive disclosure: agents read AGENTS.md first and open a linked guide only when their work needs it.
+
+1. Create refine.md with what an agent needs to triage bugs in this component, such as known non-bugs and expected behavior, and which releases take backports.
+2. Create risk-assessment.md explaining how changes reach installations and which areas are sensitive, so pull requests get the right risk tier: Low, Moderate, or Critical.
+3. Add this section to AGENTS.md, creating the file if it doesn't exist, and keep AGENTS.md short:
+
+## Automated Bug Pipeline guides
 
 - [Refining bugs](refine.md)
-- [Assessing pull request risk](risk-assessment.md)`
+- [Assessing pull request risk](risk-assessment.md)
 
-const copied = ref(false)
-let copiedTimer = null
-async function copyPrompt() {
-  try {
-    await navigator.clipboard.writeText(ONBOARDING_PROMPT)
-    copied.value = true
-    clearTimeout(copiedTimer)
-    copiedTimer = setTimeout(() => { copied.value = false }, 2000)
-  } catch {
-    // Clipboard access can be denied; the prompt stays visible to copy by hand.
-  }
-}
-onBeforeUnmount(() => {
-  clearTimeout(copiedTimer)
-  clearTimeout(clearTimer)
-})
+Base both guides on this repository's code, docs, and history. Where you can't tell, leave a TODO instead of guessing.`
+
+onBeforeUnmount(() => clearTimeout(clearTimer))
 </script>
 
 <style scoped>
+/* Action cards lift a little on hover. */
+.action-card { transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+.action-card:hover { box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.25); }
+@media (prefers-reduced-motion: no-preference) {
+  .action-card:hover { transform: translateY(-2px); }
+}
+
 /* Each box sets its --glow color with a Tailwind class, since theme() does not reach this block. */
 .guide-node { transition: opacity 200ms ease-out, transform 200ms ease-out, filter 200ms ease-out, border-color 200ms ease-out; }
 

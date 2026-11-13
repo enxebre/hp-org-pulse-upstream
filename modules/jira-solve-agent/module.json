@@ -3,11 +3,12 @@
   "slug": "jira-solve-agent",
   "description": "Track the progress and adoption of OpenShift Jira Solve Agent",
   "icon": "bot",
-  "order": 10,
+  "order": 9,
   "client": {
     "entry": "./client/index.js",
+    "navGroup": { "id": "hp-automation", "label": "HP Automation", "icon": "Rocket" },
     "navItems": [
-      { "id": "main", "label": "OpenShift Jira Solve Agent", "icon": "Bot", "default": true }
+      { "id": "main", "label": "Solve", "icon": "Bot", "default": true }
     ]
   },
   "server": {

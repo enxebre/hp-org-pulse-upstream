@@ -2,8 +2,7 @@
   <div class="p-6" data-testid="bug-refinement">
     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Agentic Bug Refinement</h2>
     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-      Track OCPBUGS and CNTRLPLANE issues labeled refined-by-agent by Chai.
-      Refinement includes all saved assessments, including deferrals and requests for more information.
+      Tracks issues refined-by-agent on demand or by the bug pipeline.
     </p>
     <p v-if="data?.demo" role="status" class="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
       Demo data — these are fictional examples, not results from Jira. Open the Jira search below to see real matching issues.

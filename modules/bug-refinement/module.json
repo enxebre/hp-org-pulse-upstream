@@ -3,12 +3,13 @@
   "slug": "bug-refinement",
   "description": "Track Chai bug refinement assessments across OCPBUGS and CNTRLPLANE",
   "icon": "ClipboardList",
-  "order": 9,
+  "order": 10,
   "defaultEnabled": true,
   "client": {
     "entry": "./client/index.js",
+    "navGroup": { "id": "hp-automation", "label": "HP Automation", "icon": "Rocket" },
     "navItems": [
-      { "id": "main", "label": "Agentic Bug Refinement", "icon": "ClipboardList", "default": true }
+      { "id": "main", "label": "Refine", "icon": "ClipboardList", "default": true }
     ]
   },
   "server": {

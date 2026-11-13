@@ -3,11 +3,12 @@
   "slug": "backport-tracker",
   "description": "Track Chai-driven OpenShift backports and merge outcomes",
   "icon": "GitMerge",
-  "order": 12,
+  "order": 11,
   "client": {
     "entry": "./client/index.js",
+    "navGroup": { "id": "hp-automation", "label": "HP Automation", "icon": "Rocket" },
     "navItems": [
-      { "id": "main", "label": "Agentic Backports", "icon": "GitMerge", "default": true }
+      { "id": "main", "label": "Backport", "icon": "GitMerge", "default": true }
     ]
   },
   "server": {

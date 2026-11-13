@@ -15,7 +15,15 @@ This document covers how to create, develop, and contribute built-in modules for
 
 ## Module Structure
 
-The `bug-refinement` module owns the **Agentic Bug Refinement** sidebar section and view at
+Six modules share the **HP Automation** sidebar section through `client.navGroup`
+(see [`navGroup`](#navgroup)), listed by module `order`: **Bug Pipeline Guide** and
+**Bug Pipeline** (`bug-pipeline`), **Solve** (`jira-solve-agent`),
+**Refine** (`bug-refinement`), **Backport** (`backport-tracker`),
+**PR Risk Assessment** (`risk-assessment`), **CVE Triage** (`cve-triage`), and
+**Go Mod Automerge**. Go Mod Automerge is a placeholder: a disabled `cve-triage` nav item
+with no view, so it shows greyed out and can't be clicked.
+
+The `bug-refinement` module owns the **Refine** sidebar entry and view at
 `#/bug-refinement/main`. It tracks OCPBUGS and CNTRLPLANE issues with
 Chai's `refined-by-agent` label, separately from the solve queue. The Agentic
 Tools landing block contributes its home card through the shared `useModuleLink`
@@ -49,8 +57,9 @@ preserved.
 Its integration suite uses `@bug-refinement` and is included in module change
 detection. See [the snapshot format](DATA-FORMATS.md#agentic-bug-refinement--bug-refinementdatajson).
 
-The `bug-pipeline` module owns the **Agentic Bug Pipeline** sidebar section and view at
-`#/bug-pipeline/main`, separate from the refinement section, and the Agentic Tools
+The `bug-pipeline` module owns the **Bug Pipeline Guide** sidebar entry and view at
+`#/bug-pipeline/guide` and the **Bug Pipeline** entry and view at
+`#/bug-pipeline/main`, and the Agentic Tools
 landing block adds its home card the same way, guarded by
 `moduleNav.isModuleAvailable('bug-pipeline')`. It declares `"requires": ["bug-refinement"]`
 and has no Jira client, refresh job, or storage of its own: `GET /api/modules/bug-pipeline/data`
@@ -63,8 +72,8 @@ copies in sync.
 The view shows how refined OCPBUGS issues move
 through Chai's solve and backport stages. It leaves out CNTRLPLANE issues and
 issues labeled `chai-backport`; backport clones count through their original
-issue's `backports`. Before the percentages, a **How the pipeline works** guide
-(`client/components/PipelineGuide.vue`) links the canonical self-driven bug backlog docs
+issue's `backports`. The guide view (`client/views/GuideView.vue`) shows the **How the
+pipeline works** guide (`client/components/PipelineGuide.vue`), which links the canonical self-driven bug backlog docs
 and diagrams refine → solve → backport, with risk assessment labeling the pull requests
 solve and backport open. Each box links its sources: the `jira-refine` skill in
 openshift-eng/ai-helpers; Chai's `jira_solve_pipeline.md` profile in
@@ -74,13 +83,16 @@ profile with the `backport` and `cherry-pick` skills it drives; and the
 names the risk assessment guideline, as plain text without a link. Hovering a box with a mouse,
 or focusing one of its links, glows that box, keeps the boxes one edge away lit, animates
 the edges between them toward the next stage, and fades the rest; with reduced motion
-the edges only change color. An
-onboarding note says to make the Chai persona extend `openshift_asdlc` and ask
-`@chai-bot` to onboard the component into the automated refine+solve pipeline, with a
-button that copies that prompt. A **Give the agents your repository's context** section
-then explains progressive disclosure: a short `AGENTS.md` that links `refine.md` and
-`risk-assessment.md`, with an **Automated Bug Pipeline guides** snippet to paste. The guide is static, so it also shows while the snapshot loads or
-fails. Summary cards show refined bugs; the shares closed, sent for
+the edges only change color. Below it,
+two cards each end in a **Copy prompt** button. **Onboard your component** shows the
+short `@chai-bot` request to onboard the component into the automated refine+solve
+pipeline, with `Component X` highlighted to replace, and notes that the Chai persona
+needs `extends: openshift_asdlc`. **Customize if you need to** sketches a short
+`AGENTS.md` that links `refine.md` and `risk-assessment.md`; its button copies a prompt,
+not shown on the page, that asks a coding agent in the repository to write both guides
+and add the **Automated Bug Pipeline guides** links to `AGENTS.md`. If the clipboard API
+is blocked, the buttons copy through a hidden textarea instead.
+The guide is static and fetches nothing. On the dashboard, summary cards show refined bugs; the shares closed, sent for
 human analysis, and waiting for information; the share sent to solve (`SOLVE`);
 the share of those that merged; and the share of their linked backports that
 merged. Each card states its count and denominator. The view reuses the
@@ -138,7 +150,7 @@ for a refresh.
 Its integration suite uses `@bug-pipeline`; change detection also runs it when the
 refinement server or fixture changes, since they define its data.
 
-The `risk-assessment` module owns the **Agentic Risk Assessment** sidebar section and
+The `risk-assessment` module owns the **PR Risk Assessment** sidebar entry and
 view at `#/risk-assessment/main`. Chai labels the latest commit of a pull request with
 exactly one of `chai-risk-assessment/low`, `chai-risk-assessment/moderate`, or
 `chai-risk-assessment/critical`. The module counts the PRs (any state) carrying each
@@ -211,6 +223,7 @@ modules/your-module/
 | `requires` | No | Array of module slugs this module depends on (default: `[]`) |
 | `client.entry` | No | Path to frontend entry point |
 | `client.navItems` | No | Sidebar navigation items |
+| `client.navGroup` | No | Share one sidebar section with other modules (see below) |
 | `client.settingsComponent` | No | Vue component for the Settings page |
 | `client.sotuWidgets` | No | Array of widget declarations for the SOTU dashboard (see below) |
 | `client.landingBlocks` | No | Array of selectable blocks to display above the landing-page dashboard (see below) |
@@ -229,6 +242,25 @@ modules/your-module/
 | `requireRole` | string | No | Only show item to users with this role (e.g., `"manager"`, `"team-admin"`, `"planning-manager"`) |
 | `requireCondition` | string | No | Only show when condition is met (e.g., `"in-app-mode"` — hides when roster is sheet-based) |
 | `separatorBefore` | boolean | No | Render a visual separator line above this item |
+
+### `navGroup`
+
+By default each module gets its own collapsible sidebar section, titled with its `name`.
+Modules that set the same `client.navGroup.id` share one section instead:
+
+```json
+{
+  "client": {
+    "navGroup": { "id": "hp-automation", "label": "HP Automation", "icon": "Rocket" }
+  }
+}
+```
+
+The section sits where the group's first module (by `order`) would, and lists each member
+module's `navItems` in module `order`. Every member must use the same `label` and `icon`;
+`npm run validate:modules` reports a mismatch. Routes, APIs, and storage stay per module.
+This needs an `@org-pulse/core` release with `navGroup` support; older releases ignore the
+field and show one section per module.
 
 ### `hiddenRoutes`
 
