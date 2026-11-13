@@ -153,8 +153,7 @@ const GUIDE = [
     sources: [skill('jira-refine')],
     edge: 'refine-solve',
     description: 'Triages each new OCPBUGS bug into one of:',
-    // Only SOLVE gets a plan and backport targets; see the jira-refine skill.
-    points: ['CLOSE', 'SOLVE, with an implementation plan and backport targets', 'NEEDS_INFO', 'NEED_HUMAN_ANALYSIS'],
+    points: ['CLOSE', 'SOLVE', 'NEEDS_INFO', 'NEED_HUMAN_ANALYSIS'],
     next: 'SOLVE'
   },
   {

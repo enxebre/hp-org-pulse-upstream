@@ -229,7 +229,7 @@ test.describe('Agentic Bug Pipeline @hp-automation', () => {
     await expect(guide.getByRole('heading', { name: 'How the pipeline works', exact: true })).toBeVisible()
     await expect(guide.getByRole('link', { name: 'Canonical docs', exact: true })).toHaveAttribute('href', 'https://thoughts-e2c4a9.pages.redhat.com/self-driven-bug-backlog/self-driven-bug-backlog.html')
     await expect(guide.locator('[data-testid^="guide-stage-"] .font-semibold')).toHaveText(['Refine', 'Solve', 'Backport', 'Risk assessment'])
-    await expect(guide.getByTestId('guide-stage-refine').getByTestId('guide-point')).toHaveText(['CLOSE', 'SOLVE, with an implementation plan and backport targets', 'NEEDS_INFO', 'NEED_HUMAN_ANALYSIS'])
+    await expect(guide.getByTestId('guide-stage-refine').getByTestId('guide-point')).toHaveText(['CLOSE', 'SOLVE', 'NEEDS_INFO', 'NEED_HUMAN_ANALYSIS'])
     await expect(guide.getByTestId('guide-source')).toHaveText(['/openshift-developer:jira-refine', 'jira_solve_pipeline.md', 'openshift_backport_pipeline.md', '/openshift-developer:backport', '/openshift-developer:cherry-pick', '/openshift-developer:pr-risk-assessment'].map(name => `${name} ↗`))
     const risk = guide.getByTestId('guide-stage-risk')
     await expect(risk.getByTestId('guide-source-text')).toHaveText('Risk assessment guideline')

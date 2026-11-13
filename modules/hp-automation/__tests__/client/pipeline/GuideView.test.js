@@ -39,7 +39,7 @@ describe('Bug Pipeline Guide', () => {
     expect(guide.html()).not.toContain('docs.google.com')
     const refine = guide.get('[data-testid="guide-stage-refine"]')
     expect(refine.text()).toContain('Triages each new OCPBUGS bug into one of:')
-    expect(refine.findAll('[data-testid="guide-point"]').map(point => point.text())).toEqual(['CLOSE', 'SOLVE, with an implementation plan and backport targets', 'NEEDS_INFO', 'NEED_HUMAN_ANALYSIS'])
+    expect(refine.findAll('[data-testid="guide-point"]').map(point => point.text())).toEqual(['CLOSE', 'SOLVE', 'NEEDS_INFO', 'NEED_HUMAN_ANALYSIS'])
     expect(guide.findAll('[data-testid="guide-point"]')).toHaveLength(4)
     expect(sources.every(link => link.attributes('target') === '_blank' && link.attributes('rel') === 'noopener noreferrer')).toBe(true)
     const onboarding = guide.get('[data-testid="pipeline-onboarding"]')
