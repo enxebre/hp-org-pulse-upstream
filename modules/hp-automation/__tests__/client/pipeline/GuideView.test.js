@@ -86,17 +86,34 @@ describe('Bug Pipeline Guide', () => {
     expect(onboarding.find('input').exists()).toBe(false)
     expect(onboarding.get('mark').text()).toBe('Component X')
     const customize = wrapper.get('[data-testid="pipeline-customize"]')
-    expect(customize.get('h4').text()).toBe('Customize if you need to')
+    expect(customize.get('h4').text()).toBe('A result missed the mark?')
+    // Tuning a skill with an eval comes before the repository guides.
+    expect(customize.findAll('h5').map(heading => heading.text())).toEqual(['Core skills', 'Your repository'])
+    const improvement = customize.get('[data-testid="skill-improvement"]')
+    expect(improvement.text()).toContain('Ask an agent to capture the case as an eval, then tune the skill, such as jira-refine or pr-risk-assessment, until it passes.')
+    expect(improvement.text()).toContain('Rerun the existing evals so nothing else regresses.')
+    const skills = 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills'
+    expect(improvement.findAll('a').map(link => link.attributes())).toEqual([
+      expect.objectContaining({ href: `${skills}/jira-refine/SKILL.md`, target: '_blank', rel: 'noopener noreferrer' }),
+      expect.objectContaining({ href: `${skills}/pr-risk-assessment/SKILL.md`, target: '_blank', rel: 'noopener noreferrer' }),
+      expect.objectContaining({ href: 'https://github.com/openshift-eng/ai-helpers', target: '_blank', rel: 'noopener noreferrer' })
+    ])
+    // Each section ends in its own copy button.
+    expect(improvement.find('[data-testid="copy-eval-prompt"]').exists()).toBe(true)
+    expect(customize.get('[data-testid="repository-guides"]').find('[data-testid="copy-customize-prompt"]').exists()).toBe(true)
+    const repositoryGuides = customize.get('[data-testid="repository-guides"]')
+    expect(improvement.element.compareDocumentPosition(repositoryGuides.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(customize.findAll('[data-testid^="context-file-"] code').map(name => name.text())).toEqual(['AGENTS.md', '↳ refine.md', '↳ risk-assessment.md'])
-    // The customize prompt is long, so the page offers it only through the copy button.
+    // The customize prompts are long, so the page offers them only through the copy buttons.
     expect(customize.text()).not.toContain('progressive disclosure')
+    expect(customize.text()).not.toContain('What went wrong')
     expect(wrapper.find('[data-testid="customize-prompt"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="pipeline-repo-context"]').exists()).toBe(false)
     // Onboarding comes first, so newcomers see how to opt in before customizing.
     expect(onboarding.element.compareDocumentPosition(customize.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
-  it('copies the onboarding prompt and the customize prompt', async () => {
+  it('copies the onboarding prompt and both customize prompts', async () => {
     const writeText = vi.fn(async () => {})
     vi.stubGlobal('navigator', { clipboard: { writeText } })
     try {
@@ -107,6 +124,19 @@ describe('Bug Pipeline Guide', () => {
       await flushPromises()
       expect(writeText).toHaveBeenLastCalledWith('@chai-bot please onboard "Component X" into the automated refine+solve pipeline.')
       expect(copyOnboarding.text()).toBe('Copied')
+
+      const copyEval = wrapper.get('[data-testid="copy-eval-prompt"]')
+      expect(copyEval.text()).toBe('Copy prompt')
+      await copyEval.trigger('click')
+      await flushPromises()
+      const evalPrompt = writeText.mock.lastCall[0]
+      expect(evalPrompt).toContain('Skill: <jira-refine or pr-risk-assessment>\nCase: <Jira bug or pull request URL>\nWhat went wrong: <what the skill decided, and what it should have decided>')
+      expect(evalPrompt).toContain('Work in a clone of https://github.com/openshift-eng/ai-helpers.')
+      expect(evalPrompt).toContain('plugins/openshift-developer/evals')
+      expect(evalPrompt).toContain('1. Add an eval case for this result')
+      expect(evalPrompt).toContain('2. Adjust the skill until the new case passes.')
+      expect(evalPrompt).toContain("3. Rerun the skill's existing eval cases and confirm none of them regress.")
+      expect(copyEval.text()).toBe('Copied')
 
       const copyCustomize = wrapper.get('[data-testid="copy-customize-prompt"]')
       await copyCustomize.trigger('click')

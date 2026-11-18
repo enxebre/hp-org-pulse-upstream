@@ -100,19 +100,51 @@
             <SlidersHorizontal :size="18" />
           </span>
           <div class="min-w-0">
-            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Customize if you need to</h4>
-            <p class="text-xs text-gray-600 dark:text-gray-300">Teach refine and risk assessment your repository's specifics.</p>
+            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">A result missed the mark?</h4>
+            <p class="text-xs text-gray-600 dark:text-gray-300">Fix it in the core skills, or teach them your repository.</p>
           </div>
         </div>
-        <ul class="relative mt-4 space-y-1 text-xs" aria-label="Repository guides">
-          <li v-for="file in CONTEXT_FILES" :key="file.name" :data-testid="`context-file-${file.key}`" class="flex flex-wrap items-baseline gap-x-2" :class="file.linked && 'pl-4'">
-            <code class="font-mono font-semibold text-gray-900 dark:text-gray-100"><span v-if="file.linked" aria-hidden="true" class="text-violet-400 dark:text-violet-500">↳ </span>{{ file.name }}</code>
-            <span class="text-gray-500 dark:text-gray-400">{{ file.hint }}</span>
-          </li>
-        </ul>
-        <div class="relative mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
-          <p class="text-xs text-gray-500 dark:text-gray-400">For your coding agent, in your repository</p>
-          <CopyPromptButton name="customize-prompt" :text="CUSTOMIZE_PROMPT" />
+        <!-- Two ways to fix it: tune a core skill for everyone, or add context for one repository. -->
+        <div class="relative mt-4 space-y-4">
+          <section data-testid="skill-improvement" aria-labelledby="skill-improvement-heading" class="flex gap-3">
+            <span aria-hidden="true" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-violet-100 text-violet-600 ring-1 ring-violet-200 dark:bg-violet-900/40 dark:text-violet-300 dark:ring-violet-800">
+              <FlaskConical :size="14" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <h5 id="skill-improvement-heading" class="text-xs font-semibold text-gray-900 dark:text-gray-100">Core skills</h5>
+              <p class="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
+                Ask an agent to capture the case as an eval, then tune the skill, such as
+                <template v-for="(tunable, index) in TUNABLE_SKILLS" :key="tunable.name">{{ index ? ' or ' : '' }}<a :data-testid="`tunable-skill-${tunable.name}`" :href="tunable.url" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap rounded bg-white/80 px-1.5 py-0.5 font-mono text-[11px] text-primary-600 ring-1 ring-gray-200 hover:underline dark:bg-gray-900/60 dark:text-primary-400 dark:ring-gray-700">{{ tunable.name }}</a></template>,
+                until it passes. Rerun the existing evals so nothing else regresses.
+              </p>
+              <div class="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  For an agent in
+                  <a data-testid="ai-helpers-repo" :href="AI_HELPERS_URL" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:underline dark:text-primary-400">ai-helpers</a>
+                </p>
+                <CopyPromptButton name="eval-prompt" :text="EVAL_PROMPT" class="ml-auto" />
+              </div>
+            </div>
+          </section>
+          <section data-testid="repository-guides" aria-labelledby="repository-guides-heading" class="flex gap-3">
+            <span aria-hidden="true" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-violet-100 text-violet-600 ring-1 ring-violet-200 dark:bg-violet-900/40 dark:text-violet-300 dark:ring-violet-800">
+              <FileText :size="14" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <h5 id="repository-guides-heading" class="text-xs font-semibold text-gray-900 dark:text-gray-100">Your repository</h5>
+              <p class="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-300">Give the skills what only your repository knows.</p>
+              <ul class="mt-2 space-y-1 text-xs" aria-label="Repository guides">
+                <li v-for="file in CONTEXT_FILES" :key="file.name" :data-testid="`context-file-${file.key}`" class="flex flex-wrap items-baseline gap-x-2" :class="file.linked && 'pl-4'">
+                  <code class="font-mono font-semibold text-gray-900 dark:text-gray-100"><span v-if="file.linked" aria-hidden="true" class="text-violet-400 dark:text-violet-500">↳ </span>{{ file.name }}</code>
+                  <span class="text-gray-500 dark:text-gray-400">{{ file.hint }}</span>
+                </li>
+              </ul>
+              <div class="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                <p class="text-xs text-gray-500 dark:text-gray-400">For an agent in your repository</p>
+                <CopyPromptButton name="customize-prompt" :text="CUSTOMIZE_PROMPT" class="ml-auto" />
+              </div>
+            </div>
+          </section>
         </div>
       </article>
     </div>
@@ -121,12 +153,13 @@
 
 <script setup>
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { Rocket, SlidersHorizontal } from 'lucide-vue-next'
+import { FileText, FlaskConical, Rocket, SlidersHorizontal } from 'lucide-vue-next'
 import CopyPromptButton from './CopyPromptButton.vue'
 
 const DOCS_URL = 'https://thoughts-e2c4a9.pages.redhat.com/self-driven-bug-backlog/self-driven-bug-backlog.html'
 const PERSONA_URL = 'https://github.com/openshift-eng/ship-help-bot/blob/main/config/groups/openshift-core/personas/openshift_asdlc.yaml'
-const SKILLS_URL = 'https://github.com/openshift-eng/ai-helpers/blob/main/plugins/openshift-developer/skills'
+const AI_HELPERS_URL = 'https://github.com/openshift-eng/ai-helpers'
+const SKILLS_URL = `${AI_HELPERS_URL}/blob/main/plugins/openshift-developer/skills`
 // Chai's pipeline profiles, pinned to a reviewed commit.
 const PROFILES_URL = 'https://github.com/openshift-eng/ship-help-bot/blob/910ff153b5fad68550cf8868c5f7752fadd3ded2/ship_help_bot/shared/instructions/workspace/profiles'
 // The onboarding prompt, split so the page can highlight the part to replace.
@@ -225,6 +258,23 @@ function onPointerEnter(event, key) {
   // A tap is not a hover; touch users still get the effect through focus.
   if (event.pointerType !== 'touch') activate(key)
 }
+
+// Skills a team can tune with an eval when a pipeline result misses the mark.
+const TUNABLE_SKILLS = ['jira-refine', 'pr-risk-assessment'].map(name => ({ name, url: `${SKILLS_URL}/${name}/SKILL.md` }))
+// For a coding agent working in ai-helpers, where the skills and their evals live.
+const EVAL_PROMPT = `A result from the automated bug pipeline missed the mark. Turn it into an eval case and tune the skill so it gets cases like this right.
+
+Skill: <jira-refine or pr-risk-assessment>
+Case: <Jira bug or pull request URL>
+What went wrong: <what the skill decided, and what it should have decided>
+
+Work in a clone of ${AI_HELPERS_URL}. The skill is plugins/openshift-developer/skills/<skill>/SKILL.md. Its evals are in plugins/openshift-developer/evals, and the README.md there explains how to add a case.
+
+1. Add an eval case for this result with the expected outcome, and list it in the README index. Run it against the current skill and confirm it fails.
+2. Adjust the skill until the new case passes. Fix the reasoning behind the wrong result rather than special-casing this case.
+3. Rerun the skill's existing eval cases and confirm none of them regress.
+
+If you can't tell what the right outcome is, ask me instead of guessing.`
 
 const CONTEXT_FILES = [
   { key: 'agents', name: 'AGENTS.md', hint: 'links the guides' },

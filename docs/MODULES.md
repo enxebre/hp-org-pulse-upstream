@@ -88,11 +88,16 @@ names the risk assessment guideline, as plain text without a link. Hovering a bo
 or focusing one of its links, glows that box, keeps the boxes one edge away lit, animates
 the edges between them toward the next stage, and fades the rest; with reduced motion
 the edges only change color. Below it,
-two cards each end in a **Copy prompt** button. **Onboard your component** shows the
+two cards offer **Copy prompt** buttons. **Onboard your component** shows the
 short `@chai-bot` request to onboard the component into the automated refine+solve
 pipeline, with `Component X` highlighted to replace, and notes that the Chai persona
-needs `extends: openshift_asdlc`. **Customize if you need to** sketches a short
-`AGENTS.md` that links `refine.md` and `risk-assessment.md`; its button copies a prompt,
+needs `extends: openshift_asdlc`. **A result missed the mark?** has two sections, each
+with its own button. **Core skills** suggests asking an agent to capture the case as an
+eval, tune the skill (linking `jira-refine` and `pr-risk-assessment`) until it passes,
+and rerun the existing evals to check for regressions; its button copies a prompt, not
+shown on the page, for a coding agent in ai-helpers, with placeholders for the skill,
+the case, and what went wrong. **Your repository** sketches a
+short `AGENTS.md` that links `refine.md` and `risk-assessment.md`; its button copies a prompt,
 not shown on the page, that asks a coding agent in the repository to write both guides
 and add the **Automated Bug Pipeline guides** links to `AGENTS.md`. If the clipboard API
 is blocked, the buttons copy through a hidden textarea instead.
